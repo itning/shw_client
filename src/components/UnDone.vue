@@ -1,6 +1,6 @@
 <template>
-  <div class="height_100">
-    <md-table class="height_100" v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
+  <div>
+    <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
       <md-table-toolbar>
         <div class="md-toolbar-section-start">
           <h1 class="md-title">未交作业</h1>
