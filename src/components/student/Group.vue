@@ -29,7 +29,7 @@
     <transition name="fade">
       <md-card class="md-card-info" v-if="show_add_info_card">
         <md-card-header>
-          <div class="md-title">想要添加群组？</div>
+          <div class="md-title">想要加入群组？</div>
         </md-card-header>
         <md-card-content>
           看见右下角的红色按钮了吗？<br>单击它试试！
