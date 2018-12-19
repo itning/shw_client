@@ -1,4 +1,4 @@
-# shw_client
+# 学生作业管理系统客户端
 
 > Student HomeWork Management System Client
 
