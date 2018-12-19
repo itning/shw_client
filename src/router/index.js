@@ -4,6 +4,7 @@ import Welcome from '@/components/Welcome'
 import Group from '@/components/Group'
 import UnDone from '@/components/UnDone'
 import Done from '@/components/Done'
+import PersonalCenter from '@/components/PersonalCenter'
 
 Vue.use(Router);
 
@@ -33,6 +34,11 @@ export default new Router({
       path: '/group',
       name: 'Group',
       component: Group
+    },
+    {
+      path: '/personal_center',
+      name: 'PersonalCenter',
+      component: PersonalCenter
     }
   ]
 })
