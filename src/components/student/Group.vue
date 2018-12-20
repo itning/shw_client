@@ -9,7 +9,8 @@
           在这里你可以查看你加入的群组,或者加入新的群组，甚至退出你已经加入的群组。<br>
         </md-card-content>
         <md-card-actions>
-          <md-button @click="show_welcome_card=false">我知道了</md-button>
+          <md-button @click="setInfoCardDisable(show_welcome_card=false,'show_welcome_card')">我知道了
+          </md-button>
         </md-card-actions>
       </md-card>
     </transition>
@@ -22,7 +23,7 @@
           单击群组条目进行群组详情查看，而且你还可以选择退出该群组！
         </md-card-content>
         <md-card-actions>
-          <md-button @click="show_info_card=false">我知道了</md-button>
+          <md-button @click="setInfoCardDisable(show_info_card=false,'show_info_card')">我知道了</md-button>
         </md-card-actions>
       </md-card>
     </transition>
@@ -35,7 +36,7 @@
           看见右下角的红色按钮了吗？<br>单击它试试！
         </md-card-content>
         <md-card-actions>
-          <md-button @click="show_add_info_card=false">我知道了</md-button>
+          <md-button @click="setInfoCardDisable(show_add_info_card=false,'show_add_info_card')">我知道了</md-button>
         </md-card-actions>
       </md-card>
     </transition>
@@ -135,10 +136,25 @@
         console.log(id);
         this.selected = this.users.find(item => item.id === id);
         this.showDialog = true;
+      },
+      setInfoCardDisable(item, localStorageKey) {
+        window.localStorage.setItem(localStorageKey, 'false');
       }
     },
     created() {
-      this.searched = this.users
+      this.searched = this.users;
+      let show_add_info_card = window.localStorage.getItem('show_add_info_card');
+      let show_welcome_card = window.localStorage.getItem('show_welcome_card');
+      let show_info_card = window.localStorage.getItem('show_info_card');
+      if (show_add_info_card != null) {
+        this.show_add_info_card = (show_add_info_card === 'true');
+      }
+      if (show_welcome_card != null) {
+        this.show_welcome_card = (show_welcome_card === 'true');
+      }
+      if (show_info_card != null) {
+        this.show_info_card = (show_info_card === 'true');
+      }
     }
   }
 </script>
