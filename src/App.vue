@@ -17,10 +17,9 @@
               <md-tooltip md-delay="300" md-direction="bottom">您有1条新的邀请</md-tooltip>
             </md-button>
           </md-badge>
-          <md-button class="md-icon-button" v-if="!isHaveNotifications"
-                     @click="showNotificationsList=!showNotificationsList">
+          <md-button class="md-icon-button" v-if="!isHaveNotifications">
             <md-icon>notifications</md-icon>
-            <md-tooltip md-delay="300" md-direction="bottom">没有通知需要处理</md-tooltip>
+            <md-tooltip md-delay="200" md-direction="bottom">没有通知需要处理</md-tooltip>
           </md-button>
           <transition name="fade">
             <md-list class="notifications-list md-elevation-2" v-show="showNotificationsList">
