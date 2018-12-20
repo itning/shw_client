@@ -1,0 +1,261 @@
+<template>
+  <div>
+    <transition name="fade">
+      <md-card class="md-card-info" v-if="show_welcome_card">
+        <md-card-header>
+          <div class="md-title">Hi! 欢迎来到群组管理</div>
+        </md-card-header>
+        <md-card-content>
+          在这里你可以查看你加入的群组,或者加入新的群组，甚至退出你已经加入的群组。<br>
+        </md-card-content>
+        <md-card-actions>
+          <md-button @click="setInfoCardDisable(show_welcome_card=false,'show_welcome_card')">我知道了
+          </md-button>
+        </md-card-actions>
+      </md-card>
+    </transition>
+    <transition name="fade">
+      <md-card class="md-card-info" v-if="show_info_card">
+        <md-card-header>
+          <div class="md-title">群组详情</div>
+        </md-card-header>
+        <md-card-content>
+          单击群组条目进行群组详情查看，而且你还可以选择退出该群组！
+        </md-card-content>
+        <md-card-actions>
+          <md-button @click="setInfoCardDisable(show_info_card=false,'show_info_card')">我知道了</md-button>
+        </md-card-actions>
+      </md-card>
+    </transition>
+    <transition name="fade">
+      <md-card class="md-card-info" v-if="show_add_info_card">
+        <md-card-header>
+          <div class="md-title">想要加入群组？</div>
+        </md-card-header>
+        <md-card-content>
+          看见右下角的红色按钮了吗？<br>单击它试试！
+        </md-card-content>
+        <md-card-actions>
+          <md-button @click="setInfoCardDisable(show_add_info_card=false,'show_add_info_card')">我知道了</md-button>
+        </md-card-actions>
+      </md-card>
+    </transition>
+    <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
+      <md-table-toolbar>
+        <div class="md-toolbar-section-start">
+          <h1 class="md-title">群组管理</h1>
+        </div>
+
+        <md-field md-clearable class="md-toolbar-section-end">
+          <md-input placeholder="键入组名进行搜索..." v-model="search" @input="searchOnTable"/>
+        </md-field>
+      </md-table-toolbar>
+
+      <md-table-empty-state
+        md-label="群组没有找到"
+        :md-description="`没有找到名为 '${search}' 的组. 尝试其他关键字进行搜索或者加入新群组`">
+        <md-button class="md-primary md-raised" @click="add_group_dialog_status=true">加入新群组</md-button>
+      </md-table-empty-state>
+
+      <md-table-row slot="md-table-row" slot-scope="{ item }" @click="onItemClick(item.id)">
+        <md-table-cell md-label="组名" md-sort-by="name">{{ item.name }}</md-table-cell>
+        <md-table-cell md-label="教师" md-sort-by="email">{{ item.teacher }}</md-table-cell>
+        <md-table-cell md-label="加入时间" md-sort-by="gender" md-numeric>{{ item.join_data }}</md-table-cell>
+      </md-table-row>
+    </md-table>
+    <md-dialog :md-active.sync="showDialog" :md-fullscreen="alert_fullscreen">
+      <md-dialog-title>群组详情</md-dialog-title>
+      <md-dialog-content>
+        编号：{{selected.id}}<br><br>
+        名称：{{selected.name}}<br><br>
+        邀请码：<br><br>
+        管理教师：<br><br>
+        加入时间：{{selected.join_data}}<br><br>
+      </md-dialog-content>
+      <md-dialog-actions>
+        <md-button class="md-accent" @click="">退出群组</md-button>
+        <md-button class="md-primary" @click="showDialog = false">关闭</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+    <md-dialog-prompt
+      :md-active.sync="add_group_dialog_status"
+      v-model="group_id"
+      md-title="输入你的群组邀请码"
+      md-input-maxlength="30"
+      md-input-placeholder="在此输入..."
+      md-confirm-text="完成"
+      md-cancel-text="取消"/>
+    <md-button class="md-fab md-fixed md-fab-bottom-right" @click="add_group_dialog_status=true">
+      <md-icon>add</md-icon>
+    </md-button>
+  </div>
+</template>
+
+<script>
+  const toLower = text => {
+    return text.toString().toLowerCase()
+  };
+
+  const searchByName = (items, term) => {
+    if (term) {
+      return items.filter(item => toLower(item.name).includes(toLower(term)))
+    }
+    return items
+  };
+
+  export default {
+    name: "AllGroup",
+    data() {
+      return {
+        search: null,
+        group_id: "",
+        searched: [],
+        selected: {},
+        add_group_dialog_status: false,
+        show_add_info_card: true,
+        show_welcome_card: true,
+        show_info_card: true,
+        showDialog: false,
+        alert_fullscreen: false,
+        users: [
+          {
+            id: "1",
+            name: "群组A群组A群组A群组A群组A",
+            teacher: "舒露",
+            join_data: "2018/12/19 15:36:25",
+            title: "Assistant Media Planner"
+          },
+          {
+            id: "2",
+            name: "群组A群组A群组A群组A群组A",
+            teacher: "舒露",
+            join_data: "2018/12/19 15:36:25",
+            title: "Assistant Media Planner"
+          },
+          {
+            id: "3",
+            name: "群组A群组A群组A群组A群组A",
+            teacher: "舒露",
+            join_data: "2018/12/19 15:36:25",
+            title: "Assistant Media Planner"
+          },
+          {
+            id: "4",
+            name: "群组A群组A群组A群组A群组A",
+            teacher: "舒露",
+            join_data: "2018/12/19 15:36:25",
+            title: "Assistant Media Planner"
+          },
+          {
+            id: "5",
+            name: "群组A群组A群组A群组A群组A",
+            teacher: "舒露",
+            join_data: "2018/12/19 15:36:25",
+            title: "Assistant Media Planner"
+          },
+          {
+            id: "6",
+            name: "群组A群组A群组A群组A群组A",
+            teacher: "舒露",
+            join_data: "2018/12/19 15:36:25",
+            title: "Assistant Media Planner"
+          },
+          {
+            id: "7",
+            name: "群组A群组A群组A群组A群组A",
+            teacher: "舒露",
+            join_data: "2018/12/19 15:36:25",
+            title: "Assistant Media Planner"
+          },
+          {
+            id: "8",
+            name: "群组A群组A群组A群组A群组A",
+            teacher: "舒露",
+            join_data: "2018/12/19 15:36:25",
+            title: "Assistant Media Planner"
+          },
+          {
+            id: "9",
+            name: "群组A群组A群组A群组A群组A",
+            teacher: "舒露",
+            join_data: "2018/12/19 15:36:25",
+            title: "Assistant Media Planner"
+          },
+          {
+            id: "20",
+            name: "群组A群组A群组A群组A群组A",
+            teacher: "舒露",
+            join_data: "2018/12/19 15:36:25",
+            title: "Assistant Media Planner"
+          },
+          {
+            id: "21",
+            name: "群组A群组A群组A群组A群组A",
+            teacher: "舒露",
+            join_data: "2018/12/19 15:36:25",
+            title: "Assistant Media Planner"
+          },
+          {
+            id: "22",
+            name: "群组A群组A群组A群组A群组A",
+            teacher: "舒露",
+            join_data: "2018/12/19 15:36:25",
+            title: "Assistant Media Planner"
+          },
+          {
+            id: "33",
+            name: "群组A群组A群组A群组A群组A",
+            teacher: "舒露",
+            join_data: "2018/12/19 15:36:25",
+            title: "Assistant Media Planner"
+          },
+          {
+            id: "44",
+            name: "群组A群组A群组A群组A群组A",
+            teacher: "舒露",
+            join_data: "2018/12/19 15:36:25",
+            title: "Assistant Media Planner"
+          },
+          {
+            id: "11",
+            name: "群组A群组A群组A群组A群组A",
+            teacher: "舒露1",
+            join_data: "2018/12/19 15:36:25",
+            title: "Assistant Media Planner"
+          },
+        ]
+      }
+    },
+    methods: {
+      searchOnTable() {
+        this.searched = searchByName(this.users, this.search)
+      },
+      onItemClick(id) {
+        this.selected = this.users.find(item => item.id === id);
+        this.showDialog = true;
+      },
+      setInfoCardDisable(item, localStorageKey) {
+        window.localStorage.setItem(localStorageKey, 'false');
+      }
+    },
+    created() {
+      this.searched = this.users;
+      let show_add_info_card = window.localStorage.getItem('show_add_info_card');
+      let show_welcome_card = window.localStorage.getItem('show_welcome_card');
+      let show_info_card = window.localStorage.getItem('show_info_card');
+      if (show_add_info_card != null) {
+        this.show_add_info_card = (show_add_info_card === 'true');
+      }
+      if (show_welcome_card != null) {
+        this.show_welcome_card = (show_welcome_card === 'true');
+      }
+      if (show_info_card != null) {
+        this.show_info_card = (show_info_card === 'true');
+      }
+    }
+  }
+</script>
+
+<style scoped>
+
+</style>

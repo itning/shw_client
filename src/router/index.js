@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Welcome from '@/components/student/Welcome'
-import Group from '@/components/student/Group'
-import UnDone from '@/components/student/UnDone'
-import Done from '@/components/student/Done'
-import PersonalCenter from '@/components/student/PersonalCenter'
+import Welcome from '@/components/Welcome'
+import Group from '@/components/Group'
+import UnDone from '@/components/UnDone'
+import Done from '@/components/Done'
+import PersonalCenter from '@/components/PersonalCenter'
+import AllGroup from '@/components/AllGroup'
 
 Vue.use(Router);
 
@@ -39,6 +40,11 @@ export default new Router({
       path: '/personal_center',
       name: 'PersonalCenter',
       component: PersonalCenter
+    },
+    {
+      path: '/all_group',
+      name: 'AllGroup',
+      component: AllGroup
     }
   ]
 })
