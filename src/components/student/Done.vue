@@ -1,6 +1,12 @@
 <template>
   <div>
-    <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
+    <md-empty-state v-if="!have_done_work"
+                    md-icon="done_all"
+                    md-label="没有已经上交作业"
+                    md-description="点击下方按钮你可以查看还没有上交的作业">
+      <md-button class="md-primary md-raised" @click="routerToUnDonePage">查看未交作业</md-button>
+    </md-empty-state>
+    <md-table v-if="have_done_work" v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
       <md-table-toolbar>
         <div class="md-toolbar-section-start">
           <h1 class="md-title">已交作业</h1>
@@ -58,6 +64,7 @@
         showDialog: false,
         alert_fullscreen: false,
         alert_click_outside_to_close: false,
+        have_done_work: true,
         users: [
           {
             id: "1",
@@ -150,6 +157,9 @@
       },
       fileChange(value) {
         console.log(value)
+      },
+      routerToUnDonePage(){
+        this.$router.push('un_done');
       }
     },
     created() {

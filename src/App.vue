@@ -59,7 +59,7 @@
           </md-list-item>
 
           <md-list-item @click="pushRouter('done')">
-            <md-icon>done_all</md-icon>
+            <md-icon>done</md-icon>
             <span class="md-list-item-text">已交作业</span>
           </md-list-item>
 
