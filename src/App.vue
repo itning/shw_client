@@ -26,9 +26,6 @@
             <md-list class="notifications-list md-elevation-2" v-show="showNotificationsList">
               <md-subheader>群组邀请</md-subheader>
               <md-list-item>
-                <span class="md-list-item-text">没有待处理的群组邀请</span>
-              </md-list-item>
-              <md-list-item>
                 <span class="md-list-item-text">XX邀请你加入XXXXXXXXXXXX群组</span>
                 <md-tooltip md-delay="1000" md-direction="bottom">XX邀请你加入XXXXXXXXXXXX群组</md-tooltip>
                 <md-button class="md-icon-button">
