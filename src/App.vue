@@ -4,9 +4,9 @@
                      :md-active.sync="isNotChrome"
                      md-content="系统可能不支持您的浏览器，请下载Chrome浏览器！"
                      md-confirm-text="好的"/>
-    <md-app class="height_100" md-mode="reveal">
-      <md-app-toolbar class="md-primary" md-elevation="0">
-        <md-button class="md-icon-button" @click="menuVisible = !menuVisible" v-if="!menuVisible">
+    <md-app class="height_100" md-mode="fixed">
+      <md-app-toolbar class="md-primary">
+        <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
           <md-icon>menu</md-icon>
         </md-button>
         <span class="md-title md-xsmall-hide">哈信息学生作业管理系统</span>
@@ -43,22 +43,14 @@
               <md-icon>more_vert</md-icon>
             </md-button>
             <md-menu-content>
-              <md-menu-item @click="">My Item 1</md-menu-item>
-              <md-menu-item @click="">My Item 2</md-menu-item>
-              <md-menu-item @click="">My Item 3</md-menu-item>
+              <md-menu-item @click="">舒露</md-menu-item>
+              <md-menu-item @click="">注销登陆</md-menu-item>
             </md-menu-content>
           </md-menu>
         </div>
       </md-app-toolbar>
-      <md-app-drawer :md-active.sync="menuVisible" md-persistent="mini">
-        <md-toolbar class="md-transparent" md-elevation="0">
-          <span>舒露</span>
-          <div class="md-toolbar-section-end">
-            <md-button class="md-icon-button md-dense" @click="menuVisible = !menuVisible">
-              <md-icon>keyboard_arrow_left</md-icon>
-            </md-button>
-          </div>
-        </md-toolbar>
+      <md-app-drawer :md-active.sync="menuVisible">
+        <md-toolbar class="md-transparent" md-elevation="0">舒露</md-toolbar>
 
         <md-list>
           <md-list-item @click="pushRouter('un_done')">
