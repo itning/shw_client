@@ -20,7 +20,7 @@
         <md-table-cell md-label="组名" md-sort-by="name">{{ item.name }}</md-table-cell>
         <md-table-cell md-label="作业名" md-sort-by="title">{{ item.title }}</md-table-cell>
         <md-table-cell md-label="教师" md-sort-by="email">{{ item.teacher }}</md-table-cell>
-        <md-table-cell md-label="上交时间" md-sort-by="gender">{{ item.join_data }}</md-table-cell>
+        <md-table-cell md-label="上交时间" md-sort-by="gender" md-numeric>{{ item.join_data }}</md-table-cell>
       </md-table-row>
     </md-table>
     <md-dialog :md-active.sync="showDialog" :md-fullscreen="alert_fullscreen"

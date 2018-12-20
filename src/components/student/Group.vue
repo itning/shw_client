@@ -60,7 +60,7 @@
       <md-table-row slot="md-table-row" slot-scope="{ item }" @click="onItemClick(item.id)">
         <md-table-cell md-label="组名" md-sort-by="name">{{ item.name }}</md-table-cell>
         <md-table-cell md-label="教师" md-sort-by="email">{{ item.teacher }}</md-table-cell>
-        <md-table-cell md-label="加入时间" md-sort-by="gender">{{ item.join_data }}</md-table-cell>
+        <md-table-cell md-label="加入时间" md-sort-by="gender" md-numeric>{{ item.join_data }}</md-table-cell>
       </md-table-row>
     </md-table>
     <md-dialog :md-active.sync="showDialog" :md-fullscreen="alert_fullscreen">
@@ -133,7 +133,6 @@
         this.searched = searchByName(this.users, this.search)
       },
       onItemClick(id) {
-        console.log(id);
         this.selected = this.users.find(item => item.id === id);
         this.showDialog = true;
       },
@@ -165,13 +164,5 @@
     margin-bottom: 4px;
     display: inline-block;
     vertical-align: top;
-  }
-
-  .fade-enter-active, .fade-leave-active {
-    transition: opacity .5s;
-  }
-
-  .fade-enter, .fade-leave-to {
-    opacity: 0;
   }
 </style>
