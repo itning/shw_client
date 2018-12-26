@@ -151,8 +151,8 @@
       if (studentGroups !== null) {
         try {
           this.users = JSON.parse(studentGroups).map(group => {
-            group.gmtCreate = dayjs(group.gmtCreate.split('.')[0]).format("YYYY年MM月DD日 HH:mm:ss");
-            group.gmtModified = dayjs(group.gmtModified.split('.')[0]).format("YYYY年MM月DD日 HH:mm:ss");
+            group.gmtCreate = dayjs(group.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
+            group.gmtModified = dayjs(group.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
             return group;
           });
         } catch (e) {
