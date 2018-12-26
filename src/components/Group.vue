@@ -58,19 +58,19 @@
       </md-table-empty-state>
 
       <md-table-row slot="md-table-row" slot-scope="{ item }" @click="onItemClick(item.id)">
-        <md-table-cell md-label="组名" md-sort-by="name">{{ item.name }}</md-table-cell>
-        <md-table-cell md-label="教师" md-sort-by="email">{{ item.teacher }}</md-table-cell>
-        <md-table-cell md-label="加入时间" md-sort-by="gender" md-numeric>{{ item.join_data }}</md-table-cell>
+        <md-table-cell md-label="组名" md-sort-by="name">{{ item.groupName }}</md-table-cell>
+        <md-table-cell md-label="教师" md-sort-by="email">{{ item.teacherName }}</md-table-cell>
+        <md-table-cell md-label="加入时间" md-sort-by="gender" md-numeric>{{ item.gmtCreate }}</md-table-cell>
       </md-table-row>
     </md-table>
     <md-dialog :md-active.sync="showDialog" :md-fullscreen="alert_fullscreen">
       <md-dialog-title>群组详情</md-dialog-title>
       <md-dialog-content>
         编号：{{selected.id}}<br><br>
-        名称：{{selected.name}}<br><br>
-        邀请码：<br><br>
-        管理教师：<br><br>
-        加入时间：{{selected.join_data}}<br><br>
+        名称：{{selected.groupName}}<br><br>
+        邀请码：{{selected.code}}<br><br>
+        管理教师：{{selected.teacherName}}<br><br>
+        加入时间：{{selected.gmtCreate}}<br><br>
       </md-dialog-content>
       <md-dialog-actions>
         <md-button class="md-accent" @click="">退出群组</md-button>
@@ -92,6 +92,8 @@
 </template>
 
 <script>
+  import dayjs from 'dayjs'
+
   const toLower = text => {
     return text.toString().toLowerCase()
   };
@@ -117,113 +119,7 @@
         show_info_card: true,
         showDialog: false,
         alert_fullscreen: false,
-        users: [
-          {
-            id: "1",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "2",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "3",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "4",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "5",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "6",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "7",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "8",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "9",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "20",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "21",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "22",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "33",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "44",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "11",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露1",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-        ]
+        users: []
       }
     },
     methods: {
@@ -239,7 +135,6 @@
       }
     },
     created() {
-      this.searched = this.users;
       let show_add_info_card = window.localStorage.getItem('show_add_info_card');
       let show_welcome_card = window.localStorage.getItem('show_welcome_card');
       let show_info_card = window.localStorage.getItem('show_info_card');
@@ -252,6 +147,19 @@
       if (show_info_card != null) {
         this.show_info_card = (show_info_card === 'true');
       }
+      let studentGroups = window.localStorage.getItem('student_groups');
+      if (studentGroups !== null) {
+        try {
+          this.users = JSON.parse(studentGroups).map(group => {
+            group.gmtCreate = dayjs(group.gmtCreate.split('.')[0]).format("YYYY年MM月DD日 HH:mm:ss");
+            group.gmtModified = dayjs(group.gmtModified.split('.')[0]).format("YYYY年MM月DD日 HH:mm:ss");
+            return group;
+          });
+        } catch (e) {
+          window.localStorage.removeItem('student_groups');
+        }
+      }
+      this.searched = this.users;
     }
   }
 </script>

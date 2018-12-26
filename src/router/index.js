@@ -14,7 +14,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/un_done'
+      redirect: '/welcome'
     },
     {
       path: '/welcome',
@@ -45,6 +45,10 @@ export default new Router({
       path: '/all_group',
       name: 'AllGroup',
       component: AllGroup
+    },
+    {
+      path: "*",
+      redirect: "/"
     }
   ]
 })

@@ -18,12 +18,50 @@
 </template>
 
 <script>
+  import {Student} from "@/api/api";
+  import axios from 'axios'
+
   export default {
     name: 'Welcome',
     data() {
       return {
         add_group_dialog_status: false,
         group_id: ''
+      }
+    },
+    beforeRouteEnter(to, from, next) {
+      axios.get(Student().groups, {withCredentials: true})
+        .then(function (response) {
+          if (response.status === 200) {
+            if (response.data.data.length !== 0) {
+              window.localStorage.setItem('student_groups', JSON.stringify(response.data.data));
+              next('/un_done');
+            } else {
+              doNext();
+            }
+          } else {
+            alert('服务端错误，请稍后再试。状态码：' + response.status);
+          }
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+          if (typeof error.response === 'undefined') {
+            window.location = 'http://login.greathiit.com/login?service=http://localhost:8080/login';
+          } else {
+            return Promise.reject(error)
+          }
+        })
+        .then(function () {
+          // always executed
+        });
+
+      function doNext() {
+        console.log("do next");
+        next(vm => {
+          console.log(vm);
+          //TODO 重用response 数据? 使用vuex
+        })
       }
     }
   }
