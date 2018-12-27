@@ -129,6 +129,10 @@
       }
     },
     created() {
+      if (!this.$store.state.have_groups) {
+        this.$router.push("welcome");
+        return;
+      }
       let that = this;
       axios.get(Student().works_done, {withCredentials: true})
         .then(function (response) {

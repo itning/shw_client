@@ -169,6 +169,7 @@
                 });
                 that.searched = that.groups;
                 that.init_finish = true;
+                that.$store.commit('have_groups');
               }
             } else {
               alert('服务端错误，请稍后再试。状态码：' + response.status);
