@@ -99,7 +99,7 @@
 <script>
   import dayjs from 'dayjs'
   import axios from 'axios'
-  import {CAS_LOGIN_URL, Student} from "../api/api";
+  import {CAS_LOGIN_URL, Student} from "@/api";
 
   const toLower = text => {
     return text.toString().toLowerCase()
@@ -147,7 +147,7 @@
           .then(function (response) {
             if (response.status === 200) {
               if (response.data.data.length === 0) {
-                this.$router.push("/welcome");
+                that.$router.push("welcome");
               } else {
                 that.groups = response.data.data.map(group => {
                   group.gmtCreate = dayjs(group.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");

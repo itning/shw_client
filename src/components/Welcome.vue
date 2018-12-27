@@ -18,8 +18,7 @@
 </template>
 
 <script>
-  import {Student} from "@/api/api";
-  import {CAS_LOGIN_URL} from "@/api/api";
+  import {CAS_LOGIN_URL, Student} from "@/api";
   import axios from 'axios'
 
   export default {
@@ -31,6 +30,7 @@
       }
     },
     beforeRouteEnter(to, from, next) {
+      window.localStorage.removeItem('student_groups');
       axios.get(Student().groups, {withCredentials: true})
         .then(function (response) {
           if (response.status === 200) {
@@ -58,8 +58,9 @@
         });
 
       function doNext() {
-        console.log("do next");
-        next();
+        next(vm => {
+          vm.$store.commit('none_groups');
+        });
       }
     }
   }

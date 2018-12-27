@@ -56,7 +56,7 @@
 <script>
   import axios from 'axios'
   import dayjs from 'dayjs'
-  import {CAS_LOGIN_URL, Student} from "../api/api";
+  import {CAS_LOGIN_URL, Student} from "@/api";
 
   const toLower = text => {
     return text.toString().toLowerCase()

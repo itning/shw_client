@@ -54,7 +54,7 @@
 <script>
   import axios from 'axios'
   import dayjs from 'dayjs'
-  import {CAS_LOGIN_URL, Student} from "../api/api";
+  import {CAS_LOGIN_URL, Student} from "@/api";
 
   const toLower = text => {
     return text.toString().toLowerCase()
@@ -100,6 +100,7 @@
     },
     created() {
       let that = this;
+      this.$store.commit('have_groups');
       axios.get(Student().works_undone, {withCredentials: true})
         .then(function (response) {
           if (response.status === 200) {
