@@ -83,7 +83,7 @@
 
 <script>
   import axios from 'axios'
-  import {CAS_LOGIN_URL, User} from "@/api/api";
+  import {BASE_URL, CAS_LOGIN_URL, User} from "@/api/api";
 
   export default {
     name: 'App',
@@ -102,7 +102,7 @@
         this.menuVisible = false;
       },
       logout() {
-        window.location.href = "http://localhost:8080/logout";
+        window.location.href = BASE_URL + "http://localhost:8080/logout";
       }
     },
     created() {
