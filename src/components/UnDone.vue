@@ -87,7 +87,6 @@
         this.searched = searchByName(this.works, this.search)
       },
       onItemClick(id) {
-        console.log(id);
         this.selected = this.works.find(item => item.id === id);
         this.showDialog = true;
       },

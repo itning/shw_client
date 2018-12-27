@@ -14,6 +14,7 @@ export function Student() {
     "groups": BASE_URL + str + '/groups',
     "works_undone": BASE_URL + str + '/works/un_done',
     "works_done": BASE_URL + str + '/works/done',
-    "upload": BASE_URL + str + '/upload/'
+    "upload": BASE_URL + str + '/upload/',
+    "addGroup": BASE_URL + str + '/group'
   }
 }

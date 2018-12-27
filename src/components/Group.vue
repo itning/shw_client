@@ -82,8 +82,9 @@
         </md-dialog-actions>
       </md-dialog>
       <md-dialog-prompt
+        @md-confirm="addGroup"
         :md-active.sync="add_group_dialog_status"
-        v-model="group_id"
+        v-model="group_code"
         md-title="输入你的群组邀请码"
         md-input-maxlength="30"
         md-input-placeholder="在此输入..."
@@ -117,7 +118,7 @@
     data() {
       return {
         search: null,
-        group_id: "",
+        group_code: "",
         searched: [],
         selected: {},
         add_group_dialog_status: false,
@@ -130,6 +131,7 @@
         groups: []
       }
     },
+    watch: {},
     methods: {
       searchOnTable() {
         this.searched = searchByName(this.groups, this.search)
@@ -168,6 +170,72 @@
               window.location = CAS_LOGIN_URL;
             } else {
               return Promise.reject(error)
+            }
+          })
+          .then(function () {
+            // always executed
+          });
+      },
+      addGroup() {
+        if (this.group_code === '') {
+          return;
+        }
+        let that = this;
+        let params = new URLSearchParams();
+        params.append('code', this.group_code);
+        axios.post(Student().addGroup, params, {withCredentials: true})
+          .then(response => {
+            if (response.status === 201) {
+              that.$toasted.success('加入成功', {
+                position: "top-right",
+                icon: 'check',
+                duration: 5000
+              });
+              that.group_code = '';
+              that.init_finish = false;
+              that.initData();
+            } else {
+              that.$toasted.error('加入失败：' + response.data.msg, {
+                position: "top-right",
+                icon: 'clear',
+                duration: 30000,
+                action: {
+                  text: '我知道了',
+                  onClick: (e, toastObject) => {
+                    toastObject.goAway(0);
+                  }
+                }
+              });
+            }
+          })
+          .catch(function (error) {
+            if (typeof error.response === 'undefined') {
+              that.$toasted.error('登陆超时，请重新登陆', {
+                position: "top-right",
+                icon: 'clear',
+                duration: 2000,
+                action: {
+                  text: '我知道了',
+                  onClick: (e, toastObject) => {
+                    toastObject.goAway(0);
+                  }
+                }
+              });
+              setTimeout(function () {
+                window.location = CAS_LOGIN_URL;
+              }, 2000);
+            } else {
+              that.$toasted.error('加入失败：' + error.response.data.msg, {
+                position: "top-right",
+                icon: 'clear',
+                duration: 30000,
+                action: {
+                  text: '我知道了',
+                  onClick: (e, toastObject) => {
+                    toastObject.goAway(0);
+                  }
+                }
+              });
             }
           })
           .then(function () {
