@@ -43,14 +43,14 @@
               <md-icon>more_vert</md-icon>
             </md-button>
             <md-menu-content>
-              <md-menu-item @click="">舒露</md-menu-item>
+              <md-menu-item @click="">{{user.name}}</md-menu-item>
               <md-menu-item @click="logout">注销登陆</md-menu-item>
             </md-menu-content>
           </md-menu>
         </div>
       </md-app-toolbar>
       <md-app-drawer :md-active.sync="menuVisible">
-        <md-toolbar class="md-transparent" md-elevation="0">舒露</md-toolbar>
+        <md-toolbar class="md-transparent" md-elevation="0">{{user.name}} {{user.no}}</md-toolbar>
 
         <md-list>
           <md-list-item @click="pushRouter('un_done')">
@@ -82,6 +82,9 @@
 </template>
 
 <script>
+  import axios from 'axios'
+  import {CAS_LOGIN_URL, User} from "@/api/api";
+
   export default {
     name: 'App',
     data() {
@@ -89,7 +92,8 @@
         menuVisible: false,
         isNotChrome: true,
         isHaveNotifications: false,
-        showNotificationsList: false
+        showNotificationsList: false,
+        user: {}
       }
     },
     methods: {
@@ -100,6 +104,29 @@
       logout() {
         window.location.href = "http://localhost:8080/logout";
       }
+    },
+    created() {
+      let that = this;
+      axios.get(User().user, {withCredentials: true})
+        .then(function (response) {
+          if (response.status === 200) {
+            that.user = response.data.data;
+          } else {
+            alert('用户信息加载失败 状态码：' + response.status);
+          }
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+          if (typeof error.response === 'undefined') {
+            window.location = CAS_LOGIN_URL;
+          } else {
+            return Promise.reject(error)
+          }
+        })
+        .then(function () {
+          // always executed
+        });
     },
     beforeMount() {
       const USER_AGENT = navigator.userAgent.toLowerCase();
