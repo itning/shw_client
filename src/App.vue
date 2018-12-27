@@ -44,7 +44,7 @@
             </md-button>
             <md-menu-content>
               <md-menu-item @click="">舒露</md-menu-item>
-              <md-menu-item @click="">注销登陆</md-menu-item>
+              <md-menu-item @click="logout">注销登陆</md-menu-item>
             </md-menu-content>
           </md-menu>
         </div>
@@ -96,6 +96,9 @@
       pushRouter(path) {
         this.$router.push(path);
         this.menuVisible = false;
+      },
+      logout() {
+        window.location.href = "http://localhost:8080/logout";
       }
     },
     beforeMount() {

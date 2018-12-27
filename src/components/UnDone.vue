@@ -6,7 +6,11 @@
                     md-description="太棒了，你已上交全部作业，点击下方按钮你可以查看以往上交的作业">
       <md-button class="md-primary md-raised" @click="routerToDonePage">查看已交作业</md-button>
     </md-empty-state>
-    <md-table v-if="have_un_done_work" v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
+    <md-content class="center" v-if="!init_finish">
+      <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
+    </md-content>
+    <md-table v-if="have_un_done_work" v-show="init_finish" v-model="searched" md-sort="name" md-sort-order="asc"
+              md-card md-fixed-header>
       <md-table-toolbar>
         <div class="md-toolbar-section-start">
           <h1 class="md-title">未交作业</h1>
@@ -23,10 +27,10 @@
       </md-table-empty-state>
 
       <md-table-row slot="md-table-row" slot-scope="{ item }" @click="onItemClick(item.id)">
-        <md-table-cell md-label="组名" md-sort-by="name">{{ item.name }}</md-table-cell>
-        <md-table-cell md-label="作业名" md-sort-by="title">{{ item.title }}</md-table-cell>
-        <md-table-cell md-label="教师" md-sort-by="email">{{ item.teacher }}</md-table-cell>
-        <md-table-cell md-label="创建时间" md-sort-by="gender" md-numeric>{{ item.join_data }}</md-table-cell>
+        <md-table-cell md-label="组名" md-sort-by="name">{{ item.groupName }}</md-table-cell>
+        <md-table-cell md-label="作业名" md-sort-by="title">{{ item.workName }}</md-table-cell>
+        <md-table-cell md-label="教师" md-sort-by="email">{{ item.teacherName }}</md-table-cell>
+        <md-table-cell md-label="创建时间" md-sort-by="gender" md-numeric>{{ item.gmtCreate }}</md-table-cell>
       </md-table-row>
     </md-table>
     <md-dialog :md-active.sync="showDialog" :md-fullscreen="alert_fullscreen"
@@ -48,6 +52,10 @@
 </template>
 
 <script>
+  import axios from 'axios'
+  import dayjs from 'dayjs'
+  import {CAS_LOGIN_URL, Student} from "../api/api";
+
   const toLower = text => {
     return text.toString().toLowerCase()
   };
@@ -70,94 +78,17 @@
         alert_fullscreen: false,
         alert_click_outside_to_close: false,
         have_un_done_work: true,
-        users: [
-          {
-            id: "1",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "2",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "3",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "4",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "5",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "6",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "7",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "8",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "9",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "10",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-          {
-            id: "11",
-            name: "群组A群组A群组A群组A群组A",
-            teacher: "舒露",
-            join_data: "2018/12/19 15:36:25",
-            title: "Assistant Media Planner"
-          },
-        ]
+        init_finish: false,
+        works: []
       }
     },
     methods: {
       searchOnTable() {
-        this.searched = searchByName(this.users, this.search)
+        this.searched = searchByName(this.works, this.search)
       },
       onItemClick(id) {
         console.log(id);
-        this.selected = this.users.find(item => item.id === id);
+        this.selected = this.works.find(item => item.id === id);
         this.showDialog = true;
       },
       fileChange(value) {
@@ -168,11 +99,46 @@
       }
     },
     created() {
-      this.searched = this.users
+      let that = this;
+      axios.get(Student().works_undone, {withCredentials: true})
+        .then(function (response) {
+          if (response.status === 200) {
+            if (response.data.data.length === 0) {
+              that.have_un_done_work = false;
+              that.init_finish = true;
+            } else {
+              that.have_un_done_work = true;
+              that.works = response.data.data.map(work => {
+                work.gmtCreate = dayjs(work.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
+                work.gmtModified = dayjs(work.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
+                return work;
+              });
+              that.searched = that.works;
+              that.init_finish = true;
+            }
+          } else {
+            alert('服务端错误，请稍后再试。状态码：' + response.status);
+          }
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+          if (typeof error.response === 'undefined') {
+            window.location = CAS_LOGIN_URL;
+          } else {
+            return Promise.reject(error)
+          }
+        })
+        .then(function () {
+          // always executed
+        });
     }
   }
 </script>
 
 <style scoped>
-
+  .center {
+    width: 50px;
+    margin: 0 auto;
+  }
 </style>

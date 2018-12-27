@@ -19,6 +19,7 @@
 
 <script>
   import {Student} from "@/api/api";
+  import {CAS_LOGIN_URL} from "@/api/api";
   import axios from 'axios'
 
   export default {
@@ -47,7 +48,7 @@
           // handle error
           console.log(error);
           if (typeof error.response === 'undefined') {
-            window.location = 'http://login.greathiit.com/login?service=http://localhost:8080/login';
+            window.location = CAS_LOGIN_URL;
           } else {
             return Promise.reject(error)
           }
@@ -58,10 +59,7 @@
 
       function doNext() {
         console.log("do next");
-        next(vm => {
-          console.log(vm);
-          //TODO 重用response 数据? 使用vuex
-        })
+        next();
       }
     }
   }
