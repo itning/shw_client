@@ -102,7 +102,7 @@
         this.menuVisible = false;
       },
       logout() {
-        window.location.href = BASE_URL + "http://localhost:8080/logout";
+        window.location.href = BASE_URL + "/logout";
       }
     },
     created() {
