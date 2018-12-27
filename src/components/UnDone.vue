@@ -44,7 +44,7 @@
         </md-field>
       </md-dialog-content>
       <md-dialog-actions>
-        <md-button class="md-accent" @click="">开始上传</md-button>
+        <md-button class="md-accent" @click="startUpload">开始上传</md-button>
         <md-button class="md-primary" @click="showDialog = false">关闭</md-button>
       </md-dialog-actions>
     </md-dialog>
@@ -70,6 +70,7 @@
     name: "UnDone",
     data() {
       return {
+        file: null,
         search: null,
         searched: [],
         selected: {},
@@ -91,47 +92,135 @@
         this.showDialog = true;
       },
       fileChange(value) {
-        console.log(value)
+        this.file = value[0];
       },
       routerToDonePage() {
         this.$router.push('done');
+      },
+      initData() {
+        let that = this;
+        this.$store.commit('have_groups');
+        axios.get(Student().works_undone, {withCredentials: true})
+          .then(function (response) {
+            if (response.status === 200) {
+              if (response.data.data.length === 0) {
+                that.have_un_done_work = false;
+                that.init_finish = true;
+              } else {
+                that.have_un_done_work = true;
+                that.works = response.data.data.map(work => {
+                  work.gmtCreate = dayjs(work.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
+                  work.gmtModified = dayjs(work.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
+                  return work;
+                });
+                that.searched = that.works;
+                that.init_finish = true;
+              }
+            } else {
+              alert('服务端错误，请稍后再试。状态码：' + response.status);
+            }
+          })
+          .catch(function (error) {
+            // handle error
+            console.log(error);
+            if (typeof error.response === 'undefined') {
+              window.location = CAS_LOGIN_URL;
+            } else {
+              return Promise.reject(error)
+            }
+          })
+          .then(function () {
+            // always executed
+          });
+      },
+      startUpload() {
+        if (this.file === null) {
+          this.$toasted.info('请选择文件', {
+            position: "top-right",
+            icon: 'clear',
+            duration: 1000
+          });
+          return;
+        }
+        this.showDialog = false;
+        this.$toasted.success('正在上传', {
+          position: "top-right",
+          icon: 'check',
+          duration: 1500
+        });
+        //TODO 显示上传弹窗 进度条
+        const formData = new FormData();
+        const config = {
+          headers: {'content-type': 'multipart/form-data'},
+          withCredentials: true
+        };
+        formData.append('file', this.file);
+        formData.append('name', this.file_name);
+        let that = this;
+        axios.post(Student().uploadWork + this.selected.id, formData, config)
+          .then(function (response) {
+            if (response.status === 201) {
+              that.$toasted.success('上传成功', {
+                position: "top-right",
+                icon: 'check',
+                duration: 1500
+              });
+              that.file = null;
+              that.file_name = '';
+              that.initData();
+            } else {
+              that.file = null;
+              that.file_name = '';
+              that.$toasted.error('上传失败：' + response.data.msg, {
+                position: "top-right",
+                icon: 'clear',
+                duration: 30000,
+                action: {
+                  text: '我知道了',
+                  onClick: (e, toastObject) => {
+                    toastObject.goAway(0);
+                  }
+                }
+              });
+            }
+          })
+          .catch(function (error) {
+            if (typeof error.response === 'undefined') {
+              that.$toasted.error('登陆超时，请重新登陆', {
+                position: "top-right",
+                icon: 'clear',
+                duration: 2000,
+                action: {
+                  text: '我知道了',
+                  onClick: (e, toastObject) => {
+                    toastObject.goAway(0);
+                  }
+                }
+              });
+              setTimeout(function () {
+                window.location = CAS_LOGIN_URL;
+              }, 2000);
+            } else {
+              that.$toasted.error('上传失败：' + error.response.data.msg, {
+                position: "top-right",
+                icon: 'clear',
+                duration: 30000,
+                action: {
+                  text: '我知道了',
+                  onClick: (e, toastObject) => {
+                    toastObject.goAway(0);
+                  }
+                }
+              });
+            }
+          })
+          .then(function () {
+            // always executed
+          });
       }
     },
     created() {
-      let that = this;
-      this.$store.commit('have_groups');
-      axios.get(Student().works_undone, {withCredentials: true})
-        .then(function (response) {
-          if (response.status === 200) {
-            if (response.data.data.length === 0) {
-              that.have_un_done_work = false;
-              that.init_finish = true;
-            } else {
-              that.have_un_done_work = true;
-              that.works = response.data.data.map(work => {
-                work.gmtCreate = dayjs(work.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
-                work.gmtModified = dayjs(work.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
-                return work;
-              });
-              that.searched = that.works;
-              that.init_finish = true;
-            }
-          } else {
-            alert('服务端错误，请稍后再试。状态码：' + response.status);
-          }
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-          if (typeof error.response === 'undefined') {
-            window.location = CAS_LOGIN_URL;
-          } else {
-            return Promise.reject(error)
-          }
-        })
-        .then(function () {
-          // always executed
-        });
+      this.initData();
     }
   }
 </script>
