@@ -77,7 +77,7 @@
           加入时间：{{selected.gmtCreate}}<br><br>
         </md-dialog-content>
         <md-dialog-actions>
-          <md-button class="md-accent" @click="">退出群组</md-button>
+          <md-button class="md-accent" @click="showDropOutDialog">退出群组</md-button>
           <md-button class="md-primary" @click="showDialog = false">关闭</md-button>
         </md-dialog-actions>
       </md-dialog>
@@ -90,6 +90,16 @@
         md-input-placeholder="在此输入..."
         md-confirm-text="完成"
         md-cancel-text="取消"/>
+      <md-dialog :md-active.sync="show_drop_out_group_dialog" :md-fullscreen="alert_fullscreen">
+        <md-dialog-title>危险！退出群组确认</md-dialog-title>
+        <md-dialog-content>
+          确定要退出名为 {{selected.groupName}} 的群组吗？
+        </md-dialog-content>
+        <md-dialog-actions>
+          <md-button class="md-accent" @click="dropOutGroup">退出</md-button>
+          <md-button class="md-primary" @click="show_drop_out_group_dialog = false">取消</md-button>
+        </md-dialog-actions>
+      </md-dialog>
       <md-button class="md-fab md-fixed md-fab-bottom-right" @click="add_group_dialog_status=true">
         <md-icon>add</md-icon>
       </md-button>
@@ -128,6 +138,7 @@
         showDialog: false,
         alert_fullscreen: false,
         init_finish: false,
+        show_drop_out_group_dialog: false,
         groups: []
       }
     },
@@ -236,6 +247,75 @@
                   }
                 }
               });
+            }
+          })
+          .then(function () {
+            // always executed
+          });
+      },
+      showDropOutDialog() {
+        this.show_drop_out_group_dialog = true;
+        this.showDialog = false;
+      },
+      dropOutGroup() {
+        let that = this;
+        axios.delete(Student().dropOutGroup + this.selected.id, {withCredentials: true})
+          .then(response => {
+            if (response.status === 204) {
+              that.$toasted.success('退出成功', {
+                position: "top-right",
+                icon: 'check',
+                duration: 5000
+              });
+              that.show_drop_out_group_dialog = false;
+              that.selected = {};
+              that.init_finish = false;
+              that.initData();
+            } else {
+              that.$toasted.error('退出失败：' + response.data.msg, {
+                position: "top-right",
+                icon: 'clear',
+                duration: 30000,
+                action: {
+                  text: '我知道了',
+                  onClick: (e, toastObject) => {
+                    toastObject.goAway(0);
+                  }
+                }
+              });
+              that.show_drop_out_group_dialog = false;
+            }
+          })
+          .catch(function (error) {
+            if (typeof error.response === 'undefined') {
+              that.$toasted.error('登陆超时，请重新登陆', {
+                position: "top-right",
+                icon: 'clear',
+                duration: 2000,
+                action: {
+                  text: '我知道了',
+                  onClick: (e, toastObject) => {
+                    toastObject.goAway(0);
+                  }
+                }
+              });
+              that.show_drop_out_group_dialog = false;
+              setTimeout(function () {
+                window.location = CAS_LOGIN_URL;
+              }, 2000);
+            } else {
+              that.$toasted.error('退出失败：' + error.response.data.msg, {
+                position: "top-right",
+                icon: 'clear',
+                duration: 30000,
+                action: {
+                  text: '我知道了',
+                  onClick: (e, toastObject) => {
+                    toastObject.goAway(0);
+                  }
+                }
+              });
+              that.show_drop_out_group_dialog = false;
             }
           })
           .then(function () {
