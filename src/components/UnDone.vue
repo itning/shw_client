@@ -52,9 +52,9 @@
 </template>
 
 <script>
-  import axios from '@/http';
+  import {Get, Post} from '@/http';
   import dayjs from 'dayjs'
-  import {CAS_LOGIN_URL, Student} from "@/api";
+  import {Student} from "@/api";
 
   const toLower = text => {
     return text.toString().toLowerCase()
@@ -101,38 +101,21 @@
       initData() {
         let that = this;
         this.$store.commit('have_groups');
-        axios.get(Student().works_undone)
-          .then(function (response) {
-            if (response.status === 200) {
-              if (response.data.data.length === 0) {
-                that.have_un_done_work = false;
-                that.init_finish = true;
-              } else {
-                that.have_un_done_work = true;
-                that.works = response.data.data.map(work => {
-                  work.gmtCreate = dayjs(work.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
-                  work.gmtModified = dayjs(work.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
-                  return work;
-                });
-                that.searched = that.works;
-                that.init_finish = true;
-              }
-            } else {
-              alert('服务端错误，请稍后再试。状态码：' + response.status);
-            }
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-            if (typeof error.response === 'undefined') {
-              window.location = CAS_LOGIN_URL;
-            } else {
-              return Promise.reject(error)
-            }
-          })
-          .then(function () {
-            // always executed
-          });
+        Get(Student().works_undone).do(function (response) {
+          if (response.data.data.length === 0) {
+            that.have_un_done_work = false;
+            that.init_finish = true;
+          } else {
+            that.have_un_done_work = true;
+            that.works = response.data.data.map(work => {
+              work.gmtCreate = dayjs(work.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
+              work.gmtModified = dayjs(work.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
+              return work;
+            });
+            that.searched = that.works;
+            that.init_finish = true;
+          }
+        });
       },
       startUpload() {
         if (this.file === null) {
@@ -144,84 +127,24 @@
           return;
         }
         this.showDialog = false;
-        let uploadToast = this.$toasted.info('正在上传：0%', {
-          position: "top-right",
-          icon: 'hourglass_empty'
-        });
-        const formData = new FormData();
-        const config = {
-          headers: {'content-type': 'multipart/form-data'},
-          withCredentials: true,
-          onUploadProgress: progressEvent => {
-            this.progress = (progressEvent.loaded / progressEvent.total * 100 | 0) + '%';
-            uploadToast.text("正在上传：" + this.progress);
-            if (this.progress === '100%') {
-              uploadToast.goAway(100);
-            }
-          }
-        };
-        formData.append('file', this.file);
-        formData.append('name', this.file_name);
         let that = this;
-        axios.post(Student().uploadWork + this.selected.id, formData, config)
-          .then(function (response) {
-            if (response.status === 201) {
-              that.$toasted.success('上传成功', {
-                position: "top-right",
-                icon: 'check',
-                duration: 3000
-              });
-              that.file = null;
-              that.file_name = '';
-              that.initData();
-            } else {
-              that.file = null;
-              that.file_name = '';
-              that.$toasted.error('上传失败：' + response.data.msg, {
-                position: "top-right",
-                icon: 'clear',
-                duration: 30000,
-                action: {
-                  text: '我知道了',
-                  onClick: (e, toastObject) => {
-                    toastObject.goAway(0);
-                  }
-                }
-              });
-            }
+        Post(Student().uploadWork + this.selected.id)
+          .withFormData({'file': this.file, 'name': this.file_name}, true)
+          .withSuccessCode(201)
+          .withErrorStartMsg('上传失败：')
+          .do(function (response) {
+            that.$toasted.success('上传成功', {
+              position: "top-right",
+              icon: 'check',
+              duration: 3000
+            });
+            that.file = null;
+            that.file_name = '';
+            that.initData();
           })
-          .catch(function (error) {
-            if (typeof error.response === 'undefined') {
-              that.$toasted.error('登陆超时，请重新登陆', {
-                position: "top-right",
-                icon: 'clear',
-                duration: 2000,
-                action: {
-                  text: '我知道了',
-                  onClick: (e, toastObject) => {
-                    toastObject.goAway(0);
-                  }
-                }
-              });
-              setTimeout(function () {
-                window.location = CAS_LOGIN_URL;
-              }, 2000);
-            } else {
-              that.$toasted.error('上传失败：' + error.response.data.msg, {
-                position: "top-right",
-                icon: 'clear',
-                duration: 30000,
-                action: {
-                  text: '我知道了',
-                  onClick: (e, toastObject) => {
-                    toastObject.goAway(0);
-                  }
-                }
-              });
-            }
-          })
-          .then(function () {
-            // always executed
+          .doAfter(function () {
+            that.file = null;
+            that.file_name = '';
           });
       }
     },

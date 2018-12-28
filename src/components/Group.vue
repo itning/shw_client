@@ -109,8 +109,8 @@
 
 <script>
   import dayjs from 'dayjs'
-  import axios from '@/http';
-  import {CAS_LOGIN_URL, Student} from "@/api";
+  import {Del, Get, Post} from '@/http';
+  import {Student} from "@/api";
 
   const toLower = text => {
     return text.toString().toLowerCase()
@@ -156,76 +156,39 @@
       },
       initData() {
         let that = this;
-        axios.get(Student().groups)
-          .then(function (response) {
-            if (response.status === 200) {
-              if (response.data.data.length === 0) {
-                that.$router.push("welcome");
-              } else {
-                that.groups = response.data.data.map(group => {
-                  group.gmtCreate = dayjs(group.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
-                  group.gmtModified = dayjs(group.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
-                  return group;
-                });
-                that.searched = that.groups;
-                that.init_finish = true;
-                that.$store.commit('have_groups');
-              }
-            } else {
-              alert('服务端错误，请稍后再试。状态码：' + response.status);
-            }
-          })
-          .catch(function (error) {
-          })
-          .then(function () {
-          });
+        Get(Student().groups).do(function (response) {
+          if (response.data.data.length === 0) {
+            that.$router.push("welcome");
+          } else {
+            that.groups = response.data.data.map(group => {
+              group.gmtCreate = dayjs(group.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
+              group.gmtModified = dayjs(group.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
+              return group;
+            });
+            that.searched = that.groups;
+            that.init_finish = true;
+            that.$store.commit('have_groups');
+          }
+        });
       },
       addGroup() {
         if (this.group_code === '') {
           return;
         }
         let that = this;
-        let params = new URLSearchParams();
-        params.append('code', this.group_code);
-        axios.post(Student().addGroup, params)
-          .then(response => {
-            if (response.status === 201) {
-              that.$toasted.success('加入成功', {
-                position: "top-right",
-                icon: 'check',
-                duration: 5000
-              });
-              that.group_code = '';
-              that.init_finish = false;
-              that.initData();
-            } else {
-              that.$toasted.error('加入失败：' + response.data.msg, {
-                position: "top-right",
-                icon: 'clear',
-                duration: 30000,
-                action: {
-                  text: '我知道了',
-                  onClick: (e, toastObject) => {
-                    toastObject.goAway(0);
-                  }
-                }
-              });
-            }
-          })
-          .catch(function (error) {
-            that.$toasted.error('加入失败：' + error.response.data.msg, {
+        Post(Student().addGroup)
+          .withURLSearchParams({'code': this.group_code})
+          .withSuccessCode(201)
+          .withErrorStartMsg('加入失败：')
+          .do(function (response) {
+            that.$toasted.success('加入成功', {
               position: "top-right",
-              icon: 'clear',
-              duration: 30000,
-              action: {
-                text: '我知道了',
-                onClick: (e, toastObject) => {
-                  toastObject.goAway(0);
-                }
-              }
+              icon: 'check',
+              duration: 5000
             });
-          })
-          .then(function () {
+            that.group_code = '';
+            that.init_finish = false;
+            that.initData();
           });
       },
       showDropOutDialog() {
@@ -234,49 +197,19 @@
       },
       dropOutGroup() {
         let that = this;
-        axios.delete(Student().dropOutGroup + this.selected.id)
-          .then(response => {
-            if (response.status === 204) {
-              that.$toasted.success('退出成功', {
-                position: "top-right",
-                icon: 'check',
-                duration: 5000
-              });
-              that.show_drop_out_group_dialog = false;
-              that.selected = {};
-              that.init_finish = false;
-              that.initData();
-            } else {
-              that.$toasted.error('退出失败：' + response.data.msg, {
-                position: "top-right",
-                icon: 'clear',
-                duration: 30000,
-                action: {
-                  text: '我知道了',
-                  onClick: (e, toastObject) => {
-                    toastObject.goAway(0);
-                  }
-                }
-              });
-              that.show_drop_out_group_dialog = false;
-            }
-          })
-          .catch(function (error) {
-            that.$toasted.error('退出失败：' + error.response.data.msg, {
-              position: "top-right",
-              icon: 'clear',
-              duration: 30000,
-              action: {
-                text: '我知道了',
-                onClick: (e, toastObject) => {
-                  toastObject.goAway(0);
-                }
-              }
-            });
-            that.show_drop_out_group_dialog = false;
-          })
-          .then(function () {
+        Del(Student().dropOutGroup + this.selected.id).withSuccessCode(204).withErrorStartMsg('退出失败：').do(function (response) {
+          that.$toasted.success('退出成功', {
+            position: "top-right",
+            icon: 'check',
+            duration: 5000
           });
+          that.show_drop_out_group_dialog = false;
+          that.selected = {};
+          that.init_finish = false;
+          that.initData();
+        }).doAfter(function () {
+          that.show_drop_out_group_dialog = false;
+        });
       }
     },
     created() {

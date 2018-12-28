@@ -65,7 +65,7 @@
 </template>
 
 <script>
-  import axios from '@/http';
+  import {Del, Get} from '@/http';
   import dayjs from 'dayjs'
   import {Student} from "@/api";
 
@@ -109,68 +109,31 @@
         this.selected_upload = {gmtCreate: '加载中...', size: '加载中...', mime: '加载中...'};
         this.showDialog = true;
         let that = this;
-        axios.get(Student().upload + id)
-          .then(function (response) {
-            if (response.status === 200) {
-              let temp = response.data.data;
-              temp.gmtCreate = dayjs(temp.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
-              temp.gmtModified = dayjs(temp.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
-              that.selected_upload = temp;
-            } else {
-              that.$toasted.error('服务端错误，请稍后再试。状态码：' + response.status, {
-                position: "top-right",
-                icon: 'clear',
-                duration: 3000,
-              });
-            }
-          })
-          .catch(function (error) {
-            that.$toasted.error('加载失败:' + error.response.data.msg, {
-              position: "top-right",
-              icon: 'clear',
-              duration: 2000,
-            });
-            return Promise.reject(error)
-          })
-          .then(function () {
-          });
+        Get(Student().upload + id).withSuccessCode(200).withErrorStartMsg('加载失败：').do(function (response) {
+          let temp = response.data.data;
+          temp.gmtCreate = dayjs(temp.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
+          temp.gmtModified = dayjs(temp.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
+          that.selected_upload = temp;
+        });
       },
       initData() {
         this.init_finish = false;
         let that = this;
-        axios.get(Student().works_done)
-          .then(function (response) {
-            if (response.status === 200) {
-              if (response.data.data.length === 0) {
-                that.have_done_work = false;
-                that.init_finish = true;
-              } else {
-                that.have_done_work = true;
-                that.works = response.data.data.map(work => {
-                  work.gmtCreate = dayjs(work.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
-                  work.gmtModified = dayjs(work.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
-                  return work;
-                });
-                that.searched = that.works;
-                that.init_finish = true;
-              }
-            } else {
-              that.$toasted.error('加载失败:' + response.status, {
-                position: "top-right",
-                icon: 'clear',
-                duration: 2000,
-              });
-            }
-          })
-          .catch(function (error) {
-            that.$toasted.error('加载失败:' + error.response.data.msg, {
-              position: "top-right",
-              icon: 'clear',
-              duration: 2000,
+        Get(Student().works_done).do(function (response) {
+          if (response.data.data.length === 0) {
+            that.have_done_work = false;
+            that.init_finish = true;
+          } else {
+            that.have_done_work = true;
+            that.works = response.data.data.map(work => {
+              work.gmtCreate = dayjs(work.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
+              work.gmtModified = dayjs(work.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
+              return work;
             });
-          })
-          .then(function () {
-          });
+            that.searched = that.works;
+            that.init_finish = true;
+          }
+        });
       },
       fileChange(value) {
         console.log(value)
@@ -185,33 +148,15 @@
       delUpload() {
         this.show_del_upload_dialog = false;
         let that = this;
-        axios.delete(Student().deleteUpload + this.selected.id)
-          .then(function (response) {
-            if (response.status === 204) {
-              that.$toasted.success('删除成功', {
-                position: "top-right",
-                icon: 'check',
-                duration: 2000,
-              });
-              that.init_finish = false;
-              that.initData();
-            } else {
-              that.$toasted.error('删除失败:' + response.status, {
-                position: "top-right",
-                icon: 'clear',
-                duration: 2000,
-              });
-            }
-          })
-          .catch(function (error) {
-            that.$toasted.error('删除失败:' + error.response.data.msg, {
-              position: "top-right",
-              icon: 'clear',
-              duration: 2000,
-            });
-          })
-          .then(function () {
+        Del(Student().deleteUpload + this.selected.id).withSuccessCode(204).withErrorStartMsg('删除失败：').do(function (response) {
+          that.$toasted.success('删除成功', {
+            position: "top-right",
+            icon: 'check',
+            duration: 2000,
           });
+          that.init_finish = false;
+          that.initData();
+        });
       }
     },
     created() {

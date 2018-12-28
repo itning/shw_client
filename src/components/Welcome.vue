@@ -19,8 +19,8 @@
 </template>
 
 <script>
-  import {CAS_LOGIN_URL, Student} from "@/api";
-  import axios from '@/http';
+  import {Student} from "@/api";
+  import {Get, Post} from '@/http';
 
   export default {
     name: 'Welcome',
@@ -36,75 +36,33 @@
           return;
         }
         let that = this;
-        let params = new URLSearchParams();
-        params.append('code', this.group_code);
-        axios.post(Student().addGroup, params)
-          .then(response => {
-            if (response.status === 201) {
-              that.$toasted.success('加入成功', {
-                position: "top-right",
-                icon: 'check',
-                duration: 5000
-              });
-              that.group_code = '';
-              that.$router.push("un_done");
-            } else {
-              that.$toasted.error('加入失败：' + response.data.msg, {
-                position: "top-right",
-                icon: 'clear',
-                duration: 30000,
-                action: {
-                  text: '我知道了',
-                  onClick: (e, toastObject) => {
-                    toastObject.goAway(0);
-                  }
-                }
-              });
-            }
-          })
-          .catch(function (error) {
-            that.$toasted.error('加入失败：' + error.response.data.msg, {
+        Post(Student().addGroup, params)
+          .withURLSearchParams({'code': this.group_code})
+          .withSuccessCode(201)
+          .withErrorStartMsg('加入失败：')
+          .do(function (response) {
+            that.$toasted.success('加入成功', {
               position: "top-right",
-              icon: 'clear',
-              duration: 30000,
-              action: {
-                text: '我知道了',
-                onClick: (e, toastObject) => {
-                  toastObject.goAway(0);
-                }
-              }
+              icon: 'check',
+              duration: 5000
             });
-          })
-          .then(function () {
-            // always executed
+            that.group_code = '';
+            that.$router.push("un_done");
           });
       }
     },
     beforeRouteEnter(to, from, next) {
       window.localStorage.removeItem('student_groups');
-      axios.get(Student().groups)
-        .then(function (response) {
-          if (response.status === 200) {
-            if (response.data.data.length !== 0) {
-              window.localStorage.setItem('student_groups', JSON.stringify(response.data.data));
-              next('/un_done');
-            } else {
-              doNext();
-            }
-          } else {
-            alert('服务端错误，请稍后再试。状态码：' + response.status);
-          }
-        })
-        .catch(function (error) {
-        })
-        .then(function () {
-        });
-
-      function doNext() {
-        next(vm => {
-          vm.$store.commit('none_groups');
-        });
-      }
+      Get(Student().groups).do(function (response) {
+        if (response.data.data.length !== 0) {
+          window.localStorage.setItem('student_groups', JSON.stringify(response.data.data));
+          next('/un_done');
+        } else {
+          next(vm => {
+            vm.$store.commit('none_groups');
+          });
+        }
+      });
     }
   }
 </script>
