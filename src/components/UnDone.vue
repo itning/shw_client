@@ -80,6 +80,7 @@
         alert_click_outside_to_close: false,
         have_un_done_work: true,
         init_finish: false,
+        progress: '0%',
         works: []
       }
     },
@@ -143,16 +144,21 @@
           return;
         }
         this.showDialog = false;
-        this.$toasted.success('正在上传', {
+        let uploadToast = this.$toasted.info('正在上传：0%', {
           position: "top-right",
-          icon: 'check',
-          duration: 1500
+          icon: 'hourglass_empty'
         });
-        //TODO 显示上传弹窗 进度条
         const formData = new FormData();
         const config = {
           headers: {'content-type': 'multipart/form-data'},
-          withCredentials: true
+          withCredentials: true,
+          onUploadProgress: progressEvent => {
+            this.progress = (progressEvent.loaded / progressEvent.total * 100 | 0) + '%';
+            uploadToast.text("正在上传：" + this.progress);
+            if (this.progress === '100%') {
+              uploadToast.goAway(100);
+            }
+          }
         };
         formData.append('file', this.file);
         formData.append('name', this.file_name);
@@ -163,7 +169,7 @@
               that.$toasted.success('上传成功', {
                 position: "top-right",
                 icon: 'check',
-                duration: 1500
+                duration: 3000
               });
               that.file = null;
               that.file_name = '';
