@@ -156,7 +156,7 @@
       },
       initData() {
         let that = this;
-        axios.get(Student().groups, {withCredentials: true})
+        axios.get(Student().groups)
           .then(function (response) {
             if (response.status === 200) {
               if (response.data.data.length === 0) {
@@ -187,7 +187,7 @@
         let that = this;
         let params = new URLSearchParams();
         params.append('code', this.group_code);
-        axios.post(Student().addGroup, params, {withCredentials: true})
+        axios.post(Student().addGroup, params)
           .then(response => {
             if (response.status === 201) {
               that.$toasted.success('加入成功', {
@@ -234,7 +234,7 @@
       },
       dropOutGroup() {
         let that = this;
-        axios.delete(Student().dropOutGroup + this.selected.id, {withCredentials: true})
+        axios.delete(Student().dropOutGroup + this.selected.id)
           .then(response => {
             if (response.status === 204) {
               that.$toasted.success('退出成功', {

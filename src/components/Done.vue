@@ -46,8 +46,19 @@
         文件类型：{{selected_upload.mime}}<br><br>
       </md-dialog-content>
       <md-dialog-actions>
-        <md-button class="md-accent" @click="">下载</md-button>
+        <md-button class="md-accent" @click="showDelUploadDialog" :disabled="!selected.enabled">删除</md-button>
+        <md-button @click="">下载</md-button>
         <md-button class="md-primary" @click="closeDialog">关闭</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+    <md-dialog :md-active.sync="show_del_upload_dialog" :md-fullscreen="alert_fullscreen">
+      <md-dialog-title>危险！删除文件确认</md-dialog-title>
+      <md-dialog-content>
+        确定要删除 {{selected.workName}} 吗？
+      </md-dialog-content>
+      <md-dialog-actions>
+        <md-button class="md-accent" @click="delUpload">删除</md-button>
+        <md-button class="md-primary" @click="show_del_upload_dialog = false">取消</md-button>
       </md-dialog-actions>
     </md-dialog>
   </div>
@@ -56,7 +67,7 @@
 <script>
   import axios from '@/http';
   import dayjs from 'dayjs'
-  import {CAS_LOGIN_URL, Student} from "@/api";
+  import {Student} from "@/api";
 
   const toLower = text => {
     return text.toString().toLowerCase()
@@ -81,6 +92,7 @@
         alert_click_outside_to_close: false,
         have_done_work: true,
         init_finish: false,
+        show_del_upload_dialog: false,
         works: []
       }
     },
@@ -88,12 +100,16 @@
       searchOnTable() {
         this.searched = searchByName(this.works, this.search)
       },
+      showDelUploadDialog() {
+        this.show_del_upload_dialog = true;
+        this.showDialog = false;
+      },
       onItemClick(id) {
         this.selected = this.works.find(item => item.id === id);
         this.selected_upload = {gmtCreate: '加载中...', size: '加载中...', mime: '加载中...'};
         this.showDialog = true;
         let that = this;
-        axios.get(Student().upload + id, {withCredentials: true})
+        axios.get(Student().upload + id)
           .then(function (response) {
             if (response.status === 200) {
               let temp = response.data.data;
@@ -101,7 +117,11 @@
               temp.gmtModified = dayjs(temp.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
               that.selected_upload = temp;
             } else {
-              alert('服务端错误，请稍后再试。状态码：' + response.status);
+              that.$toasted.error('服务端错误，请稍后再试。状态码：' + response.status, {
+                position: "top-right",
+                icon: 'clear',
+                duration: 3000,
+              });
             }
           })
           .catch(function (error) {
@@ -115,6 +135,43 @@
           .then(function () {
           });
       },
+      initData() {
+        this.init_finish = false;
+        let that = this;
+        axios.get(Student().works_done)
+          .then(function (response) {
+            if (response.status === 200) {
+              if (response.data.data.length === 0) {
+                that.have_done_work = false;
+                that.init_finish = true;
+              } else {
+                that.have_done_work = true;
+                that.works = response.data.data.map(work => {
+                  work.gmtCreate = dayjs(work.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
+                  work.gmtModified = dayjs(work.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
+                  return work;
+                });
+                that.searched = that.works;
+                that.init_finish = true;
+              }
+            } else {
+              that.$toasted.error('加载失败:' + response.status, {
+                position: "top-right",
+                icon: 'clear',
+                duration: 2000,
+              });
+            }
+          })
+          .catch(function (error) {
+            that.$toasted.error('加载失败:' + error.response.data.msg, {
+              position: "top-right",
+              icon: 'clear',
+              duration: 2000,
+            });
+          })
+          .then(function () {
+          });
+      },
       fileChange(value) {
         console.log(value)
       },
@@ -124,6 +181,37 @@
       closeDialog() {
         this.showDialog = false;
         this.selected_upload = {};
+      },
+      delUpload() {
+        this.show_del_upload_dialog = false;
+        let that = this;
+        axios.delete(Student().deleteUpload + this.selected.id)
+          .then(function (response) {
+            if (response.status === 204) {
+              that.$toasted.success('删除成功', {
+                position: "top-right",
+                icon: 'check',
+                duration: 2000,
+              });
+              that.init_finish = false;
+              that.initData();
+            } else {
+              that.$toasted.error('删除失败:' + response.status, {
+                position: "top-right",
+                icon: 'clear',
+                duration: 2000,
+              });
+            }
+          })
+          .catch(function (error) {
+            that.$toasted.error('删除失败:' + error.response.data.msg, {
+              position: "top-right",
+              icon: 'clear',
+              duration: 2000,
+            });
+          })
+          .then(function () {
+          });
       }
     },
     created() {
@@ -131,39 +219,7 @@
         this.$router.push("welcome");
         return;
       }
-      let that = this;
-      axios.get(Student().works_done, {withCredentials: true})
-        .then(function (response) {
-          if (response.status === 200) {
-            if (response.data.data.length === 0) {
-              that.have_done_work = false;
-              that.init_finish = true;
-            } else {
-              that.have_done_work = true;
-              that.works = response.data.data.map(work => {
-                work.gmtCreate = dayjs(work.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
-                work.gmtModified = dayjs(work.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
-                return work;
-              });
-              that.searched = that.works;
-              that.init_finish = true;
-            }
-          } else {
-            alert('服务端错误，请稍后再试。状态码：' + response.status);
-          }
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-          if (typeof error.response === 'undefined') {
-            window.location = CAS_LOGIN_URL;
-          } else {
-            return Promise.reject(error)
-          }
-        })
-        .then(function () {
-          // always executed
-        });
+      this.initData();
     }
   }
 </script>

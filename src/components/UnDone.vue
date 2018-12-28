@@ -101,7 +101,7 @@
       initData() {
         let that = this;
         this.$store.commit('have_groups');
-        axios.get(Student().works_undone, {withCredentials: true})
+        axios.get(Student().works_undone)
           .then(function (response) {
             if (response.status === 200) {
               if (response.data.data.length === 0) {

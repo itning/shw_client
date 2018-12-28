@@ -17,6 +17,7 @@ export function Student() {
     "upload": BASE_URL + str + '/upload/',
     "addGroup": BASE_URL + str + '/group',
     "dropOutGroup": BASE_URL + str + '/group/',
-    "uploadWork": BASE_URL + str + '/work/'
+    "uploadWork": BASE_URL + str + '/work/',
+    "deleteUpload": BASE_URL + str + '/work/'
   }
 }
