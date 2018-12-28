@@ -54,7 +54,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import axios from '@/http';
   import dayjs from 'dayjs'
   import {CAS_LOGIN_URL, Student} from "@/api";
 
@@ -105,16 +105,14 @@
             }
           })
           .catch(function (error) {
-            // handle error
-            console.log(error);
-            if (typeof error.response === 'undefined') {
-              window.location = CAS_LOGIN_URL;
-            } else {
-              return Promise.reject(error)
-            }
+            that.$toasted.error('加载失败:' + error.response.data.msg, {
+              position: "top-right",
+              icon: 'clear',
+              duration: 2000,
+            });
+            return Promise.reject(error)
           })
           .then(function () {
-            // always executed
           });
       },
       fileChange(value) {

@@ -109,7 +109,7 @@
 
 <script>
   import dayjs from 'dayjs'
-  import axios from 'axios'
+  import axios from '@/http';
   import {CAS_LOGIN_URL, Student} from "@/api";
 
   const toLower = text => {
@@ -176,16 +176,8 @@
             }
           })
           .catch(function (error) {
-            // handle error
-            console.log(error);
-            if (typeof error.response === 'undefined') {
-              window.location = CAS_LOGIN_URL;
-            } else {
-              return Promise.reject(error)
-            }
           })
           .then(function () {
-            // always executed
           });
       },
       addGroup() {
@@ -221,37 +213,19 @@
             }
           })
           .catch(function (error) {
-            if (typeof error.response === 'undefined') {
-              that.$toasted.error('登陆超时，请重新登陆', {
-                position: "top-right",
-                icon: 'clear',
-                duration: 2000,
-                action: {
-                  text: '我知道了',
-                  onClick: (e, toastObject) => {
-                    toastObject.goAway(0);
-                  }
+            that.$toasted.error('加入失败：' + error.response.data.msg, {
+              position: "top-right",
+              icon: 'clear',
+              duration: 30000,
+              action: {
+                text: '我知道了',
+                onClick: (e, toastObject) => {
+                  toastObject.goAway(0);
                 }
-              });
-              setTimeout(function () {
-                window.location = CAS_LOGIN_URL;
-              }, 2000);
-            } else {
-              that.$toasted.error('加入失败：' + error.response.data.msg, {
-                position: "top-right",
-                icon: 'clear',
-                duration: 30000,
-                action: {
-                  text: '我知道了',
-                  onClick: (e, toastObject) => {
-                    toastObject.goAway(0);
-                  }
-                }
-              });
-            }
+              }
+            });
           })
           .then(function () {
-            // always executed
           });
       },
       showDropOutDialog() {
@@ -288,39 +262,20 @@
             }
           })
           .catch(function (error) {
-            if (typeof error.response === 'undefined') {
-              that.$toasted.error('登陆超时，请重新登陆', {
-                position: "top-right",
-                icon: 'clear',
-                duration: 2000,
-                action: {
-                  text: '我知道了',
-                  onClick: (e, toastObject) => {
-                    toastObject.goAway(0);
-                  }
+            that.$toasted.error('退出失败：' + error.response.data.msg, {
+              position: "top-right",
+              icon: 'clear',
+              duration: 30000,
+              action: {
+                text: '我知道了',
+                onClick: (e, toastObject) => {
+                  toastObject.goAway(0);
                 }
-              });
-              that.show_drop_out_group_dialog = false;
-              setTimeout(function () {
-                window.location = CAS_LOGIN_URL;
-              }, 2000);
-            } else {
-              that.$toasted.error('退出失败：' + error.response.data.msg, {
-                position: "top-right",
-                icon: 'clear',
-                duration: 30000,
-                action: {
-                  text: '我知道了',
-                  onClick: (e, toastObject) => {
-                    toastObject.goAway(0);
-                  }
-                }
-              });
-              that.show_drop_out_group_dialog = false;
-            }
+              }
+            });
+            that.show_drop_out_group_dialog = false;
           })
           .then(function () {
-            // always executed
           });
       }
     },

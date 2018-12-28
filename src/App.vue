@@ -82,7 +82,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import axios from '@/http';
   import {BASE_URL, CAS_LOGIN_URL, User} from "@/api";
 
   export default {
@@ -107,7 +107,7 @@
     },
     created() {
       let that = this;
-      axios.get(User().user, {withCredentials: true})
+      axios.get(User().user)
         .then(function (response) {
           if (response.status === 200) {
             that.user = response.data.data;
@@ -115,18 +115,8 @@
             alert('用户信息加载失败 状态码：' + response.status);
           }
         })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-          if (typeof error.response === 'undefined') {
-            window.location = CAS_LOGIN_URL;
-          } else {
-            return Promise.reject(error)
-          }
-        })
-        .then(function () {
-          // always executed
-        });
+        .catch(function (error) {})
+        .then(function () {});
     },
     beforeMount() {
       const USER_AGENT = navigator.userAgent.toLowerCase();

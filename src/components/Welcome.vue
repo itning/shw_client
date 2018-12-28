@@ -20,7 +20,7 @@
 
 <script>
   import {CAS_LOGIN_URL, Student} from "@/api";
-  import axios from 'axios'
+  import axios from '@/http';
 
   export default {
     name: 'Welcome',
@@ -38,7 +38,7 @@
         let that = this;
         let params = new URLSearchParams();
         params.append('code', this.group_code);
-        axios.post(Student().addGroup, params, {withCredentials: true})
+        axios.post(Student().addGroup, params)
           .then(response => {
             if (response.status === 201) {
               that.$toasted.success('加入成功', {
@@ -63,34 +63,17 @@
             }
           })
           .catch(function (error) {
-            if (typeof error.response === 'undefined') {
-              that.$toasted.error('登陆超时，请重新登陆', {
-                position: "top-right",
-                icon: 'clear',
-                duration: 2000,
-                action: {
-                  text: '我知道了',
-                  onClick: (e, toastObject) => {
-                    toastObject.goAway(0);
-                  }
+            that.$toasted.error('加入失败：' + error.response.data.msg, {
+              position: "top-right",
+              icon: 'clear',
+              duration: 30000,
+              action: {
+                text: '我知道了',
+                onClick: (e, toastObject) => {
+                  toastObject.goAway(0);
                 }
-              });
-              setTimeout(function () {
-                window.location = CAS_LOGIN_URL;
-              }, 2000);
-            } else {
-              that.$toasted.error('加入失败：' + error.response.data.msg, {
-                position: "top-right",
-                icon: 'clear',
-                duration: 30000,
-                action: {
-                  text: '我知道了',
-                  onClick: (e, toastObject) => {
-                    toastObject.goAway(0);
-                  }
-                }
-              });
-            }
+              }
+            });
           })
           .then(function () {
             // always executed
@@ -99,7 +82,7 @@
     },
     beforeRouteEnter(to, from, next) {
       window.localStorage.removeItem('student_groups');
-      axios.get(Student().groups, {withCredentials: true})
+      axios.get(Student().groups)
         .then(function (response) {
           if (response.status === 200) {
             if (response.data.data.length !== 0) {
@@ -113,16 +96,8 @@
           }
         })
         .catch(function (error) {
-          // handle error
-          console.log(error);
-          if (typeof error.response === 'undefined') {
-            window.location = CAS_LOGIN_URL;
-          } else {
-            return Promise.reject(error)
-          }
         })
         .then(function () {
-          // always executed
         });
 
       function doNext() {

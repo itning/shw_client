@@ -1,6 +1,6 @@
 'use strict';
 export const BASE_URL = "http://localhost:8080";
-export const CAS_LOGIN_URL = "http://login.greathiit.com/login?service=http://localhost:8080/login";
+export const CAS_LOGIN_URL = BASE_URL + "/login";
 
 export function User() {
   return {

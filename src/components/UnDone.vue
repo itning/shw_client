@@ -52,7 +52,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import axios from '@/http';
   import dayjs from 'dayjs'
   import {CAS_LOGIN_URL, Student} from "@/api";
 
