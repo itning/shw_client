@@ -109,7 +109,7 @@
         this.selected_upload = {gmtCreate: '加载中...', size: '加载中...', mime: '加载中...'};
         this.showDialog = true;
         let that = this;
-        Get(Student().upload + id).withSuccessCode(200).withErrorStartMsg('加载失败：').do(function (response) {
+        Get(Student().upload + id).withSuccessCode(200).withErrorStartMsg('加载失败：').do(response => {
           let temp = response.data.data;
           temp.gmtCreate = dayjs(temp.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
           temp.gmtModified = dayjs(temp.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
@@ -119,7 +119,7 @@
       initData() {
         this.init_finish = false;
         let that = this;
-        Get(Student().works_done).do(function (response) {
+        Get(Student().works_done).do(response => {
           if (response.data.data.length === 0) {
             that.have_done_work = false;
             that.init_finish = true;
@@ -148,7 +148,7 @@
       delUpload() {
         this.show_del_upload_dialog = false;
         let that = this;
-        Del(Student().deleteUpload + this.selected.id).withSuccessCode(204).withErrorStartMsg('删除失败：').do(function (response) {
+        Del(Student().deleteUpload + this.selected.id).withSuccessCode(204).withErrorStartMsg('删除失败：').do(response => {
           that.$toasted.success('删除成功', {
             position: "top-right",
             icon: 'check',
@@ -160,10 +160,6 @@
       }
     },
     created() {
-      if (!this.$store.state.have_groups) {
-        this.$router.push("welcome");
-        return;
-      }
       this.initData();
     }
   }

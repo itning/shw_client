@@ -53,17 +53,17 @@
         <md-toolbar class="md-transparent" md-elevation="0">{{user.name}} {{user.no}}</md-toolbar>
 
         <md-list>
-          <md-list-item @click="pushRouter('un_done')" v-if="this.$store.state.have_groups">
+          <md-list-item @click="pushRouter('un_done')" v-if="this.$store.getters.exist_group">
             <md-icon>clear</md-icon>
             <span class="md-list-item-text">未交作业</span>
           </md-list-item>
 
-          <md-list-item @click="pushRouter('done')" v-if="this.$store.state.have_groups">
+          <md-list-item @click="pushRouter('done')" v-if="this.$store.getters.exist_group">
             <md-icon>done</md-icon>
             <span class="md-list-item-text">已交作业</span>
           </md-list-item>
 
-          <md-list-item @click="pushRouter('group')" v-if="this.$store.state.have_groups">
+          <md-list-item @click="pushRouter('group')" v-if="this.$store.getters.exist_group">
             <md-icon>group</md-icon>
             <span class="md-list-item-text">群组管理</span>
           </md-list-item>
@@ -82,8 +82,8 @@
 </template>
 
 <script>
-  import axios from '@/http';
-  import {BASE_URL, CAS_LOGIN_URL, User} from "@/api";
+  import {Get} from '@/http';
+  import {BASE_URL, Student, User} from "@/api";
 
   export default {
     name: 'App',
@@ -106,17 +106,24 @@
       }
     },
     created() {
+      let info = this.$toasted.info('获取用户信息', {
+        icon: 'hourglass_empty',
+        position: "top-right",
+        duration: 1000
+      });
       let that = this;
-      axios.get(User().user)
-        .then(function (response) {
-          if (response.status === 200) {
-            that.user = response.data.data;
-          } else {
-            alert('用户信息加载失败 状态码：' + response.status);
-          }
-        })
-        .catch(function (error) {})
-        .then(function () {});
+      Get(User().user).withErrorStartMsg('').do(response => {
+        info.text('用户信息获取成功').goAway(1500);
+        that.user = response.data.data;
+      });
+      Get(Student().existGroup).withErrorStartMsg('').do(response => {
+        if (response.data.data) {
+          this.$store.commit('have_groups');
+        } else {
+          this.$store.commit('none_groups');
+          this.$router.push('welcome');
+        }
+      });
     },
     beforeMount() {
       const USER_AGENT = navigator.userAgent.toLowerCase();

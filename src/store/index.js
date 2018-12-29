@@ -5,15 +5,19 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    //用户有群组？
-    have_groups: false
+    existGroup: false
+  },
+  getters: {
+    exist_group: state => {
+      return state.existGroup;
+    }
   },
   mutations: {
-    none_groups(state) {
-      state.have_groups = false;
-    },
     have_groups(state) {
-      state.have_groups = true;
+      state.existGroup = true;
+    },
+    none_groups(state) {
+      state.existGroup = false;
     }
   }
 })

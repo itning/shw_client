@@ -21,6 +21,7 @@
 <script>
   import {Student} from "@/api";
   import {Get, Post} from '@/http';
+  import store from '@/store'
 
   export default {
     name: 'Welcome',
@@ -36,16 +37,17 @@
           return;
         }
         let that = this;
-        Post(Student().addGroup, params)
+        Post(Student().addGroup)
           .withURLSearchParams({'code': this.group_code})
           .withSuccessCode(201)
           .withErrorStartMsg('加入失败：')
-          .do(function (response) {
+          .do(response => {
             that.$toasted.success('加入成功', {
               position: "top-right",
               icon: 'check',
               duration: 5000
             });
+            that.$store.commit('have_groups');
             that.group_code = '';
             that.$router.push("un_done");
           });
@@ -53,15 +55,21 @@
     },
     beforeRouteEnter(to, from, next) {
       window.localStorage.removeItem('student_groups');
-      Get(Student().groups).do(function (response) {
-        if (response.data.data.length !== 0) {
-          window.localStorage.setItem('student_groups', JSON.stringify(response.data.data));
-          next('/un_done');
-        } else {
-          next(vm => {
-            vm.$store.commit('none_groups');
-          });
+      if (from.name !== null) {
+        next();
+        return;
+      }
+      let subscribe = store.subscribe((mutation, state) => {
+        switch (mutation.type) {
+          case 'have_groups':
+            next('/un_done');
+            break;
+          case 'none_groups':
+            next();
+            break;
+          default:
         }
+        subscribe();
       });
     }
   }

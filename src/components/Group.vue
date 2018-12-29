@@ -156,8 +156,9 @@
       },
       initData() {
         let that = this;
-        Get(Student().groups).do(function (response) {
+        Get(Student().groups).do(response => {
           if (response.data.data.length === 0) {
+            that.$store.commit('none_groups');
             that.$router.push("welcome");
           } else {
             that.groups = response.data.data.map(group => {
@@ -167,7 +168,6 @@
             });
             that.searched = that.groups;
             that.init_finish = true;
-            that.$store.commit('have_groups');
           }
         });
       },
@@ -180,7 +180,7 @@
           .withURLSearchParams({'code': this.group_code})
           .withSuccessCode(201)
           .withErrorStartMsg('加入失败：')
-          .do(function (response) {
+          .do(response => {
             that.$toasted.success('加入成功', {
               position: "top-right",
               icon: 'check',
@@ -197,7 +197,7 @@
       },
       dropOutGroup() {
         let that = this;
-        Del(Student().dropOutGroup + this.selected.id).withSuccessCode(204).withErrorStartMsg('退出失败：').do(function (response) {
+        Del(Student().dropOutGroup + this.selected.id).withSuccessCode(204).withErrorStartMsg('退出失败：').do(response => {
           that.$toasted.success('退出成功', {
             position: "top-right",
             icon: 'check',
@@ -207,7 +207,7 @@
           that.selected = {};
           that.init_finish = false;
           that.initData();
-        }).doAfter(function () {
+        }).doAfter(() => {
           that.show_drop_out_group_dialog = false;
         });
       }
@@ -225,26 +225,7 @@
       if (show_info_card != null) {
         this.show_info_card = (show_info_card === 'true');
       }
-      let studentGroups = window.localStorage.getItem('student_groups');
-      if (studentGroups !== null) {
-        try {
-          this.groups = JSON.parse(studentGroups).map(group => {
-            group.gmtCreate = dayjs(group.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
-            group.gmtModified = dayjs(group.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
-            return group;
-          });
-          this.init_finish = true;
-        } catch (e) {
-          console.error(e);
-          this.groups = [];
-          this.initData();
-        } finally {
-          window.localStorage.removeItem('student_groups');
-        }
-      } else {
-        this.initData();
-      }
-      this.searched = this.groups;
+      this.initData();
     }
   }
 </script>

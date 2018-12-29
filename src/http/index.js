@@ -15,7 +15,9 @@ instance.interceptors.response.use(
     if (error.response.status) {
       switch (error.response.status) {
         case 401:
-          window.location.href = CAS_LOGIN_URL;
+          setTimeout(() => {
+            window.location.href = CAS_LOGIN_URL;
+          }, 2000);
           break;
         case 403:
           console.log("403");
@@ -63,7 +65,7 @@ function _request(url, method) {
   this.method = method;
   this.url = url;
   this.code = 200;
-  this.startMsg = '错误';
+  this.startMsg = '错误：';
 }
 
 _request.prototype.withErrorStartMsg = function (msg) {
@@ -148,17 +150,17 @@ _request.prototype.do = function (fn) {
       return Promise.reject('none switch found of ' + this.method);
   }
   promise
-    .then(function (response) {
+    .then(response => {
       if (response.status === that.code) {
         fn(response)
       } else {
         showErrorToast(that.startMsg + response.data.msg);
       }
     })
-    .catch(function (error) {
+    .catch(error => {
       showErrorToast(that.startMsg + error.response.data.msg);
     })
-    .then(function () {
+    .then(() => {
       if (that.doAfterFun !== undefined) {
         that.doAfterFun();
       }

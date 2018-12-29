@@ -100,8 +100,7 @@
       },
       initData() {
         let that = this;
-        this.$store.commit('have_groups');
-        Get(Student().works_undone).do(function (response) {
+        Get(Student().works_undone).do(response => {
           if (response.data.data.length === 0) {
             that.have_un_done_work = false;
             that.init_finish = true;
@@ -132,7 +131,7 @@
           .withFormData({'file': this.file, 'name': this.file_name}, true)
           .withSuccessCode(201)
           .withErrorStartMsg('上传失败：')
-          .do(function (response) {
+          .do(response => {
             that.$toasted.success('上传成功', {
               position: "top-right",
               icon: 'check',
@@ -142,7 +141,7 @@
             that.file_name = '';
             that.initData();
           })
-          .doAfter(function () {
+          .doAfter(() => {
             that.file = null;
             that.file_name = '';
           });
