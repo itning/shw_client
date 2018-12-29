@@ -5,11 +5,15 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    existGroup: false
+    existGroup: false,
+    user: {}
   },
   getters: {
     exist_group: state => {
       return state.existGroup;
+    },
+    user_type: state => {
+      return state.user === {} ? '' : state.user.userType;
     }
   },
   mutations: {
@@ -18,6 +22,12 @@ export default new Vuex.Store({
     },
     none_groups(state) {
       state.existGroup = false;
-    }
+    },
+    set_user(state, user) {
+      state.user = user;
+    },
+    clear_user(state) {
+      state.user = {};
+    },
   }
 })

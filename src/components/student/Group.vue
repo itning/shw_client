@@ -125,23 +125,21 @@
 
   export default {
     name: "Group",
-    data() {
-      return {
-        search: null,
-        group_code: "",
-        searched: [],
-        selected: {},
-        add_group_dialog_status: false,
-        show_add_info_card: true,
-        show_welcome_card: true,
-        show_info_card: true,
-        showDialog: false,
-        alert_fullscreen: false,
-        init_finish: false,
-        show_drop_out_group_dialog: false,
-        groups: []
-      }
-    },
+    data: () => ({
+      search: null,
+      group_code: "",
+      searched: [],
+      selected: {},
+      add_group_dialog_status: false,
+      show_add_info_card: true,
+      show_welcome_card: true,
+      show_info_card: true,
+      showDialog: false,
+      alert_fullscreen: false,
+      init_finish: false,
+      show_drop_out_group_dialog: false,
+      groups: []
+    }),
     watch: {},
     methods: {
       searchOnTable() {

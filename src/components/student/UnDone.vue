@@ -68,22 +68,20 @@
   };
   export default {
     name: "UnDone",
-    data() {
-      return {
-        file: null,
-        search: null,
-        searched: [],
-        selected: {},
-        file_name: '',
-        showDialog: false,
-        alert_fullscreen: false,
-        alert_click_outside_to_close: false,
-        have_un_done_work: true,
-        init_finish: false,
-        progress: '0%',
-        works: []
-      }
-    },
+    data: () => ({
+      file: null,
+      search: null,
+      searched: [],
+      selected: {},
+      file_name: '',
+      showDialog: false,
+      alert_fullscreen: false,
+      alert_click_outside_to_close: false,
+      have_un_done_work: true,
+      init_finish: false,
+      progress: '0%',
+      works: []
+    }),
     methods: {
       searchOnTable() {
         this.searched = searchByName(this.works, this.search)

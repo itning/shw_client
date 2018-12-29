@@ -21,16 +21,13 @@
 <script>
   import {Student} from "@/api";
   import {Get, Post} from '@/http';
-  import store from '@/store'
 
   export default {
     name: 'Welcome',
-    data() {
-      return {
-        add_group_dialog_status: false,
-        group_code: ''
-      }
-    },
+    data: () => ({
+      add_group_dialog_status: false,
+      group_code: ''
+    }),
     methods: {
       addGroup() {
         if (this.group_code === '') {
@@ -59,17 +56,12 @@
         next();
         return;
       }
-      let subscribe = store.subscribe((mutation, state) => {
-        switch (mutation.type) {
-          case 'have_groups':
-            next('/un_done');
-            break;
-          case 'none_groups':
-            next();
-            break;
-          default:
+      Get(Student().existGroup).do(response => {
+        if (response.data.data) {
+          next('/un_done');
+        } else {
+          next();
         }
-        subscribe();
       });
     }
   }

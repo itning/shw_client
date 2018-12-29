@@ -87,17 +87,18 @@
 
   export default {
     name: 'App',
-    data() {
-      return {
-        menuVisible: false,
-        isNotChrome: true,
-        isHaveNotifications: false,
-        showNotificationsList: false,
-        user: {}
-      }
-    },
+    data: () => ({
+      menuVisible: false,
+      isNotChrome: true,
+      isHaveNotifications: false,
+      showNotificationsList: false,
+      user: {}
+    }),
     methods: {
       pushRouter(path) {
+        if (path === 'group') {
+          //TODO 判断角色
+        }
         this.$router.push(path);
         this.menuVisible = false;
       },
@@ -113,8 +114,10 @@
       });
       let that = this;
       Get(User().user).withErrorStartMsg('').do(response => {
+        let data = response.data.data;
+        that.$store.commit('set_user', data);
         info.text('用户信息获取成功').goAway(1500);
-        that.user = response.data.data;
+        that.user = data;
       });
       Get(Student().existGroup).withErrorStartMsg('').do(response => {
         if (response.data.data) {

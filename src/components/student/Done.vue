@@ -81,21 +81,19 @@
   };
   export default {
     name: "Done",
-    data() {
-      return {
-        search: null,
-        searched: [],
-        selected: {},
-        selected_upload: {},
-        showDialog: false,
-        alert_fullscreen: false,
-        alert_click_outside_to_close: false,
-        have_done_work: true,
-        init_finish: false,
-        show_del_upload_dialog: false,
-        works: []
-      }
-    },
+    data: () => ({
+      search: null,
+      searched: [],
+      selected: {},
+      selected_upload: {},
+      showDialog: false,
+      alert_fullscreen: false,
+      alert_click_outside_to_close: false,
+      have_done_work: true,
+      init_finish: false,
+      show_del_upload_dialog: false,
+      works: []
+    }),
     methods: {
       searchOnTable() {
         this.searched = searchByName(this.works, this.search)
