@@ -12,6 +12,10 @@ instance.interceptors.response.use(
   },
   // 服务器状态码不是200的情况
   error => {
+    if (error.response === undefined) {
+      showErrorToast('网络异常');
+      return Promise.reject(error);
+    }
     if (error.response.status) {
       switch (error.response.status) {
         case 401:
@@ -158,7 +162,9 @@ _request.prototype.do = function (fn) {
       }
     })
     .catch(error => {
-      showErrorToast(that.startMsg + error.response.data.msg);
+      if (error.response !== undefined) {
+        showErrorToast(that.startMsg + error.response.data.msg);
+      }
     })
     .then(() => {
       if (that.doAfterFun !== undefined) {
