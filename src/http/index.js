@@ -37,6 +37,7 @@ instance.interceptors.response.use(
           setTimeout(() => {
             window.location.href = CAS_LOGIN_URL;
           }, 2000);
+          once401Toast(error.response.data.msg);
           return;
         case 403:
           console.log("403");
@@ -64,6 +65,18 @@ const showErrorToast = function (msg) {
     icon: 'clear',
     duration: 3000,
   });
+};
+
+let show = false;
+const once401Toast = function (msg) {
+  if (show) {
+    return;
+  }
+  Vue.toasted.error(msg, {
+    position: "top-right",
+    icon: 'clear'
+  });
+  show = true;
 };
 
 const Method = {GET: 0, POST: 1, DELETE: 2, UPDATE: 3, PUT: 4, PATCH: 5};

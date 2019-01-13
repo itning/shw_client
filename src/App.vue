@@ -116,14 +116,18 @@
       }
       let info = this.$toasted.info('获取用户信息', {
         icon: 'hourglass_empty',
-        position: "top-right",
-        duration: 1000
+        position: "top-right"
       });
       let that = this;
       Get(User().user).withErrorStartMsg('').do(response => {
         let data = response.data.data;
         that.$store.commit('set_user', data);
-        info.text('用户信息获取成功').goAway(1500);
+        info.goAway(500);
+        that.$toasted.success('用户信息获取成功', {
+          icon: 'done',
+          position: "top-right",
+          duration: 1500,
+        });
         that.user = data;
         //根据用户角色 99为学生
         if (that.user.userType === '99') {
