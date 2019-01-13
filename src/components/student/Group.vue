@@ -156,8 +156,8 @@
         let that = this;
         Get(Student().groups).do(response => {
           if (response.data.data.length === 0) {
-            that.$store.commit('none_groups');
             that.$router.push("welcome");
+            that.$store.commit('none_groups');
           } else {
             that.groups = response.data.data.map(group => {
               group.gmtCreate = dayjs(group.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");

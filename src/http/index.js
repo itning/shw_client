@@ -2,8 +2,23 @@ import axios from 'axios'
 import Vue from 'vue'
 import {CAS_LOGIN_URL} from "@/api";
 
-//12s超时 默认带Cookie
-let instance = axios.create({timeout: 1000 * 12, withCredentials: true});
+//12s超时
+let instance = axios.create({timeout: 1000 * 12});
+
+//请求拦截器
+instance.interceptors.request.use((request) => {
+  let token = window.localStorage.getItem('authorization_token');
+  if (token !== undefined) {
+    request.headers = {
+      "Authorization": token
+    };
+  }
+  return request;
+
+}, function (error) {
+  // Do something with request error
+  return Promise.reject(error);
+});
 
 // 响应拦截器
 instance.interceptors.response.use(
@@ -22,7 +37,7 @@ instance.interceptors.response.use(
           setTimeout(() => {
             window.location.href = CAS_LOGIN_URL;
           }, 2000);
-          break;
+          return;
         case 403:
           console.log("403");
           break;

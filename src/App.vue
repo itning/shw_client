@@ -84,6 +84,7 @@
 <script>
   import {Get} from '@/http';
   import {BASE_URL, Student, User} from "@/api";
+  import Cookies from 'js-cookie'
 
   export default {
     name: 'App',
@@ -103,10 +104,16 @@
         this.menuVisible = false;
       },
       logout() {
+        window.localStorage.removeItem('authorization_token');
         window.location.href = BASE_URL + "/logout";
       }
     },
     created() {
+      let authorization = Cookies.get('Authorization');
+      if (authorization !== undefined) {
+        window.localStorage.setItem('authorization_token', authorization);
+        Cookies.remove('Authorization');
+      }
       let info = this.$toasted.info('获取用户信息', {
         icon: 'hourglass_empty',
         position: "top-right",
@@ -118,13 +125,18 @@
         that.$store.commit('set_user', data);
         info.text('用户信息获取成功').goAway(1500);
         that.user = data;
-      });
-      Get(Student().existGroup).withErrorStartMsg('').do(response => {
-        if (response.data.data) {
-          this.$store.commit('have_groups');
+        //根据用户角色 99为学生
+        if (that.user.userType === '99') {
+          Get(Student().existGroup).withErrorStartMsg('').do(response => {
+            if (response.data.data) {
+              that.$store.commit('have_groups');
+            } else {
+              that.$store.commit('none_groups');
+              that.$router.push('welcome');
+            }
+          });
         } else {
-          this.$store.commit('none_groups');
-          this.$router.push('welcome');
+          //TODO Teacher
         }
       });
     },

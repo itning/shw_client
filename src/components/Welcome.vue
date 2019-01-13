@@ -20,7 +20,8 @@
 
 <script>
   import {Student} from "@/api";
-  import {Get, Post} from '@/http';
+  import {Post} from '@/http';
+  import store from '@/store'
 
   export default {
     name: 'Welcome',
@@ -52,15 +53,17 @@
     },
     beforeRouteEnter(to, from, next) {
       window.localStorage.removeItem('student_groups');
-      if (from.name !== null) {
-        next();
-        return;
-      }
-      Get(Student().existGroup).do(response => {
-        if (response.data.data) {
-          next('/un_done');
-        } else {
-          next();
+      let subscribe = store.subscribe((mutation, state) => {
+        switch (mutation.type) {
+          case 'none_groups':
+            next();
+            subscribe();
+            break;
+          case 'have_groups':
+            next('un_done');
+            subscribe();
+            break;
+          default:
         }
       });
     }
