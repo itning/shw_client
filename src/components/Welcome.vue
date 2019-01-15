@@ -1,10 +1,10 @@
 <template>
   <div>
     <md-empty-state
-      md-icon="cloud_upload"
-      md-label="提交你的第一份作业"
-      md-description="点击下方按钮，输入你的群组邀请码并进行群组确认来提交你的第一份作业">
-      <md-button class="md-primary md-raised" @click="add_group_dialog_status = true">加入群组</md-button>
+      :md-icon="state_msg.icon"
+      :md-label="state_msg.label"
+      :md-description="state_msg.description">
+      <md-button class="md-primary md-raised" @click="doBtn">{{state_msg.btn_info}}</md-button>
     </md-empty-state>
     <md-dialog-prompt
       @md-confirm="addGroup"
@@ -15,19 +15,79 @@
       md-input-placeholder="在此输入..."
       md-confirm-text="完成"
       md-cancel-text="取消"/>
+    <md-dialog :md-active.sync="show_create_dialog" :md-close-on-esc="auto_close_dialog"
+               :md-click-outside-to-close="auto_close_dialog">
+      <md-dialog-title>创建群组</md-dialog-title>
+      <md-steppers :md-active-step.sync="active" md-vertical md-linear>
+        <md-step id="first" md-label="First Step" md-description="Optional" :md-editable="false" :md-done.sync="first">
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque
+            quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat
+            nulla.</p>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque
+            quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat
+            nulla.</p>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque
+            quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat
+            nulla.</p>
+          <md-button class="md-raised md-primary" @click="setDone('first', 'second')">Continue</md-button>
+        </md-step>
+
+        <md-step id="second" md-label="Second Step" :md-error="secondStepError" :md-editable="false"
+                 :md-done.sync="second">
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque
+            quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat
+            nulla.</p>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque
+            quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat
+            nulla.</p>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque
+            quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat
+            nulla.</p>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque
+            quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat
+            nulla.</p>
+          <md-button class="md-raised md-primary" @click="setDone('second', 'third')">Continue</md-button>
+          <md-button class="md-raised md-primary" @click="setError()">Set error!</md-button>
+        </md-step>
+
+        <md-step id="third" md-label="Third Step" :md-editable="false" :md-done.sync="third">
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque
+            quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat
+            nulla.</p>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque
+            quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat
+            nulla.</p>
+          <md-button class="md-raised md-primary" @click="setDone('third')">Done</md-button>
+        </md-step>
+      </md-steppers>
+
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="show_create_dialog = false">Close</md-button>
+        <md-button class="md-primary" @click="show_create_dialog = false">Save</md-button>
+      </md-dialog-actions>
+    </md-dialog>
   </div>
 </template>
 
 <script>
   import {Student} from "@/api";
-  import {Post} from '@/http';
-  import store from '@/store'
+  import {Get, Post} from '@/http';
+  import store from "@/store";
+  import Vue from 'vue'
 
   export default {
     name: 'Welcome',
     data: () => ({
+      auto_close_dialog: false,
       add_group_dialog_status: false,
-      group_code: ''
+      group_code: '',
+      show_create_dialog: false,
+      state_msg: {},
+      active: 'first',
+      first: false,
+      second: false,
+      third: false,
+      secondStepError: null
     }),
     methods: {
       addGroup() {
@@ -49,23 +109,78 @@
             that.group_code = '';
             that.$router.push("un_done");
           });
+      },
+      doBtn() {
+        if (this.$store.getters.user_is_student) {
+          this.add_group_dialog_status = true
+        } else {
+          this.show_create_dialog = true;
+        }
+      },
+      setDone(id, index) {
+        this[id] = true;
+        this.secondStepError = null;
+        if (index) {
+          this.active = index
+        }
+      },
+      setError() {
+        this.secondStepError = 'This is an error!'
+      }
+    },
+    created() {
+      if (this.$store.getters.user_is_student) {
+        this.state_msg = {
+          icon: 'cloud_upload',
+          label: '提交你的第一份作业',
+          description: '点击下方按钮，输入你的群组邀请码并进行群组确认来提交你的第一份作业',
+          btn_info: '加入群组'
+        };
+      } else {
+        this.state_msg = {
+          icon: 'group_add',
+          label: '创建你的第一个群组',
+          description: '欢迎您，' + this.$store.state.user.name + '。点击下方按钮，创建第一个群组。',
+          btn_info: '创建群组'
+        };
       }
     },
     beforeRouteEnter(to, from, next) {
       window.localStorage.removeItem('student_groups');
-      let subscribe = store.subscribe((mutation, state) => {
-        switch (mutation.type) {
-          case 'none_groups':
-            next();
+      if (store.getters.user_type !== undefined) {
+        d();
+      } else {
+        let subscribe = store.subscribe((mutation, state) => {
+          if (mutation.type === 'set_user') {
             subscribe();
-            break;
-          case 'have_groups':
-            next('un_done');
-            subscribe();
-            break;
-          default:
+            d();
+          }
+        });
+      }
+
+      function d() {
+        //根据用户角色 99为学生
+        if (store.getters.user_type === '99') {
+          let info = Vue.toasted.info('检查群组状态', {
+            position: "top-right",
+            icon: 'hourglass_empty'
+          });
+          Get(Student().existGroup).withErrorStartMsg('').do(response => {
+            if (response.data.data) {
+              store.commit('have_groups');
+              next('un_done');
+            } else {
+              store.commit('none_groups');
+              next();
+            }
+          }).doAfter(() => {
+            info.goAway(500);
+          });
+        } else {
+
+          next();
         }
-      });
+      }
     }
   }
 </script>

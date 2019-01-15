@@ -14,6 +14,12 @@ export default new Vuex.Store({
     },
     user_type: state => {
       return state.user === {} ? '' : state.user.userType;
+    },
+    user_is_teacher: state => {
+      return state.user.userType === '13'
+    },
+    user_is_student: state => {
+      return state.user.userType === '99'
     }
   },
   mutations: {

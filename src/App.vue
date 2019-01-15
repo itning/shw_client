@@ -129,19 +129,6 @@
           duration: 1500,
         });
         that.user = data;
-        //根据用户角色 99为学生
-        if (that.user.userType === '99') {
-          Get(Student().existGroup).withErrorStartMsg('').do(response => {
-            if (response.data.data) {
-              that.$store.commit('have_groups');
-            } else {
-              that.$store.commit('none_groups');
-              that.$router.push('welcome');
-            }
-          });
-        } else {
-          //TODO Teacher
-        }
       });
     },
     beforeMount() {
