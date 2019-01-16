@@ -22,3 +22,10 @@ export function Student() {
     "existGroup": BASE_URL + str + '/group/exist'
   }
 }
+
+export function Teacher() {
+  const str = "/teacher";
+  return {
+    "existGroup": BASE_URL + str + '/group/exist'
+  }
+}

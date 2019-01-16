@@ -20,29 +20,15 @@
       <md-dialog-title>创建群组</md-dialog-title>
       <md-steppers :md-active-step.sync="active" md-vertical md-linear>
         <md-step id="first" md-label="First Step" md-description="Optional" :md-editable="false" :md-done.sync="first">
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque
-            quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat
-            nulla.</p>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque
-            quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat
-            nulla.</p>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque
-            quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat
-            nulla.</p>
+          <md-field>
+            <label>群组名</label>
+            <md-input v-model="new_group_name" md-counter="30"></md-input>
+          </md-field>
           <md-button class="md-raised md-primary" @click="setDone('first', 'second')">Continue</md-button>
         </md-step>
 
         <md-step id="second" md-label="Second Step" :md-error="secondStepError" :md-editable="false"
                  :md-done.sync="second">
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque
-            quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat
-            nulla.</p>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque
-            quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat
-            nulla.</p>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque
-            quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat
-            nulla.</p>
           <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque
             quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat
             nulla.</p>
@@ -70,7 +56,7 @@
 </template>
 
 <script>
-  import {Student} from "@/api";
+  import {Student, Teacher} from "@/api";
   import {Get, Post} from '@/http';
   import store from "@/store";
   import Vue from 'vue'
@@ -87,7 +73,8 @@
       first: false,
       second: false,
       third: false,
-      secondStepError: null
+      secondStepError: null,
+      new_group_name: ''
     }),
     methods: {
       addGroup() {
@@ -159,12 +146,12 @@
       }
 
       function d() {
+        let info = Vue.toasted.info('检查群组状态', {
+          position: "top-right",
+          icon: 'hourglass_empty'
+        });
         //根据用户角色 99为学生
         if (store.getters.user_type === '99') {
-          let info = Vue.toasted.info('检查群组状态', {
-            position: "top-right",
-            icon: 'hourglass_empty'
-          });
           Get(Student().existGroup).withErrorStartMsg('').do(response => {
             if (response.data.data) {
               store.commit('have_groups');
@@ -177,8 +164,15 @@
             info.goAway(500);
           });
         } else {
-
-          next();
+          Get(Teacher().existGroup).withErrorStartMsg('').do(response => {
+            if (response.data.data) {
+              next('group_panel');
+            } else {
+              next();
+            }
+          }).doAfter(() => {
+            info.goAway(500);
+          });
         }
       }
     }
