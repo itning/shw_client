@@ -40,9 +40,6 @@
           <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque
             quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat
             nulla.</p>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias doloribus eveniet quaerat modi cumque
-            quos sed, temporibus nemo eius amet aliquid, illo minus blanditiis tempore, dolores voluptas dolore placeat
-            nulla.</p>
           <md-button class="md-raised md-primary" @click="setDone('third')">Done</md-button>
         </md-step>
       </md-steppers>
