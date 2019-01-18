@@ -103,8 +103,8 @@
           .withSuccessCode(201)
           .withURLSearchParams({'groupName': this.new_group_name})
           .do(response => {
-            console.log(response);
             that.new_group_code = response.data.code;
+            that.$router.push('group_panel');
           })
           .doAfter(() => {
 
