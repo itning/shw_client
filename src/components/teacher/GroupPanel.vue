@@ -75,6 +75,8 @@
 </template>
 
 <script>
+  import store from '@/store'
+
   const toLower = text => {
     return text.toString().toLowerCase()
   };
@@ -108,6 +110,14 @@
       setInfoCardDisable(item, localStorageKey) {
         window.localStorage.setItem(localStorageKey, 'false');
       },
+    },
+    beforeRouteEnter(to, from, next) {
+      if (store.getters.user_type !== undefined) {
+
+      } else {
+
+      }
+      next();
     }
   }
 </script>

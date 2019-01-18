@@ -104,7 +104,6 @@
           .withURLSearchParams({'groupName': this.new_group_name})
           .do(response => {
             that.new_group_code = response.data.code;
-            that.$router.push('group_panel');
           })
           .doAfter(() => {
 
@@ -163,6 +162,7 @@
     beforeRouteEnter(to, from, next) {
       window.localStorage.removeItem('student_groups');
       if (store.getters.user_type !== undefined) {
+        //当且仅当从其它页面push到此才会执行
         d();
       } else {
         let subscribe = store.subscribe((mutation, state) => {

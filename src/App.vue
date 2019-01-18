@@ -83,7 +83,7 @@
 
 <script>
   import {Get} from '@/http';
-  import {BASE_URL, Student, User} from "@/api";
+  import {BASE_URL, User} from "@/api";
   import Cookies from 'js-cookie'
 
   export default {
