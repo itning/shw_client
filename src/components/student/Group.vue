@@ -4,16 +4,29 @@
       <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
     </md-content>
     <div v-show="init_finish">
-      <welcome-card localStorage="show_welcome_card" title="Hi! 欢迎来到群组管理">
-        在这里你可以查看你加入的群组,或者加入新的群组，甚至退出你已经加入的群组。<br>
-      </welcome-card>
-      <welcome-card localStorage="show_info_card" title="群组详情">
-        单击群组条目进行群组详情查看，而且你还可以选择退出该群组！
-      </welcome-card>
-      <welcome-card localStorage="show_add_info_card" title="想要加入群组？">
-        看见右下角的红色按钮了吗？<br>单击它试试！
-      </welcome-card>
-      <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
+      <div v-if="this.$store.getters.user_is_student">
+        <welcome-card localStorage="show_welcome_card" title="Hi! 欢迎来到群组管理">
+          在这里你可以查看你加入的群组,或者加入新的群组，甚至退出你已经加入的群组。<br>
+        </welcome-card>
+        <welcome-card localStorage="show_info_card" title="群组详情">
+          单击群组条目进行群组详情查看，而且你还可以选择退出该群组！
+        </welcome-card>
+        <welcome-card localStorage="show_add_info_card" title="想要加入群组？">
+          看见右下角的红色按钮了吗？<br>单击它试试！
+        </welcome-card>
+      </div>
+      <div v-if="this.$store.getters.user_is_teacher">
+        <welcome-card localStorage="show_welcome_card_" title="Hi! 欢迎来到群组管理">
+          在这里你可以查看你创建的群组，甚至解散你已经创建的群组。<br>
+        </welcome-card>
+        <welcome-card localStorage="show_info_card_panel_" title="群组详情">
+          单击群组条目进行群组详情查看，而且你还可以选择解散该群组！
+        </welcome-card>
+        <welcome-card localStorage="show_add_info_card_panel_" title="想要创建群组？">
+          看见右下角的红色按钮了吗？<br>单击它试试！
+        </welcome-card>
+      </div>
+      <md-table v-model="searched" md-sort="gmtCreate" md-sort-order="asc" md-card md-fixed-header>
         <md-table-toolbar>
           <div class="md-toolbar-section-start">
             <h1 class="md-title">群组管理</h1>
@@ -26,14 +39,15 @@
 
         <md-table-empty-state
           md-label="群组没有找到"
-          :md-description="`没有找到名为 '${search}' 的组. 尝试其他关键字进行搜索或者加入新群组`">
-          <md-button class="md-primary md-raised" @click="add_group_dialog_status=true">加入新群组</md-button>
+          :md-description="`没有找到名为 '${search}' 的组. 尝试其他关键字进行搜索或者${info_msg.add_msg}新群组`">
+          <md-button class="md-primary md-raised" @click="addBtn">{{info_msg.add_msg}}新群组</md-button>
         </md-table-empty-state>
 
         <md-table-row slot="md-table-row" slot-scope="{ item }" @click="onItemClick(item.id)">
-          <md-table-cell md-label="组名" md-sort-by="name">{{ item.groupName }}</md-table-cell>
-          <md-table-cell md-label="教师" md-sort-by="email">{{ item.teacherName }}</md-table-cell>
-          <md-table-cell md-label="加入时间" md-sort-by="gender" md-numeric>{{ item.gmtCreate }}</md-table-cell>
+          <md-table-cell md-label="组名" md-sort-by="groupName">{{ item.groupName }}</md-table-cell>
+          <md-table-cell md-label="教师" md-sort-by="teacherName">{{ item.teacherName }}</md-table-cell>
+          <md-table-cell :md-label="`${info_msg.add_msg}时间`" md-sort-by="gmtCreate" md-numeric>{{ item.gmtCreate }}
+          </md-table-cell>
         </md-table-row>
       </md-table>
       <md-dialog :md-active.sync="showDialog" :md-fullscreen="alert_fullscreen">
@@ -43,10 +57,13 @@
           名称：{{selected.groupName}}<br><br>
           邀请码：{{selected.code}}<br><br>
           管理教师：{{selected.teacherName}}<br><br>
-          加入时间：{{selected.gmtCreate}}<br><br>
+          {{info_msg.add_msg}}时间：{{selected.gmtCreate}}<br><br>
+          <span v-if="this.$store.getters.user_is_teacher">修改时间：{{selected.gmtModified}}</span>
         </md-dialog-content>
         <md-dialog-actions>
-          <md-button class="md-accent" @click="showDropOutDialog">退出群组</md-button>
+          <md-button class="md-accent" @click="showDropOutDialog">{{info_msg.cancel_msg}}群组</md-button>
+          <md-button class="md-primary" @click="showUpDialog">修改群名</md-button>
+          <md-button class="md-primary" @click="showDialog = false">查看作业</md-button>
           <md-button class="md-primary" @click="showDialog = false">关闭</md-button>
         </md-dialog-actions>
       </md-dialog>
@@ -59,17 +76,27 @@
         md-input-placeholder="在此输入..."
         md-confirm-text="完成"
         md-cancel-text="取消"/>
+      <md-dialog-prompt
+        @md-confirm="upGroup"
+        :md-active.sync="up_group_dialog_status"
+        v-model="new_group_name"
+        md-title="输入新的群名称"
+        md-input-maxlength="30"
+        md-input-placeholder="在此输入..."
+        md-confirm-text="完成"
+        md-cancel-text="取消"/>
       <md-dialog :md-active.sync="show_drop_out_group_dialog" :md-fullscreen="alert_fullscreen">
-        <md-dialog-title>危险！退出群组确认</md-dialog-title>
+        <md-dialog-title>危险！{{info_msg.cancel_msg}}群组确认</md-dialog-title>
         <md-dialog-content>
-          确定要退出名为 {{selected.groupName}} 的群组吗？
+          确定要{{info_msg.cancel_msg}}名为 {{selected.groupName}} 的群组吗？
         </md-dialog-content>
         <md-dialog-actions>
-          <md-button class="md-accent" @click="dropOutGroup">退出</md-button>
+          <md-button class="md-accent" @click="dropOutGroup">{{info_msg.cancel_msg}}</md-button>
           <md-button class="md-primary" @click="show_drop_out_group_dialog = false">取消</md-button>
         </md-dialog-actions>
       </md-dialog>
-      <md-button class="md-fab md-fixed md-fab-bottom-right" @click="add_group_dialog_status=true">
+      <create-group :show="show_create_dialog" @cancel="show_create_dialog=false" @finish="finish"/>
+      <md-button class="md-fab md-fixed md-fab-bottom-right" @click="addBtn">
         <md-icon>add</md-icon>
       </md-button>
     </div>
@@ -78,9 +105,11 @@
 
 <script>
   import dayjs from 'dayjs'
-  import {Del, Get, Post} from '@/http';
-  import {Student} from "@/api";
+  import store from '@/store'
+  import {Del, Get, Patch, Post} from '@/http';
+  import {Student, Teacher} from "@/api";
   import WelcomeCard from "@/components/WelcomeCard";
+  import CreateGroup from "@/components/CreateGroup";
 
   const toLower = text => {
     return text.toString().toLowerCase()
@@ -95,17 +124,21 @@
 
   export default {
     name: "Group",
-    components: {WelcomeCard},
+    components: {CreateGroup, WelcomeCard},
     data: () => ({
       search: null,
       group_code: "",
       searched: [],
       selected: {},
+      info_msg: {},
       add_group_dialog_status: false,
+      up_group_dialog_status: false,
       showDialog: false,
       alert_fullscreen: false,
       init_finish: false,
       show_drop_out_group_dialog: false,
+      show_create_dialog: false,
+      new_group_name: '',
       groups: []
     }),
     watch: {},
@@ -122,7 +155,13 @@
       },
       initData() {
         let that = this;
-        Get(Student().groups).do(response => {
+        let url;
+        if (this.$store.getters.user_is_student) {
+          url = Student().groups;
+        } else {
+          url = Teacher().groups;
+        }
+        Get(url).do(response => {
           if (response.data.data.length === 0) {
             that.$router.push("welcome");
             that.$store.commit('none_groups');
@@ -161,10 +200,21 @@
         this.show_drop_out_group_dialog = true;
         this.showDialog = false;
       },
+      showUpDialog() {
+        this.new_group_name = this.selected.groupName;
+        this.up_group_dialog_status = true;
+        this.showDialog = false;
+      },
       dropOutGroup() {
         let that = this;
-        Del(Student().dropOutGroup + this.selected.id).withSuccessCode(204).withErrorStartMsg('退出失败：').do(response => {
-          that.$toasted.success('退出成功', {
+        let url;
+        if (this.$store.getters.user_is_student) {
+          url = Student().dropOutGroup;
+        } else {
+          url = Teacher().delGroup;
+        }
+        Del(url + this.selected.id).withSuccessCode(204).withErrorStartMsg(this.info_msg.cancel_msg + '失败：').do(response => {
+          that.$toasted.success(this.info_msg.cancel_msg + '成功', {
             position: "top-right",
             icon: 'check',
             duration: 5000
@@ -176,10 +226,69 @@
         }).doAfter(() => {
           that.show_drop_out_group_dialog = false;
         });
+      },
+      addBtn() {
+        if (this.$store.getters.user_is_student) {
+          this.add_group_dialog_status = true
+        } else {
+          this.show_create_dialog = true;
+        }
+      },
+      finish() {
+        this.show_create_dialog = false;
+        this.initData();
+      },
+      upGroup() {
+        if (this.new_group_name.trim() === '') {
+          return;
+        }
+        let that = this;
+        Patch(Teacher().upGroupName + this.selected.id + '/' + this.new_group_name)
+          .withSuccessCode(204)
+          .withErrorStartMsg('修改失败：')
+          .do(response => {
+            that.$toasted.success('修改成功', {
+              position: "top-right",
+              icon: 'check',
+              duration: 5000
+            });
+            that.show_drop_out_group_dialog = false;
+            that.selected = {};
+            that.init_finish = false;
+            that.initData();
+          })
       }
     },
     created() {
+      if (this.$store.getters.user_is_student) {
+        this.info_msg = {cancel_msg: '退出', add_msg: '加入'};
+      } else {
+        this.info_msg = {cancel_msg: '删除', add_msg: '创建'};
+      }
       this.initData();
+    },
+    beforeRouteEnter(to, from, next) {
+      if (store.getters.user_type !== undefined) {
+        d();
+      } else {
+        let subscribe = store.subscribe((mutation, state) => {
+          if (mutation.type === 'set_user') {
+            subscribe();
+            d();
+          }
+        });
+      }
+
+      function d() {
+        //根据用户角色 99为学生
+        if (store.getters.user_is_student) {
+
+        } else {
+
+        }
+      }
+
+      next();
     }
   }
 </script>

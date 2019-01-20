@@ -65,7 +65,7 @@
         }
       },
       finish() {
-        this.$router.push("group_panel");
+        this.$router.push("group");
       }
     },
     created() {
@@ -105,7 +105,7 @@
           icon: 'hourglass_empty'
         });
         //根据用户角色 99为学生
-        if (store.getters.user_type === '99') {
+        if (store.getters.user_is_student) {
           Get(Student().existGroup).withErrorStartMsg('').do(response => {
             if (response.data.data) {
               store.commit('have_groups');
@@ -120,7 +120,7 @@
         } else {
           Get(Teacher().existGroup).withErrorStartMsg('').do(response => {
             if (response.data.data) {
-              next('group_panel');
+              next('group');
             } else {
               next();
             }

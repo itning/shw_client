@@ -93,6 +93,10 @@ export function Post(url) {
   return new _request(url, Method.POST);
 }
 
+export function Patch(url) {
+  return new _request(url, Method.PATCH);
+}
+
 function _request(url, method) {
   this.method = method;
   this.url = url;
@@ -153,9 +157,7 @@ _request.prototype.do = function (fn) {
     case Method.POST:
       if (this.urlSearchParams !== undefined) {
         promise = instance.post(this.url, this.urlSearchParams);
-        break;
-      }
-      if (this.formData !== undefined) {
+      } else if (this.formData !== undefined) {
         if (this.enableUploadProgress === false) {
           promise = instance.post(this.url, this.formData, {headers: {'content-type': 'multipart/form-data'}});
         } else {
@@ -175,9 +177,19 @@ _request.prototype.do = function (fn) {
           };
           promise = instance.post(this.url, this.formData, config);
         }
-        break;
+      } else {
+        promise = instance.post(this.url);
       }
-      return Promise.reject('none type found of post request');
+      break;
+    case Method.PATCH:
+      if (this.urlSearchParams !== undefined) {
+        promise = instance.patch(this.url, this.urlSearchParams);
+      } else if (this.formData !== undefined) {
+        promise = instance.patch(this.url, this.formData, {headers: {'content-type': 'multipart/form-data'}});
+      } else {
+        promise = instance.patch(this.url);
+      }
+      break;
     default:
       return Promise.reject('none switch found of ' + this.method);
   }

@@ -26,7 +26,10 @@ export function Student() {
 export function Teacher() {
   const str = "/teacher";
   return {
+    'groups': BASE_URL + str + '/groups',
     "existGroup": BASE_URL + str + '/group/exist',
-    "createGroup": BASE_URL + str + '/group'
+    "createGroup": BASE_URL + str + '/group',
+    "delGroup": BASE_URL + str + '/group/',
+    "upGroupName": BASE_URL + str + '/group/'
   }
 }

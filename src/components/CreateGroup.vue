@@ -60,6 +60,15 @@
       },
       new_group_name(now, old) {
         this.secondStepError = null;
+      },
+      show(now, old) {
+        if (!now) {
+          this.active = 'first';
+          this.first = false;
+          this.second = false;
+          this.third = false;
+          this.cancel_btn_disabled = false;
+        }
       }
     },
     methods: {
@@ -109,11 +118,6 @@
         document.body.removeChild(input);
       },
       cancel() {
-        this.active = 'first';
-        this.first = false;
-        this.second = false;
-        this.third = false;
-        this.cancel_btn_disabled = false;
         this.$emit('cancel');
       }
     }

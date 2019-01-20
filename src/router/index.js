@@ -5,8 +5,7 @@ import Group from '@/components/student/Group'
 import UnDone from '@/components/student/UnDone'
 import Done from '@/components/student/Done'
 import PersonalCenter from '@/components/PersonalCenter'
-import WorkPanel from '@/components/teacher/WorkPanel'
-import GroupPanel from '@/components/teacher/GroupPanel'
+import Work from '@/components/teacher/Work'
 
 Vue.use(Router);
 
@@ -43,14 +42,9 @@ export default new Router({
       component: PersonalCenter
     },
     {
-      path: '/group_panel',
-      name: 'GroupPanel',
-      component: GroupPanel
-    },
-    {
-      path: '/work_panel',
-      name: 'WorkPanel',
-      component: WorkPanel
+      path: '/work',
+      name: 'Work',
+      component: Work
     },
     {
       path: "*",
