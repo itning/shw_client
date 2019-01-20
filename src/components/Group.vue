@@ -239,7 +239,7 @@
         this.initData();
       },
       upGroup() {
-        if (this.new_group_name.trim() === '') {
+        if (this.new_group_name.trim() === '' || this.new_group_name === this.selected.groupName) {
           return;
         }
         let that = this;
