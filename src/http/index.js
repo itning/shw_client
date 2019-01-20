@@ -34,6 +34,7 @@ instance.interceptors.response.use(
     if (error.response.status) {
       switch (error.response.status) {
         case 401:
+          window.localStorage.setItem('last_path', window.location.pathname);
           setTimeout(() => {
             window.location.href = CAS_LOGIN_URL;
           }, 2000);

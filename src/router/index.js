@@ -10,7 +10,7 @@ import WorkDetails from '@/components/teacher/WorkDetails'
 
 Vue.use(Router);
 
-export default new Router({
+let router = new Router({
   mode: 'history',
   routes: [
     {
@@ -59,4 +59,15 @@ export default new Router({
       redirect: "/"
     }
   ]
-})
+});
+router.beforeEach((to, from, next) => {
+  let path = window.localStorage.getItem('last_path');
+  if (path !== null) {
+    window.localStorage.removeItem('last_path');
+    next(path);
+  } else {
+    next();
+  }
+
+});
+export default router;
