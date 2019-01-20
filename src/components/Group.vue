@@ -63,7 +63,7 @@
         <md-dialog-actions>
           <md-button class="md-accent" @click="showDropOutDialog">{{info_msg.cancel_msg}}群组</md-button>
           <md-button class="md-primary" @click="showUpDialog">修改群名</md-button>
-          <md-button class="md-primary" @click="showDialog = false">查看作业</md-button>
+          <md-button class="md-primary" @click="lookWork">查看作业</md-button>
           <md-button class="md-primary" @click="showDialog = false">关闭</md-button>
         </md-dialog-actions>
       </md-dialog>
@@ -219,7 +219,6 @@
             icon: 'check',
             duration: 5000
           });
-          that.show_drop_out_group_dialog = false;
           that.selected = {};
           that.init_finish = false;
           that.initData();
@@ -257,6 +256,11 @@
             that.init_finish = false;
             that.initData();
           })
+      },
+      lookWork() {
+        this.showDialog = false;
+        let id = this.selected.id;
+        this.$router.push({name: 'Work', params: {id}});
       }
     },
     created() {

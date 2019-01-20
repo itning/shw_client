@@ -6,6 +6,7 @@ import UnDone from '@/components/student/UnDone'
 import Done from '@/components/student/Done'
 import PersonalCenter from '@/components/PersonalCenter'
 import Work from '@/components/teacher/Work'
+import WorkDetails from '@/components/teacher/WorkDetails'
 
 Vue.use(Router);
 
@@ -42,9 +43,16 @@ export default new Router({
       component: PersonalCenter
     },
     {
-      path: '/work',
+      path: '/work/:id',
       name: 'Work',
-      component: Work
+      component: Work,
+      props: true
+    },
+    {
+      path: '/work_details/:id',
+      name: 'WorkDetails',
+      component: WorkDetails,
+      props: true
     },
     {
       path: "*",

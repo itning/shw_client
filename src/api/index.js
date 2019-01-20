@@ -30,6 +30,11 @@ export function Teacher() {
     "existGroup": BASE_URL + str + '/group/exist',
     "createGroup": BASE_URL + str + '/group',
     "delGroup": BASE_URL + str + '/group/',
-    "upGroupName": BASE_URL + str + '/group/'
+    "upGroupName": BASE_URL + str + '/group/',
+    "works": BASE_URL + str + '/works',
+    "work": BASE_URL + str + '/work/',
+    "createWork": BASE_URL + str + '/work',
+    "delWork": BASE_URL + str + '/work/',
+    "upWork": BASE_URL + str + '/work/',
   }
 }
