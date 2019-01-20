@@ -11,7 +11,7 @@
       :md-active.sync="add_group_dialog_status"
       v-model="group_code"
       md-title="输入你的群组邀请码"
-      md-input-maxlength="30"
+      md-input-maxlength="32"
       md-input-placeholder="在此输入..."
       md-confirm-text="完成"
       md-cancel-text="取消"/>

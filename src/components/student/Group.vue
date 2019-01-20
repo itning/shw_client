@@ -4,46 +4,15 @@
       <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
     </md-content>
     <div v-show="init_finish">
-      <transition name="fade">
-        <md-card class="md-card-info" v-if="show_welcome_card">
-          <md-card-header>
-            <div class="md-title">Hi! 欢迎来到群组管理</div>
-          </md-card-header>
-          <md-card-content>
-            在这里你可以查看你加入的群组,或者加入新的群组，甚至退出你已经加入的群组。<br>
-          </md-card-content>
-          <md-card-actions>
-            <md-button @click="setInfoCardDisable(show_welcome_card=false,'show_welcome_card')">我知道了
-            </md-button>
-          </md-card-actions>
-        </md-card>
-      </transition>
-      <transition name="fade">
-        <md-card class="md-card-info" v-if="show_info_card">
-          <md-card-header>
-            <div class="md-title">群组详情</div>
-          </md-card-header>
-          <md-card-content>
-            单击群组条目进行群组详情查看，而且你还可以选择退出该群组！
-          </md-card-content>
-          <md-card-actions>
-            <md-button @click="setInfoCardDisable(show_info_card=false,'show_info_card')">我知道了</md-button>
-          </md-card-actions>
-        </md-card>
-      </transition>
-      <transition name="fade">
-        <md-card class="md-card-info" v-if="show_add_info_card">
-          <md-card-header>
-            <div class="md-title">想要加入群组？</div>
-          </md-card-header>
-          <md-card-content>
-            看见右下角的红色按钮了吗？<br>单击它试试！
-          </md-card-content>
-          <md-card-actions>
-            <md-button @click="setInfoCardDisable(show_add_info_card=false,'show_add_info_card')">我知道了</md-button>
-          </md-card-actions>
-        </md-card>
-      </transition>
+      <welcome-card localStorage="show_welcome_card" title="Hi! 欢迎来到群组管理">
+        在这里你可以查看你加入的群组,或者加入新的群组，甚至退出你已经加入的群组。<br>
+      </welcome-card>
+      <welcome-card localStorage="show_info_card" title="群组详情">
+        单击群组条目进行群组详情查看，而且你还可以选择退出该群组！
+      </welcome-card>
+      <welcome-card localStorage="show_add_info_card" title="想要加入群组？">
+        看见右下角的红色按钮了吗？<br>单击它试试！
+      </welcome-card>
       <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
         <md-table-toolbar>
           <div class="md-toolbar-section-start">
@@ -111,6 +80,7 @@
   import dayjs from 'dayjs'
   import {Del, Get, Post} from '@/http';
   import {Student} from "@/api";
+  import WelcomeCard from "@/components/WelcomeCard";
 
   const toLower = text => {
     return text.toString().toLowerCase()
@@ -125,15 +95,13 @@
 
   export default {
     name: "Group",
+    components: {WelcomeCard},
     data: () => ({
       search: null,
       group_code: "",
       searched: [],
       selected: {},
       add_group_dialog_status: false,
-      show_add_info_card: true,
-      show_welcome_card: true,
-      show_info_card: true,
       showDialog: false,
       alert_fullscreen: false,
       init_finish: false,
@@ -211,18 +179,6 @@
       }
     },
     created() {
-      let show_add_info_card = window.localStorage.getItem('show_add_info_card');
-      let show_welcome_card = window.localStorage.getItem('show_welcome_card');
-      let show_info_card = window.localStorage.getItem('show_info_card');
-      if (show_add_info_card != null) {
-        this.show_add_info_card = (show_add_info_card === 'true');
-      }
-      if (show_welcome_card != null) {
-        this.show_welcome_card = (show_welcome_card === 'true');
-      }
-      if (show_info_card != null) {
-        this.show_info_card = (show_info_card === 'true');
-      }
       this.initData();
     }
   }
