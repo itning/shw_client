@@ -35,7 +35,7 @@
     </md-table>
     <md-dialog :md-active.sync="showDialog" :md-fullscreen="alert_fullscreen"
                :md-click-outside-to-close="alert_click_outside_to_close">
-      <md-dialog-title>{{selected.title}}</md-dialog-title>
+      <md-dialog-title>{{selected.workName}}</md-dialog-title>
       <md-dialog-content>
         <md-field>
           <label>上传文件</label>
