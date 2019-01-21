@@ -108,6 +108,7 @@
       searched: [],
       search: null,
       selected: {},
+      work: [],
       groupName: '',
       init_finish: false,
       have_work: true,
@@ -129,11 +130,12 @@
               that.have_work = false;
               that.show_empty = true;
             } else {
-              that.searched = response.data.data.map(work => {
+              that.work = response.data.data.map(work => {
                 work.gmtCreate = dayjs(work.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
                 work.gmtModified = dayjs(work.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
                 return work;
               });
+              that.searched = that.work;
               that.groupName = that.searched[0].groupName;
               that.have_work = true;
               that.show_empty = false;
@@ -144,10 +146,10 @@
           })
       },
       searchOnTable() {
-        this.searched = searchByName(this.groups, this.search)
+        this.searched = searchByName(this.work, this.search)
       },
       onItemClick(id) {
-        this.selected = this.searched.find(item => item.id === id);
+        this.selected = this.work.find(item => item.id === id);
         this.showDialog = true;
       },
       addBtn() {
