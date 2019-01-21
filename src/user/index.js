@@ -1,4 +1,5 @@
 import {CAS_LOGIN_URL} from "@/api";
+import {Base64} from 'js-base64';
 
 let User = {};
 let loginUser = init();
@@ -10,13 +11,9 @@ function init() {
     return {};
   }
   return JSON.parse(JSON.parse(
-    decodeURIComponent(
-      escape(
-        window.atob(
-          window.localStorage.getItem('authorization_token')
-            .split('.')[1]
-        )
-      )
+    Base64.decode(
+      window.localStorage.getItem('authorization_token')
+        .split('.')[1]
     )
   ).loginUser);
 }
