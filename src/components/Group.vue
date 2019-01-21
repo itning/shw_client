@@ -43,7 +43,8 @@
           <md-button class="md-primary md-raised" @click="addBtn">{{info_msg.add_msg}}新群组</md-button>
         </md-table-empty-state>
 
-        <md-table-row slot="md-table-row" slot-scope="{ item }" @click="onItemClick(item.id)">
+        <md-table-row slot="md-table-row" slot-scope="{ item }" @click.ctrl="routerToWork(item.id)"
+                      @click="onItemClick(item.id)">
           <md-table-cell md-label="组名" md-sort-by="groupName">{{ item.groupName }}</md-table-cell>
           <md-table-cell md-label="教师" md-sort-by="teacherName">{{ item.teacherName }}</md-table-cell>
           <md-table-cell :md-label="`${info_msg.add_msg}时间`" md-sort-by="gmtCreate" md-numeric>{{ item.gmtCreate }}
@@ -258,8 +259,10 @@
           })
       },
       lookWork() {
+        this.routerToWork(this.selected.id);
+      },
+      routerToWork(id) {
         this.showDialog = false;
-        let id = this.selected.id;
         this.$router.push({name: 'Work', params: {id}});
       }
     },

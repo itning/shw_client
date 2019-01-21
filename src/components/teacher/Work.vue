@@ -27,7 +27,8 @@
         <md-button class="md-primary md-raised" @click="addBtn">创建新作业</md-button>
       </md-table-empty-state>
 
-      <md-table-row slot="md-table-row" slot-scope="{ item }" @click="onItemClick(item.id)">
+      <md-table-row slot="md-table-row" slot-scope="{ item }" @click.ctrl="routerToWorkDetails(item.id)"
+                    @click="onItemClick(item.id)">
         <md-table-cell md-label="作业名" md-sort-by="workName">{{ item.workName }}</md-table-cell>
         <md-table-cell md-label="创建时间" md-sort-by="gmtCreate" md-numeric>{{ item.gmtCreate }}</md-table-cell>
         <md-table-cell md-label="状态" md-sort-by="enabled" md-numeric>{{ item.enabled?'开启':'关闭' }}</md-table-cell>
@@ -174,9 +175,7 @@
           })
       },
       showDetails() {
-        this.showDialog = false;
-        let id = this.selected.id;
-        this.$router.push({name: 'WorkDetails', params: {id}});
+        this.routerToWorkDetails(this.selected.id);
       },
       showDelDialog() {
         this.showDialog = false;
@@ -213,6 +212,10 @@
               duration: 5000
             });
           });
+      },
+      routerToWorkDetails(id) {
+        this.showDialog = false;
+        this.$router.push({name: 'WorkDetails', params: {id}});
       }
     },
     created() {
