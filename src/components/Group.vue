@@ -4,7 +4,7 @@
       <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
     </md-content>
     <div v-show="init_finish">
-      <div v-if="this.$store.getters.user_is_student">
+      <div v-if="this.$user.user_is_student">
         <welcome-card localStorage="show_welcome_card" title="Hi! 欢迎来到群组管理">
           在这里你可以查看你加入的群组,或者加入新的群组，甚至退出你已经加入的群组。<br>
         </welcome-card>
@@ -15,7 +15,7 @@
           看见右下角的红色按钮了吗？<br>单击它试试！
         </welcome-card>
       </div>
-      <div v-if="this.$store.getters.user_is_teacher">
+      <div v-if="this.$user.user_is_teacher">
         <welcome-card localStorage="show_welcome_card_" title="Hi! 欢迎来到群组管理">
           在这里你可以查看你创建的群组，甚至解散你已经创建的群组。<br>
         </welcome-card>
@@ -59,13 +59,13 @@
           邀请码：{{selected.code}}<br><br>
           管理教师：{{selected.teacherName}}<br><br>
           {{info_msg.add_msg}}时间：{{selected.gmtCreate}}<br><br>
-          <span v-if="this.$store.getters.user_is_teacher">修改时间：{{selected.gmtModified}}</span>
+          <span v-if="this.$user.user_is_teacher">修改时间：{{selected.gmtModified}}</span>
         </md-dialog-content>
         <md-dialog-actions>
           <md-button class="md-accent" @click="showDropOutDialog">{{info_msg.cancel_msg}}群组</md-button>
-          <md-button v-if="this.$store.getters.user_is_teacher" class="md-primary" @click="showUpDialog">修改群名
+          <md-button v-if="this.$user.user_is_teacher" class="md-primary" @click="showUpDialog">修改群名
           </md-button>
-          <md-button v-if="this.$store.getters.user_is_teacher" class="md-primary" @click="lookWork">查看作业</md-button>
+          <md-button v-if="this.$user.user_is_teacher" class="md-primary" @click="lookWork">查看作业</md-button>
           <md-button class="md-primary" @click="showDialog = false">关闭</md-button>
         </md-dialog-actions>
       </md-dialog>
@@ -107,7 +107,6 @@
 
 <script>
   import dayjs from 'dayjs'
-  import store from '@/store'
   import {Del, Get, Patch, Post} from '@/http';
   import {Student, Teacher} from "@/api";
   import WelcomeCard from "@/components/WelcomeCard";
@@ -158,7 +157,7 @@
       initData() {
         let that = this;
         let url;
-        if (this.$store.getters.user_is_student) {
+        if (this.$user.user_is_student) {
           url = Student().groups;
         } else {
           url = Teacher().groups;
@@ -210,7 +209,7 @@
       dropOutGroup() {
         let that = this;
         let url;
-        if (this.$store.getters.user_is_student) {
+        if (this.$user.user_is_student) {
           url = Student().dropOutGroup;
         } else {
           url = Teacher().delGroup;
@@ -229,7 +228,7 @@
         });
       },
       addBtn() {
-        if (this.$store.getters.user_is_student) {
+        if (this.$user.user_is_student) {
           this.add_group_dialog_status = true
         } else {
           this.show_create_dialog = true;
@@ -263,7 +262,7 @@
         this.routerToWork(this.selected.id);
       },
       routerToWork(id) {
-        if (this.$store.getters.user_is_student) {
+        if (this.$user.user_is_student) {
           this.onItemClick(id);
           return;
         }
@@ -272,7 +271,7 @@
       }
     },
     created() {
-      if (this.$store.getters.user_is_student) {
+      if (this.$user.user_is_student) {
         this.info_msg = {cancel_msg: '退出', add_msg: '加入'};
       } else {
         this.info_msg = {cancel_msg: '删除', add_msg: '创建'};
@@ -280,26 +279,6 @@
       this.initData();
     },
     beforeRouteEnter(to, from, next) {
-      if (store.getters.user_type !== undefined) {
-        d();
-      } else {
-        let subscribe = store.subscribe((mutation, state) => {
-          if (mutation.type === 'set_user') {
-            subscribe();
-            d();
-          }
-        });
-      }
-
-      function d() {
-        //根据用户角色 99为学生
-        if (store.getters.user_is_student) {
-
-        } else {
-
-        }
-      }
-
       next();
     }
   }

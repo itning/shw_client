@@ -8,11 +8,13 @@ import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
 import Toasted from 'vue-toasted';
+import User from '@/user'
 
 Vue.config.productionTip = false;
 
 Vue.use(VueMaterial);
 Vue.use(Toasted);
+Vue.use(User);
 
 /* eslint-disable no-new */
 new Vue({

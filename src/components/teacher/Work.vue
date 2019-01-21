@@ -90,6 +90,7 @@
   import dayjs from 'dayjs'
   import {Del, Get, Patch, Post} from "@/http";
   import {Teacher} from "@/api";
+  import User from '@/user'
 
   const toLower = text => {
     return text.toString().toLowerCase()
@@ -220,6 +221,13 @@
     },
     created() {
       this.initData();
+    },
+    beforeRouteEnter(to, from, next) {
+      if (User.user_is_teacher) {
+        next();
+        return;
+      }
+      next('/');
     }
   }
 </script>

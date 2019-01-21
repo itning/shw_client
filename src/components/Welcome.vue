@@ -25,6 +25,7 @@
   import store from "@/store";
   import Vue from 'vue'
   import CreateGroup from "@/components/CreateGroup";
+  import User from '@/user'
 
   export default {
     name: 'Welcome',
@@ -58,7 +59,7 @@
           });
       },
       doBtn() {
-        if (this.$store.getters.user_is_student) {
+        if (this.$user.user_is_student) {
           this.add_group_dialog_status = true
         } else {
           this.show_create_dialog = true;
@@ -69,7 +70,7 @@
       }
     },
     created() {
-      if (this.$store.getters.user_is_student) {
+      if (this.$user.user_is_student) {
         this.state_msg = {
           icon: 'cloud_upload',
           label: '提交你的第一份作业',
@@ -87,47 +88,34 @@
     },
     beforeRouteEnter(to, from, next) {
       window.localStorage.removeItem('student_groups');
-      if (store.getters.user_type !== undefined) {
-        //当且仅当从其它页面push到此才会执行
-        d();
-      } else {
-        let subscribe = store.subscribe((mutation, state) => {
-          if (mutation.type === 'set_user') {
-            subscribe();
-            d();
-          }
-        });
-      }
 
-      function d() {
-        let info = Vue.toasted.info('检查群组状态', {
-          position: "top-right",
-          icon: 'hourglass_empty'
+      let info = Vue.toasted.info('检查群组状态', {
+        position: "top-right",
+        icon: 'hourglass_empty'
+      });
+      //根据用户角色 99为学生
+      if (User.user_is_student) {
+        Get(Student().existGroup).withErrorStartMsg('').do(response => {
+          if (response.data.data) {
+            store.commit('have_groups');
+            next('un_done');
+          } else {
+            store.commit('none_groups');
+            next();
+          }
+        }).doAfter(() => {
+          info.goAway(500);
         });
-        //根据用户角色 99为学生
-        if (store.getters.user_is_student) {
-          Get(Student().existGroup).withErrorStartMsg('').do(response => {
-            if (response.data.data) {
-              store.commit('have_groups');
-              next('un_done');
-            } else {
-              store.commit('none_groups');
-              next();
-            }
-          }).doAfter(() => {
-            info.goAway(500);
-          });
-        } else {
-          Get(Teacher().existGroup).withErrorStartMsg('').do(response => {
-            if (response.data.data) {
-              next('group');
-            } else {
-              next();
-            }
-          }).doAfter(() => {
-            info.goAway(500);
-          });
-        }
+      } else {
+        Get(Teacher().existGroup).withErrorStartMsg('').do(response => {
+          if (response.data.data) {
+            next('group');
+          } else {
+            next();
+          }
+        }).doAfter(() => {
+          info.goAway(500);
+        });
       }
     }
   }

@@ -1,9 +1,5 @@
 <template>
   <div class="page-container height_100">
-    <md-dialog-alert v-if="isNotChrome"
-                     :md-active.sync="isNotChrome"
-                     md-content="系统可能不支持您的浏览器，请下载Chrome浏览器！"
-                     md-confirm-text="好的"/>
     <md-app class="height_100" md-mode="fixed">
       <md-app-toolbar class="md-primary">
         <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
@@ -53,17 +49,17 @@
         <md-toolbar class="md-transparent" md-elevation="0">{{user.name}} {{user.no}}</md-toolbar>
 
         <md-list>
-          <md-list-item @click="pushRouter('un_done')" v-if="this.$store.getters.exist_group">
+          <md-list-item @click="pushRouter('un_done')" v-if="this.$user.user_is_student">
             <md-icon>clear</md-icon>
             <span class="md-list-item-text">未交作业</span>
           </md-list-item>
 
-          <md-list-item @click="pushRouter('done')" v-if="this.$store.getters.exist_group">
+          <md-list-item @click="pushRouter('done')" v-if="this.$user.user_is_student">
             <md-icon>done</md-icon>
             <span class="md-list-item-text">已交作业</span>
           </md-list-item>
 
-          <md-list-item @click="pushRouter('group')" v-if="this.$store.getters.exist_group">
+          <md-list-item @click="pushRouter('group')">
             <md-icon>group</md-icon>
             <span class="md-list-item-text">群组管理</span>
           </md-list-item>
@@ -82,15 +78,12 @@
 </template>
 
 <script>
-  import {Get} from '@/http';
-  import {BASE_URL, User} from "@/api";
-  import Cookies from 'js-cookie'
+  import {BASE_URL} from "@/api";
 
   export default {
     name: 'App',
     data: () => ({
       menuVisible: false,
-      isNotChrome: true,
       isHaveNotifications: false,
       showNotificationsList: false,
       user: {}
@@ -109,33 +102,8 @@
       }
     },
     created() {
-      let authorization = Cookies.get('Authorization');
-      if (authorization !== undefined) {
-        window.localStorage.setItem('authorization_token', authorization);
-        Cookies.remove('Authorization');
-      }
-      let info = this.$toasted.info('获取用户信息', {
-        icon: 'hourglass_empty',
-        position: "top-right"
-      });
-      let that = this;
-      Get(User().user).withErrorStartMsg('').do(response => {
-        let data = response.data.data;
-        that.$store.commit('set_user', data);
-        info.goAway(500);
-        that.$toasted.success('用户信息获取成功', {
-          icon: 'done',
-          position: "top-right",
-          duration: 1500,
-        });
-        that.user = data;
-      });
-    },
-    beforeMount() {
-      const USER_AGENT = navigator.userAgent.toLowerCase();
-      const isChrome = /.*(chrome)\/([\w.]+).*/;
-      this.isNotChrome = !isChrome.test(USER_AGENT);
-    },
+      this.user = this.$user.loginUser;
+    }
   }
 </script>
 

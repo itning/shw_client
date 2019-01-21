@@ -2,12 +2,6 @@
 export const BASE_URL = "http://localhost:8080";
 export const CAS_LOGIN_URL = BASE_URL + "/login";
 
-export function User() {
-  return {
-    "user": BASE_URL + '/user'
-  }
-}
-
 export function Student() {
   const str = "/student";
   return {
