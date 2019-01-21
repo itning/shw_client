@@ -63,8 +63,9 @@
         </md-dialog-content>
         <md-dialog-actions>
           <md-button class="md-accent" @click="showDropOutDialog">{{info_msg.cancel_msg}}群组</md-button>
-          <md-button class="md-primary" @click="showUpDialog">修改群名</md-button>
-          <md-button class="md-primary" @click="lookWork">查看作业</md-button>
+          <md-button v-if="this.$store.getters.user_is_teacher" class="md-primary" @click="showUpDialog">修改群名
+          </md-button>
+          <md-button v-if="this.$store.getters.user_is_teacher" class="md-primary" @click="lookWork">查看作业</md-button>
           <md-button class="md-primary" @click="showDialog = false">关闭</md-button>
         </md-dialog-actions>
       </md-dialog>
@@ -262,6 +263,10 @@
         this.routerToWork(this.selected.id);
       },
       routerToWork(id) {
+        if (this.$store.getters.user_is_student) {
+          this.onItemClick(id);
+          return;
+        }
         this.showDialog = false;
         this.$router.push({name: 'Work', params: {id}});
       }
