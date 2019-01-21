@@ -13,7 +13,7 @@
               md-fixed-header>
       <md-table-toolbar>
         <div class="md-toolbar-section-start">
-          <h1 class="md-title">作业管理</h1>
+          <h1 class="md-title">{{groupName}}群组作业管理</h1>
         </div>
 
         <md-field md-clearable class="md-toolbar-section-end">
@@ -96,7 +96,7 @@
 
   const searchByName = (items, term) => {
     if (term) {
-      return items.filter(item => toLower(item.groupName).includes(toLower(term)))
+      return items.filter(item => toLower(item.workName).includes(toLower(term)))
     }
     return items
   };
@@ -108,6 +108,7 @@
       searched: [],
       search: null,
       selected: {},
+      groupName: '',
       init_finish: false,
       have_work: true,
       show_work_dialog: false,
@@ -133,6 +134,7 @@
                 work.gmtModified = dayjs(work.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
                 return work;
               });
+              that.groupName = that.searched[0].groupName;
               that.have_work = true;
               that.show_empty = false;
             }
