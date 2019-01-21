@@ -277,9 +277,6 @@
         this.info_msg = {cancel_msg: '删除', add_msg: '创建'};
       }
       this.initData();
-    },
-    beforeRouteEnter(to, from, next) {
-      next();
     }
   }
 </script>

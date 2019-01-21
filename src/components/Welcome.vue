@@ -20,12 +20,9 @@
 </template>
 
 <script>
-  import {Student, Teacher} from "@/api";
-  import {Get, Post} from '@/http';
-  import store from "@/store";
-  import Vue from 'vue'
+  import {Student} from "@/api";
+  import {Post} from '@/http';
   import CreateGroup from "@/components/CreateGroup";
-  import User from '@/user'
 
   export default {
     name: 'Welcome',
@@ -84,38 +81,6 @@
           description: '欢迎您，' + this.$store.state.user.name + '。点击下方按钮，创建第一个群组。',
           btn_info: '创建群组'
         };
-      }
-    },
-    beforeRouteEnter(to, from, next) {
-      window.localStorage.removeItem('student_groups');
-
-      let info = Vue.toasted.info('检查群组状态', {
-        position: "top-right",
-        icon: 'hourglass_empty'
-      });
-      //根据用户角色 99为学生
-      if (User.user_is_student) {
-        Get(Student().existGroup).withErrorStartMsg('').do(response => {
-          if (response.data.data) {
-            store.commit('have_groups');
-            next('un_done');
-          } else {
-            store.commit('none_groups');
-            next();
-          }
-        }).doAfter(() => {
-          info.goAway(500);
-        });
-      } else {
-        Get(Teacher().existGroup).withErrorStartMsg('').do(response => {
-          if (response.data.data) {
-            next('group');
-          } else {
-            next();
-          }
-        }).doAfter(() => {
-          info.goAway(500);
-        });
       }
     }
   }
