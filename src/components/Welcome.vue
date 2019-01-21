@@ -78,7 +78,7 @@
         this.state_msg = {
           icon: 'group_add',
           label: '创建你的第一个群组',
-          description: '欢迎您，' + this.$store.state.user.name + '。点击下方按钮，创建第一个群组。',
+          description: '欢迎您，' + this.$user.loginName + '。点击下方按钮，创建第一个群组。',
           btn_info: '创建群组'
         };
       }
