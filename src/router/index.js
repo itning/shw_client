@@ -120,6 +120,13 @@ let router = new Router({
       }
     },
     {
+      path: '/token/:id', redirect: to => {
+        console.log(to.params.id);
+        window.localStorage.setItem('authorization_token', to.params.id);
+        window.location.href = window.location.protocol + '//' + window.location.host;
+      }
+    },
+    {
       path: "*",
       redirect: "/"
     }

@@ -1,15 +1,9 @@
-import Cookies from "js-cookie";
 import {CAS_LOGIN_URL} from "@/api";
 
 let User = {};
 let loginUser = init();
 
 function init() {
-  let authorization = Cookies.get('Authorization');
-  if (authorization !== undefined) {
-    window.localStorage.setItem('authorization_token', authorization);
-    Cookies.remove('Authorization');
-  }
   if (window.localStorage.getItem('authorization_token') === null) {
     window.localStorage.setItem('last_path', window.location.pathname);
     window.location.href = CAS_LOGIN_URL;

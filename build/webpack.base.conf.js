@@ -20,8 +20,7 @@ module.exports = {
     'vuex': 'Vuex',
     'axios': 'axios',
     'vue-material': 'VueMaterial',
-    'vue-toasted': 'Toasted',
-    'js-cookie': 'Cookies'
+    'vue-toasted': 'Toasted'
   },
   output: {
     path: config.build.assetsRoot,
