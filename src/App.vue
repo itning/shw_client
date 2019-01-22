@@ -59,6 +59,11 @@
             <span class="md-list-item-text">已交作业</span>
           </md-list-item>
 
+          <md-list-item @click="pushRouter('/work/all')" v-if="this.$user.user_is_teacher">
+            <md-icon>work</md-icon>
+            <span class="md-list-item-text">作业管理</span>
+          </md-list-item>
+
           <md-list-item @click="pushRouter('/group')">
             <md-icon>group</md-icon>
             <span class="md-list-item-text">群组管理</span>
