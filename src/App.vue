@@ -49,22 +49,22 @@
         <md-toolbar class="md-transparent" md-elevation="0">{{user.name}} {{user.no}}</md-toolbar>
 
         <md-list>
-          <md-list-item @click="pushRouter('un_done')" v-if="this.$user.user_is_student">
+          <md-list-item @click="pushRouter('/un_done')" v-if="this.$user.user_is_student">
             <md-icon>clear</md-icon>
             <span class="md-list-item-text">未交作业</span>
           </md-list-item>
 
-          <md-list-item @click="pushRouter('done')" v-if="this.$user.user_is_student">
+          <md-list-item @click="pushRouter('/done')" v-if="this.$user.user_is_student">
             <md-icon>done</md-icon>
             <span class="md-list-item-text">已交作业</span>
           </md-list-item>
 
-          <md-list-item @click="pushRouter('group')">
+          <md-list-item @click="pushRouter('/group')">
             <md-icon>group</md-icon>
             <span class="md-list-item-text">群组管理</span>
           </md-list-item>
 
-          <md-list-item @click="pushRouter('personal_center')">
+          <md-list-item @click="pushRouter('/personal_center')">
             <md-icon>account_circle</md-icon>
             <span class="md-list-item-text">个人中心</span>
           </md-list-item>

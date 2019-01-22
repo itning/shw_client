@@ -132,6 +132,10 @@ let router = new Router({
   ]
 });
 router.beforeEach((to, from, next) => {
+  if (to.path.startsWith('/token')) {
+    next();
+    return;
+  }
   let path = window.localStorage.getItem('last_path');
   if (path !== null) {
     window.localStorage.removeItem('last_path');

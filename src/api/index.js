@@ -30,5 +30,6 @@ export function Teacher() {
     "createWork": BASE_URL + str + '/work',
     "delWork": BASE_URL + str + '/work/',
     "upWork": BASE_URL + str + '/work/',
+    "workDetail": BASE_URL + str + '/work_detail/',
   }
 }

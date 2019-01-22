@@ -31,7 +31,7 @@
                     @click="onItemClick(item.id)">
         <md-table-cell md-label="作业名" md-sort-by="workName">{{ item.workName }}</md-table-cell>
         <md-table-cell md-label="创建时间" md-sort-by="gmtCreate" md-numeric>{{ item.gmtCreate }}</md-table-cell>
-        <md-table-cell md-label="状态" md-sort-by="enabled" md-numeric>{{ item.enabled?'开启':'关闭' }}</md-table-cell>
+        <md-table-cell md-label="状态" md-sort-by="enabled">{{ item.enabled?'开启':'关闭' }}</md-table-cell>
       </md-table-row>
     </md-table>
     <md-dialog-prompt
