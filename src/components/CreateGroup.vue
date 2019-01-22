@@ -81,6 +81,10 @@
         this.secondStepError = null;
         this.cancel_btn_disabled = true;
         this.disabled_create_btn = true;
+        let createToast = this.$toasted.info('创建中...', {
+          position: "top-right",
+          icon: 'hourglass_empty'
+        });
         let that = this;
         Post(Teacher().createGroup)
           .withErrorStartMsg('创建失败: ')
@@ -92,6 +96,7 @@
           })
           .doAfter(() => {
             that.disabled_create_btn = false;
+            createToast.goAway(100);
           })
       },
       setDone(id, index) {
