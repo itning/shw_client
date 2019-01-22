@@ -27,10 +27,10 @@
       </md-table-empty-state>
 
       <md-table-row slot="md-table-row" slot-scope="{ item }" @click="onItemClick(item.id)">
-        <md-table-cell md-label="组名" md-sort-by="name">{{ item.groupName }}</md-table-cell>
-        <md-table-cell md-label="作业名" md-sort-by="title">{{ item.workName }}</md-table-cell>
-        <md-table-cell md-label="教师" md-sort-by="email">{{ item.teacherName }}</md-table-cell>
-        <md-table-cell md-label="创建时间" md-sort-by="gender" md-numeric>{{ item.gmtCreate }}</md-table-cell>
+        <md-table-cell md-label="组名" md-sort-by="groupName">{{ item.groupName }}</md-table-cell>
+        <md-table-cell md-label="作业名" md-sort-by="workName">{{ item.workName }}</md-table-cell>
+        <md-table-cell md-label="教师" md-sort-by="teacherName">{{ item.teacherName }}</md-table-cell>
+        <md-table-cell md-label="创建时间" md-sort-by="gmtCreate" md-numeric>{{ item.gmtCreate }}</md-table-cell>
       </md-table-row>
     </md-table>
     <md-dialog :md-active.sync="showDialog" :md-fullscreen="alert_fullscreen"
@@ -62,7 +62,7 @@
 
   const searchByName = (items, term) => {
     if (term) {
-      return items.filter(item => toLower(item.groupName).includes(toLower(term)))
+      return items.filter(item => toLower(item.workName).includes(toLower(term)))
     }
     return items
   };
