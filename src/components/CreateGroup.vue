@@ -15,7 +15,7 @@
           <label>请输入您要创建的群组名</label>
           <md-input v-model="new_group_name" md-counter="30"></md-input>
         </md-field>
-        <md-button class="md-raised md-primary" @click="createGroup">创建</md-button>
+        <md-button class="md-raised md-primary" @click="createGroup" :disabled="disabled_create_btn">创建</md-button>
       </md-step>
 
       <md-step id="third" md-label="第三步" md-description="获取邀请码" :md-editable="false" :md-done.sync="third">
@@ -50,6 +50,7 @@
       new_group_name: '',
       new_group_code: '',
       cancel_btn_disabled: false,
+      disabled_create_btn: false,
       secondStepError: null
     }),
     watch: {
@@ -78,7 +79,8 @@
           return;
         }
         this.secondStepError = null;
-        this.setDone('second', 'third');
+        this.cancel_btn_disabled = true;
+        this.disabled_create_btn = true;
         let that = this;
         Post(Teacher().createGroup)
           .withErrorStartMsg('创建失败: ')
@@ -86,9 +88,10 @@
           .withURLSearchParams({'groupName': this.new_group_name})
           .do(response => {
             that.new_group_code = response.data.code;
+            that.setDone('second', 'third');
           })
           .doAfter(() => {
-
+            that.disabled_create_btn = false;
           })
       },
       setDone(id, index) {
@@ -99,6 +102,8 @@
         }
       },
       allDone() {
+        this.new_group_name = '';
+        this.new_group_code = '';
         this.setDone('third');
         this.$emit('finish');
       },
@@ -118,6 +123,7 @@
         document.body.removeChild(input);
       },
       cancel() {
+        this.secondStepError = null;
         this.$emit('cancel');
       }
     }
