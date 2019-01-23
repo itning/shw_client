@@ -30,6 +30,7 @@
       <md-table-row slot="md-table-row" slot-scope="{ item }" @click.ctrl="routerToWorkDetails(item.id)"
                     @click="onItemClick(item.id)">
         <md-table-cell md-label="作业名" md-sort-by="workName">{{ item.workName }}</md-table-cell>
+        <md-table-cell md-label="群组名" md-sort-by="groupName">{{ item.groupName }}</md-table-cell>
         <md-table-cell md-label="创建时间" md-sort-by="gmtCreate" md-numeric>{{ item.gmtCreate }}</md-table-cell>
         <md-table-cell md-label="状态" md-sort-by="enabled">{{ item.enabled?'开启':'关闭' }}</md-table-cell>
       </md-table-row>
@@ -121,11 +122,22 @@
       show_modify_dialog: false,
       new_work_name: '',
     }),
-    watch: {},
+    watch: {
+      id(now, old) {
+        this.init_finish = false;
+        this.initData();
+      }
+    },
     methods: {
       initData(groupId = this.id) {
+        let url;
+        if (groupId === 'all') {
+          url = Teacher().works;
+        } else {
+          url = Teacher().work + groupId;
+        }
         let that = this;
-        Get(Teacher().work + groupId)
+        Get(url)
           .do(response => {
             if (response.data.data.length === 0) {
               that.have_work = false;
@@ -137,7 +149,11 @@
                 return work;
               });
               that.searched = that.work;
-              that.groupName = that.searched[0].groupName;
+              if (groupId === 'all') {
+                that.groupName = '所有';
+              } else {
+                that.groupName = that.searched[0].groupName;
+              }
               that.have_work = true;
               that.show_empty = false;
             }
