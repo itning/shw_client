@@ -62,7 +62,7 @@
 <script>
   import dayjs from 'dayjs'
   import {Get} from "@/http";
-  import {Teacher} from "@/api";
+  import {Student, Teacher} from "@/api";
 
   const toLower = text => {
     return text.toString().toLowerCase()
@@ -130,25 +130,15 @@
       getFormatFileSize(size) {
         let number = Number(size);
         if (number < 1048576) {
-          //KB
           return (number / 1024).toFixed(2) + ' KB';
         } else if (number < 1073741824) {
-          //MB
           return (number / 1024 / 1024).toFixed(2) + ' MB';
-        } else if (number < 1099511627776) {
-          //GB
-          return (number / 1024 / 1024 / 1024).toFixed(2) + ' GB';
-        } else if (number < 1125899906842624) {
-          //TB
-          return (number / 1024 / 1024 / 1024 / 1024).toFixed(2) + ' TB';
         } else {
-          //PB
-          return (number / 1024 / 1024 / 1024 / 1024 / 1024).toFixed(2) + ' PB';
+          return (number / 1024 / 1024 / 1024).toFixed(2) + ' GB';
         }
       },
       down(no) {
-        console.log("学号:" + no);
-        console.log("作业:" + this.id);
+        window.open(Student().downWork + no + '/' + this.id, "_blank");
       },
       downAll() {
 

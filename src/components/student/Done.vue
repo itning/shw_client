@@ -42,12 +42,12 @@
         教师：{{selected.teacherName}}<br><br>
         创建时间：{{selected.gmtCreate}}<br><br>
         上传时间：{{selected_upload.gmtCreate}}<br><br>
-        文件大小：{{selected_upload.size}}<br><br>
+        文件大小：{{getFormatFileSize(selected_upload.size)}}<br><br>
         文件类型：{{selected_upload.mime}}<br><br>
       </md-dialog-content>
       <md-dialog-actions>
         <md-button class="md-accent" @click="showDelUploadDialog" :disabled="!selected.enabled">删除</md-button>
-        <md-button @click="">下载</md-button>
+        <md-button @click="down">下载</md-button>
         <md-button class="md-primary" @click="closeDialog">关闭</md-button>
       </md-dialog-actions>
     </md-dialog>
@@ -114,6 +114,16 @@
           that.selected_upload = temp;
         });
       },
+      getFormatFileSize(size) {
+        let number = Number(size);
+        if (number < 1048576) {
+          return (number / 1024).toFixed(2) + ' KB';
+        } else if (number < 1073741824) {
+          return (number / 1024 / 1024).toFixed(2) + ' MB';
+        } else {
+          return (number / 1024 / 1024 / 1024).toFixed(2) + ' GB';
+        }
+      },
       initData() {
         this.init_finish = false;
         let that = this;
@@ -155,6 +165,9 @@
           that.init_finish = false;
           that.initData();
         });
+      },
+      down() {
+        window.open(Student().downWork + this.$user.loginUser.no + '/' + this.selected.id, "_blank");
       }
     },
     created() {
