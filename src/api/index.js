@@ -32,5 +32,7 @@ export function Teacher() {
     "delWork": BASE_URL + str + '/work/',
     "upWork": BASE_URL + str + '/work/',
     "workDetail": BASE_URL + str + '/work_detail/',
+    "pack": BASE_URL + str + '/pack/',
+    "downAll": BASE_URL + str + '/down/',
   }
 }

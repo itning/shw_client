@@ -52,7 +52,18 @@
         <md-button class="md-primary" @click="showDialog = false">关闭</md-button>
       </md-dialog-actions>
     </md-dialog>
-    <md-button class="md-fab md-fixed md-fab-bottom-right" @click="downAll">
+    <md-dialog :md-active.sync="showDownAllDialog" :md-fullscreen="alert_fullscreen"
+               :md-click-outside-to-close="alert_fullscreen" :md-close-on-esc="alert_fullscreen">
+      <md-dialog-title>下载所有</md-dialog-title>
+      <md-dialog-content>
+        {{down_all_msg}}
+      </md-dialog-content>
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="startDownAll" :disabled="disableDownAllBtn">下载</md-button>
+        <md-button class="md-primary" @click="showDownAllDialog = false" :disabled="disableDownAllBtn">关闭</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+    <md-button class="md-fab md-fixed md-fab-bottom-right" @click="downAll" :disabled="disable_down_all_btn">
       <md-icon>cloud_download</md-icon>
     </md-button>
   </div>
@@ -82,6 +93,10 @@
       show_empty: false,
       alert_fullscreen: false,
       showDialog: false,
+      disable_down_all_btn: false,
+      down_all_msg: '',
+      showDownAllDialog: false,
+      disableDownAllBtn: true,
       have_work: true,
       search: null,
       searched: [],
@@ -139,8 +154,37 @@
       down(no) {
         window.open(Student().downWork + no + '/' + this.id, "_blank");
       },
+      startDownAll() {
+        window.open(Teacher().downAll + this.id, "_blank");
+      },
       downAll() {
+        this.disable_down_all_btn = true;
+        this.showDownAllDialog = true;
+        this.disableDownAllBtn = true;
+        this.down_all_msg = '准备中...';
+        let that = this;
+        let interval = window.setInterval(pong, 2000);
 
+        function pong() {
+          Get(Teacher().pack + that.id).do(response => {
+            switch (response.data.data) {
+              case "START":
+                that.down_all_msg = '开始打包...';
+                break;
+              case "OK":
+                window.clearInterval(interval);
+                that.down_all_msg = '打包完成';
+                that.disable_down_all_btn = false;
+                that.disableDownAllBtn = false;
+                break;
+              case "ERROR":
+                that.down_all_msg = '打包错误';
+                break;
+              default:
+                that.down_all_msg = dayjs().format("YYYY-MM-DD HH:mm:ss") + ' 正在打包：' + response.data.data;
+            }
+          });
+        }
       }
     },
     created() {
