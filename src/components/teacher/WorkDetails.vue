@@ -60,7 +60,6 @@
       </md-dialog-content>
       <md-dialog-actions>
         <md-button class="md-primary" @click="startDownAll" :disabled="disableDownAllBtn">下载</md-button>
-        <md-button class="md-primary" @click="showDownAllDialog = false" :disabled="disableDownAllBtn">关闭</md-button>
       </md-dialog-actions>
     </md-dialog>
     <md-button class="md-fab md-fixed md-fab-bottom-right" @click="downAll" :disabled="disable_down_all_btn">
@@ -155,6 +154,7 @@
         window.open(Student().downWork + no + '/' + this.id, "_blank");
       },
       startDownAll() {
+        this.showDownAllDialog = false;
         window.open(Teacher().downAll + this.id, "_blank");
       },
       downAll() {
