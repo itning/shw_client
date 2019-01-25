@@ -10,7 +10,8 @@ instance.interceptors.request.use((request) => {
   let token = window.localStorage.getItem('authorization_token');
   if (token !== undefined) {
     request.headers = {
-      "Authorization": token
+      "Authorization": token,
+      "Accept": "application/json"
     };
   }
   return request;
