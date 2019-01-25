@@ -13,6 +13,8 @@ instance.interceptors.request.use((request) => {
       "Authorization": token,
       "Accept": "application/json"
     };
+  } else {
+    request.headers = {"Accept": "application/json"};
   }
   return request;
 
