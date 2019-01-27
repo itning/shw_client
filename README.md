@@ -2,20 +2,30 @@
 
 > Student HomeWork Management System Client
 
-## Build Setup
+[![GitHub stars](https://img.shields.io/github/stars/itning/shw_client.svg)](https://github.com/itning/shw_client/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/itning/shw_client.svg)](https://github.com/itning/shw_client/network)
+[![GitHub watchers](https://img.shields.io/github/watchers/itning/shw_client.svg?style=social&label=Watch)]()
+[![GitHub followers](https://img.shields.io/github/followers/itning.svg?style=social&label=Follow)]()
+[![GitHub issues](https://img.shields.io/github/issues/itning/shw_client.svg)](https://github.com/itning/shw_client/issues)
+
+[![GitHub license](https://img.shields.io/github/license/itning/shw_client.svg)](https://github.com/itning/shw_client/blob/master/LICENSE)
+[![GitHub last commit](https://img.shields.io/github/last-commit/itning/shw_client.svg)]()
+[![GitHub release](https://img.shields.io/github/release/itning/shw_client.svg)](https://github.com/itning/shw_client/releases)
+[![GitHub repo size in bytes](https://img.shields.io/github/repo-size/itning/shw_client.svg)]()
+[![language](https://img.shields.io/badge/language-Vue-orange.svg)]()
+
+## 构建步骤
 
 ``` bash
-# install dependencies
+# 安装依赖
 npm install
 
-# serve with hot reload at localhost:8080
+# 开发服务
 npm run dev
 
-# build for production with minification
+# 构建
 npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## 截图
+
