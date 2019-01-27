@@ -14,6 +14,10 @@
 [![GitHub repo size in bytes](https://img.shields.io/github/repo-size/itning/shw_client.svg)]()
 [![language](https://img.shields.io/badge/language-Vue-orange.svg)]()
 
+## 更改BASE URL
+
+[https://github.com/itning/shw_client/blob/master/src/api/index.js#L2](https://github.com/itning/shw_client/blob/master/src/api/index.js#L2)
+
 ## 构建步骤
 
 ``` bash
@@ -29,3 +33,11 @@ npm run build
 
 ## 截图
 
+![](https://raw.githubusercontent.com/itning/shw_client/master/pic/add_group.png)
+![](https://raw.githubusercontent.com/itning/shw_client/master/pic/done.png)
+![](https://raw.githubusercontent.com/itning/shw_client/master/pic/group.png)
+![](https://raw.githubusercontent.com/itning/shw_client/master/pic/group_1.png)
+![](https://raw.githubusercontent.com/itning/shw_client/master/pic/un_done.png)
+![](https://raw.githubusercontent.com/itning/shw_client/master/pic/upload.png)
+![](https://raw.githubusercontent.com/itning/shw_client/master/pic/work_1.png)
+![](https://raw.githubusercontent.com/itning/shw_client/master/pic/work_detail.png)
