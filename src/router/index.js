@@ -91,7 +91,14 @@ let router = new Router({
     {
       path: '/personal_center',
       name: 'PersonalCenter',
-      component: PersonalCenter
+      component: PersonalCenter,
+      beforeEnter: (to, from, next) => {
+        Vue.toasted.info('这什么都没有', {
+          position: "top-right",
+          icon: 'web',
+          duration: 2000
+        });
+      }
     },
     {
       path: '/work/:id',
