@@ -22,8 +22,8 @@
       </md-table-toolbar>
 
       <md-table-empty-state
-        md-label="群组没有找到"
-        :md-description="`没有找到名为 '${search}' 的组. 尝试其他关键字进行搜索或者加入新群组`">
+        md-label="作业没有找到"
+        :md-description="`没有找到名为 '${search}' 的作业. 尝试其他关键字进行搜索或者加入新群组`">
       </md-table-empty-state>
 
       <md-table-row slot="md-table-row" slot-scope="{ item }" @click="onItemClick(item.id)">
