@@ -1,4 +1,3 @@
-import {CAS_LOGIN_URL} from "@/api";
 import {Base64} from 'js-base64';
 
 let User = {};
@@ -6,16 +5,19 @@ let loginUser = init();
 
 function init() {
   if (window.localStorage.getItem('authorization_token') === null) {
-    window.localStorage.setItem('last_path', window.location.pathname);
-    window.location.href = CAS_LOGIN_URL;
     return {};
   }
-  return JSON.parse(JSON.parse(
-    Base64.decode(
-      window.localStorage.getItem('authorization_token')
-        .split('.')[1]
-    )
-  ).loginUser);
+  try {
+    return JSON.parse(JSON.parse(
+      Base64.decode(
+        window.localStorage.getItem('authorization_token')
+          .split('.')[1]
+      )
+    ).loginUser);
+  } catch (e) {
+    window.localStorage.removeItem('authorization_token');
+    return {};
+  }
 }
 
 User.loginUser = loginUser;

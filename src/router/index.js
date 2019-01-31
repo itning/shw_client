@@ -127,9 +127,13 @@ let router = new Router({
       }
     },
     {
-      path: '/token/:id', redirect: to => {
+      path: '/token/:id',
+      name: 'token',
+      component: Welcome,
+      beforeEnter: (to, from, next) => {
         window.localStorage.setItem('authorization_token', to.params.id);
         window.location.href = window.location.protocol + '//' + window.location.host;
+        next(false);
       }
     },
     {
