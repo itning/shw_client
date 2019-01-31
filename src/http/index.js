@@ -67,7 +67,7 @@ const showErrorToast = function (msg) {
   Vue.toasted.error(msg, {
     position: "top-right",
     icon: 'clear',
-    duration: 3000,
+    duration: 5000,
   });
 };
 
