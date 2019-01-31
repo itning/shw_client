@@ -1,7 +1,7 @@
 <template>
   <div class="page-container height_100">
     <md-app class="height_100" md-mode="fixed">
-      <md-app-toolbar class="md-primary no-shadow">
+      <md-app-toolbar class="md-primary">
         <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
           <md-icon>menu</md-icon>
         </md-button>
@@ -127,12 +127,6 @@
 
   .notifications-list button {
 
-  }
-
-  @media (max-width: 960px) {
-    .no-shadow {
-      box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .2), 0 0 0 0 rgba(0, 0, 0, .14), 0 1px 10px 0 rgba(0, 0, 0, .12);
-    }
   }
 </style>
 <style>
