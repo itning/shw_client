@@ -51,6 +51,7 @@
           </md-table-cell>
         </md-table-row>
       </md-table>
+      <pagination :page="groups" @last="pageChange('last')" @next="pageChange('next')" @size="sizeChanged" @number="numberChanged"/>
       <md-dialog :md-active.sync="showDialog" :md-fullscreen="alert_fullscreen">
         <md-dialog-title>群组详情</md-dialog-title>
         <md-dialog-content>
@@ -111,6 +112,7 @@
   import {Student, Teacher} from "@/api";
   import WelcomeCard from "@/components/WelcomeCard";
   import CreateGroup from "@/components/CreateGroup";
+  import Pagination from "@/components/Pagination";
 
   const toLower = text => {
     return text.toString().toLowerCase()
@@ -125,8 +127,10 @@
 
   export default {
     name: "Group",
-    components: {CreateGroup, WelcomeCard},
+    components: {Pagination, CreateGroup, WelcomeCard},
     data: () => ({
+      page_number: 0,
+      page_size: 20,
       search: null,
       group_code: "",
       searched: [],
@@ -148,7 +152,7 @@
         this.searched = searchByName(this.groups, this.search)
       },
       onItemClick(id) {
-        this.selected = this.groups.find(item => item.id === id);
+        this.selected = this.groups.content.find(item => item.id === id);
         this.showDialog = true;
       },
       setInfoCardDisable(item, localStorageKey) {
@@ -162,17 +166,18 @@
         } else {
           url = Teacher().groups;
         }
-        Get(url).do(response => {
-          if (response.data.data.length === 0) {
+        Get(url + '?page=' + this.page_number + '&size=' + this.page_size).do(response => {
+          if (response.data.data.content.length === 0) {
             that.$router.push("welcome");
             that.$store.commit('none_groups');
           } else {
-            that.groups = response.data.data.map(group => {
+            response.data.data.content = response.data.data.content.map(group => {
               group.gmtCreate = dayjs(group.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
               group.gmtModified = dayjs(group.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
               return group;
             });
-            that.searched = that.groups;
+            that.groups = response.data.data;
+            that.searched = that.groups.content;
             that.init_finish = true;
           }
         });
@@ -268,6 +273,34 @@
         }
         this.showDialog = false;
         this.$router.push({name: 'Work', params: {id}});
+      },
+      pageChange(type) {
+        switch (type) {
+          case 'last': {
+            this.page_number -= 1;
+            break;
+          }
+          case 'next': {
+            this.page_number += 1;
+            break;
+          }
+        }
+        this.selected = {};
+        this.init_finish = false;
+        this.initData();
+      },
+      sizeChanged(size) {
+        this.page_number = 0;
+        this.page_size = size;
+        this.selected = {};
+        this.init_finish = false;
+        this.initData();
+      },
+      numberChanged(number){
+        this.page_number = number;
+        this.selected = {};
+        this.init_finish = false;
+        this.initData();
       }
     },
     created() {
