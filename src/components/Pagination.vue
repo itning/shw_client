@@ -50,14 +50,11 @@
       size: 20,
       number: 1
     }),
-    watch: {}
-    ,
     computed: {
       disabledChangeSizeBtn: function () {
         return (this.size < 1 || this.size === '');
       }
-    }
-    ,
+    },
     methods: {
       pageChangeBtn(type) {
         switch (type) {

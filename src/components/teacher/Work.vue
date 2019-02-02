@@ -256,6 +256,7 @@
         this.initData();
       },
       sizeChanged(size) {
+        localStorage.setItem('size_work', size);
         this.page_number = 0;
         this.page_size = size;
         this.selected = {};
@@ -270,6 +271,12 @@
       }
     },
     created() {
+      let size = Number(localStorage.getItem('size_work'));
+      if (isNaN(size)) {
+        size = 20;
+        localStorage.setItem('size_work', String(size));
+      }
+      this.page_size = size;
       this.initData();
     }
   }

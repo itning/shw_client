@@ -51,7 +51,8 @@
           </md-table-cell>
         </md-table-row>
       </md-table>
-      <pagination :page="groups" @last="pageChange('last')" @next="pageChange('next')" @size="sizeChanged" @number="numberChanged"/>
+      <pagination :page="groups" @last="pageChange('last')" @next="pageChange('next')" @size="sizeChanged"
+                  @number="numberChanged"/>
       <md-dialog :md-active.sync="showDialog" :md-fullscreen="alert_fullscreen">
         <md-dialog-title>群组详情</md-dialog-title>
         <md-dialog-content>
@@ -290,13 +291,15 @@
         this.initData();
       },
       sizeChanged(size) {
+        let key = this.$user.user_is_teacher ? 'size_group_' : 'size_group';
+        localStorage.setItem(key, size);
         this.page_number = 0;
         this.page_size = size;
         this.selected = {};
         this.init_finish = false;
         this.initData();
       },
-      numberChanged(number){
+      numberChanged(number) {
         this.page_number = number;
         this.selected = {};
         this.init_finish = false;
@@ -309,6 +312,13 @@
       } else {
         this.info_msg = {cancel_msg: '删除', add_msg: '创建'};
       }
+      let key = this.$user.user_is_teacher ? 'size_group_' : 'size_group';
+      let size = Number(localStorage.getItem(key));
+      if (isNaN(size)) {
+        size = 20;
+        localStorage.setItem(key, String(size));
+      }
+      this.page_size = size;
       this.initData();
     }
   }

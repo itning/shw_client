@@ -38,7 +38,7 @@
     <md-dialog :md-active.sync="showDialog" :md-fullscreen="alert_fullscreen">
       <md-dialog-title>作业详情</md-dialog-title>
       <md-dialog-content>
-        学生姓名：{{(selected.student.name)}}<br><br>
+        学生姓名：{{selected.student.name}}<br><br>
         学生学号：{{selected.student.no}}<br><br>
         所属班级：{{selected.student.clazzId}}<br><br>
         <span v-if="selected.up">
@@ -205,25 +205,32 @@
             break;
           }
         }
-        this.selected = {};
+        this.selected = {upload: {}, student: {}};
         this.init_finish = false;
         this.initData();
       },
       sizeChanged(size) {
+        localStorage.setItem('size_work_details', size);
         this.page_number = 0;
         this.page_size = size;
-        this.selected = {};
+        this.selected = {upload: {}, student: {}};
         this.init_finish = false;
         this.initData();
       },
       numberChanged(number) {
         this.page_number = number;
-        this.selected = {};
+        this.selected = {upload: {}, student: {}};
         this.init_finish = false;
         this.initData();
       }
     },
     created() {
+      let size = Number(localStorage.getItem('size_work_details'));
+      if (isNaN(size)) {
+        size = 20;
+        localStorage.setItem('size_work_details', String(size));
+      }
+      this.page_size = size;
       this.initData();
     }
   }

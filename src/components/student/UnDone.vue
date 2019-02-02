@@ -169,6 +169,7 @@
         this.initData();
       },
       sizeChanged(size) {
+        localStorage.setItem('size_un_done', size);
         this.page_number = 0;
         this.page_size = size;
         this.selected = {};
@@ -183,6 +184,12 @@
       }
     },
     created() {
+      let size = Number(localStorage.getItem('size_un_done'));
+      if (isNaN(size)) {
+        size = 20;
+        localStorage.setItem('size_un_done', String(size));
+      }
+      this.page_size = size;
       this.initData();
     }
   }
