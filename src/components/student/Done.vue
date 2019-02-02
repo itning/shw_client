@@ -31,7 +31,7 @@
         <md-table-cell md-label="组名" md-sort-by="groupName">{{ item.groupName }}</md-table-cell>
         <md-table-cell md-label="作业名" md-sort-by="workName">{{ item.workName }}</md-table-cell>
         <md-table-cell md-label="教师" md-sort-by="teacherName">{{ item.teacherName }}</md-table-cell>
-        <md-table-cell md-label="创建时间" md-sort-by="gmtCreate" md-numeric>{{ item.gmtCreate }}</md-table-cell>
+        <md-table-cell md-label="上传时间" md-sort-by="gmtCreate" md-numeric>{{ item.gmtCreate }}</md-table-cell>
       </md-table-row>
     </md-table>
     <pagination v-if="have_done_work" v-show="init_finish" :page="works" @last="pageChange('last')"
