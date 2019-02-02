@@ -32,6 +32,9 @@
         <md-table-cell md-label="上传时间" md-sort-by="uploadDate" md-numeric>{{item.uploadDate}}</md-table-cell>
       </md-table-row>
     </md-table>
+    <pagination v-show="init_finish" :page="work_details" @last="pageChange('last')" @next="pageChange('next')"
+                @size="sizeChanged"
+                @number="numberChanged"/>
     <md-dialog :md-active.sync="showDialog" :md-fullscreen="alert_fullscreen">
       <md-dialog-title>作业详情</md-dialog-title>
       <md-dialog-content>
@@ -72,6 +75,7 @@
   import dayjs from 'dayjs'
   import {Get} from "@/http";
   import {Student, Teacher} from "@/api";
+  import Pagination from "@/components/Pagination";
 
   const toLower = text => {
     return text.toString().toLowerCase()
@@ -85,9 +89,12 @@
   };
 
   export default {
+    components: {Pagination},
     props: ['id'],
     name: "WorkDetails",
     data: () => ({
+      page_number: 0,
+      page_size: 20,
       init_finish: false,
       show_empty: false,
       alert_fullscreen: false,
@@ -106,13 +113,13 @@
     methods: {
       initData(workId = this.id) {
         let that = this;
-        Get(Teacher().workDetail + workId)
+        Get(Teacher().workDetail + workId + '?page=' + this.page_number + '&size=' + this.page_size)
           .do(response => {
-            if (response.data.data.length === 0) {
+            if (response.data.data.content.length === 0) {
               that.have_work = false;
               that.show_empty = true;
             } else {
-              that.work_details = response.data.data.map(work_detail => {
+              response.data.data.content = response.data.data.content.map(work_detail => {
                 if (work_detail.upload !== null) {
                   work_detail.upload.gmtCreate = dayjs(work_detail.upload.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
                   work_detail.upload.gmtModified = dayjs(work_detail.upload.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
@@ -123,7 +130,8 @@
                 }
                 return work_detail;
               });
-              that.searched = that.work_details;
+              that.work_details = response.data.data;
+              that.searched = that.work_details.content;
               that.workName = that.searched[0].workName;
               that.have_work = true;
               that.show_empty = false;
@@ -137,7 +145,7 @@
         this.searched = searchByName(this.work_details, this.search)
       },
       onItemClick(id) {
-        this.selected = this.work_details.find(item => item.student.no === id);
+        this.selected = this.work_details.content.find(item => item.student.no === id);
         this.showDialog = true;
       },
       getFormatFileSize(size) {
@@ -185,6 +193,34 @@
             }
           });
         }
+      },
+      pageChange(type) {
+        switch (type) {
+          case 'last': {
+            this.page_number -= 1;
+            break;
+          }
+          case 'next': {
+            this.page_number += 1;
+            break;
+          }
+        }
+        this.selected = {};
+        this.init_finish = false;
+        this.initData();
+      },
+      sizeChanged(size) {
+        this.page_number = 0;
+        this.page_size = size;
+        this.selected = {};
+        this.init_finish = false;
+        this.initData();
+      },
+      numberChanged(number) {
+        this.page_number = number;
+        this.selected = {};
+        this.init_finish = false;
+        this.initData();
       }
     },
     created() {

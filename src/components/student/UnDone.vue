@@ -9,7 +9,7 @@
     <md-content class="center" v-if="!init_finish">
       <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
     </md-content>
-    <md-table v-if="have_un_done_work" v-show="init_finish" v-model="searched" md-sort="name" md-sort-order="asc"
+    <md-table v-if="have_un_done_work" v-show="init_finish" v-model="searched" md-sort="gmtCreate" md-sort-order="asc"
               md-card md-fixed-header>
       <md-table-toolbar>
         <div class="md-toolbar-section-start">

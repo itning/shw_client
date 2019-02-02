@@ -35,6 +35,8 @@
         <md-table-cell md-label="状态" md-sort-by="enabled">{{ item.enabled?'开启':'关闭' }}</md-table-cell>
       </md-table-row>
     </md-table>
+    <pagination v-show="init_finish" :page="work" @last="pageChange('last')" @next="pageChange('next')" @size="sizeChanged"
+                @number="numberChanged"/>
     <md-dialog-prompt
       @md-confirm="createWork"
       :md-active.sync="show_work_dialog"
@@ -91,6 +93,7 @@
   import dayjs from 'dayjs'
   import {Del, Get, Patch, Post} from "@/http";
   import {Teacher} from "@/api";
+  import Pagination from "@/components/Pagination";
 
   const toLower = text => {
     return text.toString().toLowerCase()
@@ -104,9 +107,12 @@
   };
 
   export default {
+    components: {Pagination},
     props: ['id'],
     name: "Work",
     data: () => ({
+      page_number: 0,
+      page_size: 20,
       searched: [],
       search: null,
       selected: {},
@@ -137,18 +143,19 @@
           url = Teacher().work + groupId;
         }
         let that = this;
-        Get(url)
+        Get(url + '?page=' + this.page_number + '&size=' + this.page_size)
           .do(response => {
-            if (response.data.data.length === 0) {
+            if (response.data.data.content.length === 0) {
               that.have_work = false;
               that.show_empty = true;
             } else {
-              that.work = response.data.data.map(work => {
+              response.data.data.content = response.data.data.content.map(work => {
                 work.gmtCreate = dayjs(work.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
                 work.gmtModified = dayjs(work.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
                 return work;
               });
-              that.searched = that.work;
+              that.work = response.data.data;
+              that.searched = that.work.content;
               if (groupId === 'all') {
                 that.groupName = '所有';
               } else {
@@ -166,7 +173,7 @@
         this.searched = searchByName(this.work, this.search)
       },
       onItemClick(id) {
-        this.selected = this.work.find(item => item.id === id);
+        this.selected = this.work.content.find(item => item.id === id);
         this.showDialog = true;
       },
       addBtn() {
@@ -232,6 +239,34 @@
       routerToWorkDetails(id) {
         this.showDialog = false;
         this.$router.push({name: 'WorkDetails', params: {id}});
+      },
+      pageChange(type) {
+        switch (type) {
+          case 'last': {
+            this.page_number -= 1;
+            break;
+          }
+          case 'next': {
+            this.page_number += 1;
+            break;
+          }
+        }
+        this.selected = {};
+        this.init_finish = false;
+        this.initData();
+      },
+      sizeChanged(size) {
+        this.page_number = 0;
+        this.page_size = size;
+        this.selected = {};
+        this.init_finish = false;
+        this.initData();
+      },
+      numberChanged(number) {
+        this.page_number = number;
+        this.selected = {};
+        this.init_finish = false;
+        this.initData();
       }
     },
     created() {
