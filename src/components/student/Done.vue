@@ -9,7 +9,8 @@
     <md-content class="center" v-if="!init_finish">
       <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
     </md-content>
-    <md-table v-if="have_done_work" v-show="init_finish" v-model="searched" md-sort="gmtCreate" md-sort-order="asc" md-card
+    <md-table v-if="have_done_work" v-show="init_finish" v-model="searched" md-sort="gmtCreate" md-sort-order="asc"
+              md-card
               md-fixed-header>
       <md-table-toolbar>
         <div class="md-toolbar-section-start">
@@ -33,6 +34,10 @@
         <md-table-cell md-label="创建时间" md-sort-by="gmtCreate" md-numeric>{{ item.gmtCreate }}</md-table-cell>
       </md-table-row>
     </md-table>
+    <pagination v-if="have_done_work" v-show="init_finish" :page="works" @last="pageChange('last')"
+                @next="pageChange('next')"
+                @size="sizeChanged"
+                @number="numberChanged"/>
     <md-dialog :md-active.sync="showDialog" :md-fullscreen="alert_fullscreen"
                :md-click-outside-to-close="alert_click_outside_to_close">
       <md-dialog-title>{{selected.workName}}</md-dialog-title>
@@ -68,6 +73,7 @@
   import {Del, Get} from '@/http';
   import dayjs from 'dayjs'
   import {Student} from "@/api";
+  import Pagination from "@/components/Pagination";
 
   const toLower = text => {
     return text.toString().toLowerCase()
@@ -81,7 +87,10 @@
   };
   export default {
     name: "Done",
+    components: {Pagination},
     data: () => ({
+      page_number: 0,
+      page_size: 20,
       search: null,
       searched: [],
       selected: {},
@@ -103,7 +112,7 @@
         this.showDialog = false;
       },
       onItemClick(id) {
-        this.selected = this.works.find(item => item.id === id);
+        this.selected = this.works.content.find(item => item.id === id);
         this.selected_upload = {gmtCreate: '加载中...', size: '加载中...', mime: '加载中...'};
         this.showDialog = true;
         let that = this;
@@ -127,18 +136,19 @@
       initData() {
         this.init_finish = false;
         let that = this;
-        Get(Student().works_done).do(response => {
-          if (response.data.data.length === 0) {
+        Get(Student().works_done + '?page=' + this.page_number + '&size=' + this.page_size).do(response => {
+          if (response.data.data.content.length === 0) {
             that.have_done_work = false;
             that.init_finish = true;
           } else {
             that.have_done_work = true;
-            that.works = response.data.data.map(work => {
+            response.data.data.content = response.data.data.content.map(work => {
               work.gmtCreate = dayjs(work.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
               work.gmtModified = dayjs(work.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
               return work;
             });
-            that.searched = that.works;
+            that.works = response.data.data;
+            that.searched = that.works.content;
             that.init_finish = true;
           }
         });
@@ -168,6 +178,34 @@
       },
       down() {
         window.open(Student().downWork + this.$user.loginUser.no + '/' + this.selected.id, "_blank");
+      },
+      pageChange(type) {
+        switch (type) {
+          case 'last': {
+            this.page_number -= 1;
+            break;
+          }
+          case 'next': {
+            this.page_number += 1;
+            break;
+          }
+        }
+        this.selected = {};
+        this.init_finish = false;
+        this.initData();
+      },
+      sizeChanged(size) {
+        this.page_number = 0;
+        this.page_size = size;
+        this.selected = {};
+        this.init_finish = false;
+        this.initData();
+      },
+      numberChanged(number) {
+        this.page_number = number;
+        this.selected = {};
+        this.init_finish = false;
+        this.initData();
       }
     },
     created() {

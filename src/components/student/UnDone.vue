@@ -33,6 +33,10 @@
         <md-table-cell md-label="创建时间" md-sort-by="gmtCreate" md-numeric>{{ item.gmtCreate }}</md-table-cell>
       </md-table-row>
     </md-table>
+    <pagination v-if="have_un_done_work" v-show="init_finish" :page="works" @last="pageChange('last')"
+                @next="pageChange('next')"
+                @size="sizeChanged"
+                @number="numberChanged"/>
     <md-dialog :md-active.sync="showDialog" :md-fullscreen="alert_fullscreen"
                :md-click-outside-to-close="alert_click_outside_to_close">
       <md-dialog-title>{{selected.workName}}</md-dialog-title>
@@ -55,6 +59,7 @@
   import {Get, Post} from '@/http';
   import dayjs from 'dayjs'
   import {Student} from "@/api";
+  import Pagination from "@/components/Pagination";
 
   const toLower = text => {
     return text.toString().toLowerCase()
@@ -68,7 +73,10 @@
   };
   export default {
     name: "UnDone",
+    components: {Pagination},
     data: () => ({
+      page_number: 0,
+      page_size: 20,
       file: null,
       search: null,
       searched: [],
@@ -87,7 +95,7 @@
         this.searched = searchByName(this.works, this.search)
       },
       onItemClick(id) {
-        this.selected = this.works.find(item => item.id === id);
+        this.selected = this.works.content.find(item => item.id === id);
         this.showDialog = true;
       },
       fileChange(value) {
@@ -98,18 +106,19 @@
       },
       initData() {
         let that = this;
-        Get(Student().works_undone).do(response => {
-          if (response.data.data.length === 0) {
+        Get(Student().works_undone + '?page=' + this.page_number + '&size=' + this.page_size).do(response => {
+          if (response.data.data.content.length === 0) {
             that.have_un_done_work = false;
             that.init_finish = true;
           } else {
             that.have_un_done_work = true;
-            that.works = response.data.data.map(work => {
+            response.data.data.content = response.data.data.content.map(work => {
               work.gmtCreate = dayjs(work.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
               work.gmtModified = dayjs(work.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
               return work;
             });
-            that.searched = that.works;
+            that.works = response.data.data;
+            that.searched = that.works.content;
             that.init_finish = true;
           }
         });
@@ -143,6 +152,34 @@
             that.file = null;
             that.file_name = '';
           });
+      },
+      pageChange(type) {
+        switch (type) {
+          case 'last': {
+            this.page_number -= 1;
+            break;
+          }
+          case 'next': {
+            this.page_number += 1;
+            break;
+          }
+        }
+        this.selected = {};
+        this.init_finish = false;
+        this.initData();
+      },
+      sizeChanged(size) {
+        this.page_number = 0;
+        this.page_size = size;
+        this.selected = {};
+        this.init_finish = false;
+        this.initData();
+      },
+      numberChanged(number) {
+        this.page_number = number;
+        this.selected = {};
+        this.init_finish = false;
+        this.initData();
       }
     },
     created() {
