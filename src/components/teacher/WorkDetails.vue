@@ -32,7 +32,8 @@
         <md-table-cell md-label="上传时间" md-sort-by="uploadDate" md-numeric>{{item.uploadDate}}</md-table-cell>
       </md-table-row>
     </md-table>
-    <pagination v-show="init_finish" :page="work_details" @last="pageChange('last')" @next="pageChange('next')"
+    <pagination v-if="have_work" v-show="init_finish" :page="work_details" @last="pageChange('last')"
+                @next="pageChange('next')"
                 @size="sizeChanged"
                 @number="numberChanged"/>
     <md-dialog :md-active.sync="showDialog" :md-fullscreen="alert_fullscreen">
