@@ -64,9 +64,11 @@
       </md-dialog-content>
       <md-dialog-actions>
         <md-button class="md-primary" @click="startDownAll" :disabled="disableDownAllBtn">下载</md-button>
+        <md-button @click="showDownAllDialog=false" v-if="showCancelBtn">取消</md-button>
       </md-dialog-actions>
     </md-dialog>
-    <md-button class="md-fab md-fixed md-fab-bottom-right" @click="downAll" :disabled="disable_down_all_btn">
+    <md-button v-if="have_work" class="md-fab md-fixed md-fab-bottom-right" @click="downAll"
+               :disabled="disable_down_all_btn">
       <md-icon>cloud_download</md-icon>
     </md-button>
   </div>
@@ -100,6 +102,7 @@
       show_empty: false,
       alert_fullscreen: false,
       showDialog: false,
+      showCancelBtn: false,
       disable_down_all_btn: false,
       down_all_msg: '',
       showDownAllDialog: false,
@@ -167,6 +170,7 @@
         window.open(Teacher().downAll + this.id, "_blank");
       },
       downAll() {
+        this.showCancelBtn = false;
         this.disable_down_all_btn = true;
         this.showDownAllDialog = true;
         this.disableDownAllBtn = true;
@@ -176,6 +180,7 @@
 
         function pong() {
           Get(Teacher().pack + that.id).do(response => {
+            console.log(response.data.data);
             switch (response.data.data) {
               case "START":
                 that.down_all_msg = '开始打包...';
@@ -186,10 +191,15 @@
                 that.disable_down_all_btn = false;
                 that.disableDownAllBtn = false;
                 break;
-              case "ERROR":
-                that.down_all_msg = '打包错误';
-                break;
               default:
+                if (response.data.data.startsWith('ERROR')) {
+                  that.down_all_msg = response.data.data;
+                  that.disable_down_all_btn = false;
+                  that.disableDownAllBtn = true;
+                  that.showCancelBtn = true;
+                  window.clearInterval(interval);
+                  return;
+                }
                 that.down_all_msg = dayjs().format("YYYY-MM-DD HH:mm:ss") + ' 正在打包：' + response.data.data;
             }
           });

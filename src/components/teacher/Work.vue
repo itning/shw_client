@@ -35,7 +35,8 @@
         <md-table-cell md-label="状态" md-sort-by="enabled">{{ item.enabled?'开启':'关闭' }}</md-table-cell>
       </md-table-row>
     </md-table>
-    <pagination v-show="init_finish" :page="work" @last="pageChange('last')" @next="pageChange('next')" @size="sizeChanged"
+    <pagination v-if="have_work" v-show="init_finish" :page="work" @last="pageChange('last')" @next="pageChange('next')"
+                @size="sizeChanged"
                 @number="numberChanged"/>
     <md-dialog-prompt
       @md-confirm="createWork"
@@ -191,7 +192,7 @@
           .withErrorStartMsg('创建失败：')
           .withURLSearchParams({groupId: this.id, workName: this.new_work_name})
           .do(response => {
-
+            that.new_work_name = '';
           })
           .doAfter(() => {
             that.initData();
