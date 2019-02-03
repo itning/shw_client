@@ -1,0 +1,26 @@
+{
+  "short_name": "作业管理系统",
+  "name": "哈信息作业管理系统",
+  "icons": [
+    {
+      "src": "/static/logo-48.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "/static/logo-96.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "/static/logo-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#448aff",
+  "background_color": "#448aff"
+}
