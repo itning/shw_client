@@ -95,9 +95,6 @@
     }),
     methods: {
       pushRouter(path) {
-        if (path === 'group') {
-          //TODO 判断角色
-        }
         this.$router.push(path);
         this.menuVisible = false;
       },
