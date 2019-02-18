@@ -56,6 +56,14 @@
         <md-button class="md-primary" @click="showDialog = false">关闭</md-button>
       </md-dialog-actions>
     </md-dialog>
+    <md-dialog :md-active.sync="showDownloadSelect" :md-fullscreen="alert_fullscreen">
+      <md-dialog-title>下载全部</md-dialog-title>
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="downNow">直接下载</md-button>
+        <md-button class="md-primary" @click="downAll">打包下载</md-button>
+        <md-button class="md-primary" @click="showDownloadSelect=false">关闭</md-button>
+      </md-dialog-actions>
+    </md-dialog>
     <md-dialog :md-active.sync="showDownAllDialog" :md-fullscreen="alert_fullscreen"
                :md-click-outside-to-close="alert_fullscreen" :md-close-on-esc="alert_fullscreen">
       <md-dialog-title>下载所有</md-dialog-title>
@@ -67,7 +75,7 @@
         <md-button @click="showDownAllDialog=false" v-if="showCancelBtn">取消</md-button>
       </md-dialog-actions>
     </md-dialog>
-    <md-button v-if="have_work" class="md-fab md-fixed md-fab-bottom-right" @click="downAll"
+    <md-button v-if="have_work" class="md-fab md-fixed md-fab-bottom-right" @click="showDownloadSelect=true"
                :disabled="disable_down_all_btn">
       <md-icon>cloud_download</md-icon>
     </md-button>
@@ -107,6 +115,7 @@
       down_all_msg: '',
       showDownAllDialog: false,
       disableDownAllBtn: true,
+      showDownloadSelect: false,
       have_work: true,
       search: null,
       searched: [],
@@ -170,6 +179,7 @@
         window.open(Teacher().downAll + this.id, "_blank");
       },
       downAll() {
+        this.showDownloadSelect = false;
         this.showCancelBtn = false;
         this.disable_down_all_btn = true;
         this.showDownAllDialog = true;
@@ -204,6 +214,10 @@
             }
           });
         }
+      },
+      downNow() {
+        this.showDownloadSelect = false;
+        window.open(Teacher().downNow + this.id, "_blank");
       },
       pageChange(type) {
         switch (type) {

@@ -34,5 +34,6 @@ export function Teacher() {
     "workDetail": BASE_URL + str + '/work_detail/',
     "pack": BASE_URL + str + '/pack/',
     "downAll": BASE_URL + str + '/down/',
+    "downNow": BASE_URL + str + '/down_now/',
   }
 }
