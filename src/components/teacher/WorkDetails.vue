@@ -178,7 +178,7 @@
           })
       },
       searchOnTable() {
-        this.searched = searchByName(this.work_details, this.search)
+        this.searched = searchByName(this.work_details.content, this.search)
       },
       onItemClick(id) {
         this.selected = this.work_details.content.find(item => item.student.no === id);

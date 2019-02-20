@@ -105,7 +105,7 @@
     }),
     methods: {
       searchOnTable() {
-        this.searched = searchByName(this.works, this.search)
+        this.searched = searchByName(this.works.content, this.search)
       },
       showDelUploadDialog() {
         this.show_del_upload_dialog = true;

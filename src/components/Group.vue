@@ -150,7 +150,7 @@
     watch: {},
     methods: {
       searchOnTable() {
-        this.searched = searchByName(this.groups, this.search)
+        this.searched = searchByName(this.groups.content, this.search)
       },
       onItemClick(id) {
         this.selected = this.groups.content.find(item => item.id === id);

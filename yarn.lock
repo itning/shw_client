@@ -6246,7 +6246,7 @@ vue-toasted@^1.1.26:
   resolved "http://registry.npm.taobao.org/vue-toasted/download/vue-toasted-1.1.26.tgz#1333d1a42157ab78389c3810023a49ba94e69c7b"
   integrity sha1-EzPRpCFXq3g4nDgQAjpJupTmnHs=
 
-vue@^2.6.6:
+vue@^2.5.22:
   version "2.6.6"
   resolved "http://registry.npm.taobao.org/vue/download/vue-2.6.6.tgz#dde41e483c11c46a7bf523909f4f2f816ab60d25"
   integrity sha1-3eQeSDwRxGp79SOQn08vgWq2DSU=

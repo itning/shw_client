@@ -7,15 +7,6 @@ import User from '@/user';
 
 Vue.use(Router);
 
-const Welcome = r => require.ensure([], () => r(require('@/components/Welcome')), 'Welcome');
-const Group = r => require.ensure([], () => r(require('@/components/Group')), 'Group');
-const UnDone = r => require.ensure([], () => r(require('@/components/student/UnDone')), 'UnDone');
-const Done = r => require.ensure([], () => r(require('@/components/student/Done')), 'Done');
-const Work = r => require.ensure([], () => r(require('@/components/teacher/Work')), 'Work');
-const WorkDetails = r => require.ensure([], () => r(require('@/components/teacher/WorkDetails')), 'WorkDetails');
-const PersonalCenter = r => require.ensure([], () => r(require('@/components/PersonalCenter')), 'PersonalCenter');
-const Preview = r => require.ensure([], () => r(require('@/components/teacher/Preview')), 'Preview');
-
 let router = new Router({
   mode: 'history',
   routes: [
@@ -26,7 +17,7 @@ let router = new Router({
     {
       path: '/welcome',
       name: 'Welcome',
-      component: Welcome,
+      component: () => import(/* webpackChunkName: "welcome" */ '@/components/Welcome.vue'),
       beforeEnter: (to, from, next) => {
         window.localStorage.removeItem('student_groups');
 
@@ -63,7 +54,7 @@ let router = new Router({
     {
       path: '/un_done',
       name: 'UnDone',
-      component: UnDone,
+      component: () => import(/* webpackChunkName: "un_done" */ '@/components/student/UnDone.vue'),
       beforeEnter: (to, from, next) => {
         if (User.user_is_student) {
           next();
@@ -75,7 +66,7 @@ let router = new Router({
     {
       path: '/done',
       name: 'Done',
-      component: Done,
+      component: () => import(/* webpackChunkName: "done" */ '@/components/student/Done.vue'),
       beforeEnter: (to, from, next) => {
         if (User.user_is_student) {
           next();
@@ -87,12 +78,12 @@ let router = new Router({
     {
       path: '/group',
       name: 'Group',
-      component: Group
+      component: () => import(/* webpackChunkName: "group" */ '@/components/Group.vue'),
     },
     {
       path: '/personal_center',
       name: 'PersonalCenter',
-      component: PersonalCenter,
+      component: () => import(/* webpackChunkName: "personal_center" */ '@/components/PersonalCenter.vue'),
       beforeEnter: (to, from, next) => {
         Vue.toasted.info('这什么都没有', {
           position: "top-right",
@@ -104,7 +95,7 @@ let router = new Router({
     {
       path: '/work/:id',
       name: 'Work',
-      component: Work,
+      component: () => import(/* webpackChunkName: "work" */ '@/components/teacher/Work.vue'),
       props: true,
       beforeEnter: (to, from, next) => {
         if (User.user_is_teacher) {
@@ -117,7 +108,7 @@ let router = new Router({
     {
       path: '/work_details/:id',
       name: 'WorkDetails',
-      component: WorkDetails,
+      component: () => import(/* webpackChunkName: "work_details" */ '@/components/teacher/WorkDetails.vue'),
       props: true,
       beforeEnter: (to, from, next) => {
         if (User.user_is_teacher) {
@@ -130,7 +121,7 @@ let router = new Router({
     {
       path: '/preview/:url',
       name: 'Preview',
-      component: Preview,
+      component: () => import(/* webpackChunkName: "preview" */ '@/components/teacher/Preview.vue'),
       props: true,
       beforeEnter: (to, from, next) => {
         if (User.user_is_teacher) {
@@ -143,7 +134,7 @@ let router = new Router({
     {
       path: '/token/:id',
       name: 'token',
-      component: Welcome,
+      component: () => import(/* webpackChunkName: "welcome" */ '@/components/Welcome.vue'),
       beforeEnter: (to, from, next) => {
         window.localStorage.setItem('authorization_token', to.params.id);
         window.location.href = window.location.protocol + '//' + window.location.host;

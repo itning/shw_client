@@ -171,7 +171,7 @@
           })
       },
       searchOnTable() {
-        this.searched = searchByName(this.work, this.search)
+        this.searched = searchByName(this.work.content, this.search)
       },
       onItemClick(id) {
         this.selected = this.work.content.find(item => item.id === id);

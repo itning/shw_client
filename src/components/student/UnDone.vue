@@ -92,7 +92,7 @@
     }),
     methods: {
       searchOnTable() {
-        this.searched = searchByName(this.works, this.search)
+        this.searched = searchByName(this.works.content, this.search)
       },
       onItemClick(id) {
         this.selected = this.works.content.find(item => item.id === id);
