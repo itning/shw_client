@@ -52,6 +52,9 @@
         所属群组：{{selected.groupName}}
       </md-dialog-content>
       <md-dialog-actions>
+        <md-button class="md-primary" v-if="selected.up" :disabled="disablePreviewBtn"
+                   @click="preview(selected.student.no)">在线查看
+        </md-button>
         <md-button class="md-primary" v-if="selected.up" @click="down(selected.student.no)">下载作业</md-button>
         <md-button class="md-primary" @click="showDialog = false">关闭</md-button>
       </md-dialog-actions>
@@ -121,8 +124,28 @@
       searched: [],
       selected: {upload: {}, student: {}},
       work_details: [],
-      workName: ''
+      workName: '',
+      disablePreviewBtn: true
     }),
+    watch: {
+      selected(now, old) {
+        if (now.up) {
+          switch (now.upload.extensionName) {
+            case '.doc':
+            case '.docx':
+            case '.xls':
+            case '.xlsx':
+            case '.ppt':
+            case '.pptx': {
+              this.disablePreviewBtn = false;
+              break
+            }
+            default:
+              this.disablePreviewBtn = true;
+          }
+        }
+      }
+    },
     methods: {
       initData(workId = this.id) {
         let that = this;
@@ -247,6 +270,9 @@
         this.selected = {upload: {}, student: {}};
         this.init_finish = false;
         this.initData();
+      },
+      preview(studentId) {
+        this.$router.push({name: 'Preview', params: {url: Student().downWork + studentId + '/' + this.id}})
       }
     },
     created() {

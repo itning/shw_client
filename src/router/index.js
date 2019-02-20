@@ -14,6 +14,7 @@ const Done = r => require.ensure([], () => r(require('@/components/student/Done'
 const Work = r => require.ensure([], () => r(require('@/components/teacher/Work')), 'Work');
 const WorkDetails = r => require.ensure([], () => r(require('@/components/teacher/WorkDetails')), 'WorkDetails');
 const PersonalCenter = r => require.ensure([], () => r(require('@/components/PersonalCenter')), 'PersonalCenter');
+const Preview = r => require.ensure([], () => r(require('@/components/teacher/Preview')), 'Preview');
 
 let router = new Router({
   mode: 'history',
@@ -117,6 +118,19 @@ let router = new Router({
       path: '/work_details/:id',
       name: 'WorkDetails',
       component: WorkDetails,
+      props: true,
+      beforeEnter: (to, from, next) => {
+        if (User.user_is_teacher) {
+          next();
+          return;
+        }
+        next('/');
+      }
+    },
+    {
+      path: '/preview/:url',
+      name: 'Preview',
+      component: Preview,
       props: true,
       beforeEnter: (to, from, next) => {
         if (User.user_is_teacher) {
