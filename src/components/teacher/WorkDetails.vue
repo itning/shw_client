@@ -142,6 +142,12 @@
               this.disablePreviewBtn = false;
               break
             }
+            case '.bmp':
+            case '.gif':
+            case '.png':
+            case '.jpeg':
+            case '.ico':
+            case '.jpg':
             case '.pdf':
             case '.htm':
             case '.html':
