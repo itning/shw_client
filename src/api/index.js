@@ -15,6 +15,7 @@ export function Student() {
     "deleteUpload": BASE_URL + str + '/work/',
     "existGroup": BASE_URL + str + '/group/exist',
     "downWork": BASE_URL + str + '/down/',
+    "downPreview": BASE_URL + str + '/down_preview/',
   }
 }
 

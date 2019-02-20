@@ -119,7 +119,7 @@ let router = new Router({
       }
     },
     {
-      path: '/preview/:url',
+      path: '/preview/:type/:url',
       name: 'Preview',
       component: () => import(/* webpackChunkName: "preview" */ '@/components/teacher/Preview.vue'),
       props: true,

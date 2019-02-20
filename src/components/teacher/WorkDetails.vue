@@ -125,7 +125,8 @@
       selected: {upload: {}, student: {}},
       work_details: [],
       workName: '',
-      disablePreviewBtn: true
+      disablePreviewBtn: true,
+      preview_file_type: '',
     }),
     watch: {
       selected(now, old) {
@@ -137,8 +138,30 @@
             case '.xlsx':
             case '.ppt':
             case '.pptx': {
+              this.preview_file_type = 'office';
               this.disablePreviewBtn = false;
               break
+            }
+            case '.pdf':
+            case '.htm':
+            case '.html':
+            case '.cpp':
+            case '.c':
+            case '.h':
+            case '.php':
+            case '.java':
+            case '.sql':
+            case '.bat':
+            case '.vue':
+            case '.js':
+            case '.json':
+            case '.cs':
+            case '.md':
+            case '.log':
+            case '.txt': {
+              this.preview_file_type = 'immediacy';
+              this.disablePreviewBtn = false;
+              break;
             }
             default:
               this.disablePreviewBtn = true;
@@ -272,7 +295,23 @@
         this.initData();
       },
       preview(studentId) {
-        this.$router.push({name: 'Preview', params: {url: Student().downWork + studentId + '/' + this.id}})
+        switch (this.preview_file_type) {
+          case 'office': {
+            this.$router.push({
+              name: 'Preview',
+              params: {type: 'office', url: Student().downWork + studentId + '/' + this.id}
+            });
+            break;
+          }
+          case 'immediacy': {
+            this.$router.push({
+              name: 'Preview',
+              params: {type: 'immediacy', url: Student().downPreview + studentId + '/' + this.id}
+            });
+            break;
+          }
+          default:
+        }
       }
     },
     created() {
