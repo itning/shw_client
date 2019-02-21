@@ -169,6 +169,11 @@
               this.disablePreviewBtn = false;
               break;
             }
+            case '.zip': {
+              this.preview_file_type = 'zip';
+              this.disablePreviewBtn = false;
+              break;
+            }
             default:
               this.disablePreviewBtn = true;
           }
@@ -313,6 +318,13 @@
             this.$router.push({
               name: 'Preview',
               params: {type: 'immediacy', url: Student().downPreview + studentId + '/' + this.id}
+            });
+            break;
+          }
+          case 'zip': {
+            this.$router.push({
+              name: 'Preview',
+              params: {type: 'zip', url: this.selected.student.no + "/" + this.id}
             });
             break;
           }

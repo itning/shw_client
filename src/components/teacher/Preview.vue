@@ -5,7 +5,10 @@
                   title="Hi! 欢迎来到作业预览界面">
       如果预览有乱码，不妨点击右下角按钮试试！<br>
     </welcome-card>
-    <iframe :src="src" width="100%" :style="{ height: height}"></iframe>
+    <iframe :src="src" width="100%" :style="{ height: height}" v-if="showFrame"></iframe>
+    <md-content>
+      <tree :model="zipTree" @preview="onPreview"/>
+    </md-content>
     <md-dialog :md-active.sync="showDialog" :md-fullscreen="alert_fullscreen">
       <md-dialog-title>更改预览编码</md-dialog-title>
       <md-dialog-content>
@@ -32,9 +35,12 @@
 
 <script>
   import WelcomeCard from "@/components/WelcomeCard";
+  import {Get} from "@/http";
+  import {Teacher} from "@/api";
+  import Tree from "@/components/Tree";
 
   export default {
-    components: {WelcomeCard},
+    components: {Tree, WelcomeCard},
     props: ['url', 'type'],
     name: "Preview",
     data: () => ({
@@ -44,7 +50,9 @@
       showDialog: false,
       alert_fullscreen: false,
       encoding: 'UTF-8',
-      showInImmediacy: false
+      showInImmediacy: false,
+      showFrame: true,
+      zipTree: [],
     }),
     methods: {
       reload() {
@@ -55,19 +63,68 @@
           duration: 1500
         });
         this.src = this.url + '?encoding=' + this.encoding;
+      },
+      onPreview(name) {
+        let ex = '.' + name.slice((name.lastIndexOf(".") - 1 >>> 0) + 2);
+        switch (ex) {
+          case '.doc':
+          case '.docx':
+          case '.xls':
+          case '.xlsx':
+          case '.ppt':
+          case '.pptx': {
+            this.showFrame = true;
+            this.src = this.server_url + Teacher().downInZip + this.url + '?name=' + name;
+            break;
+          }
+          case '.bmp':
+          case '.gif':
+          case '.png':
+          case '.jpeg':
+          case '.ico':
+          case '.jpg':
+          case '.pdf':
+          case '.htm':
+          case '.html':
+          case '.cpp':
+          case '.c':
+          case '.h':
+          case '.php':
+          case '.java':
+          case '.sql':
+          case '.bat':
+          case '.vue':
+          case '.js':
+          case '.json':
+          case '.cs':
+          case '.md':
+          case '.log':
+          case '.txt': {
+            this.showFrame = true;
+            this.src = Teacher().downInZip + this.url + '?name=' + name;
+            break;
+          }
+        }
       }
     },
     created() {
       this.height = (document.getElementsByClassName('md-app-content')[0].clientHeight - 32) + 'px';
       switch (this.type) {
         case 'office': {
-          this.showInImmediacy = false;
           this.src = this.server_url + this.url;
           break;
         }
         case 'immediacy': {
           this.showInImmediacy = true;
           this.src = this.url;
+          break;
+        }
+        case 'zip': {
+          this.showFrame = false;
+          let that = this;
+          Get(Teacher().zipPreview + this.url).do(response => {
+            that.zipTree = response.data;
+          });
           break;
         }
         default:

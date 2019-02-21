@@ -36,5 +36,7 @@ export function Teacher() {
     "pack": BASE_URL + str + '/pack/',
     "downAll": BASE_URL + str + '/down/',
     "downNow": BASE_URL + str + '/down_now/',
+    "downInZip": BASE_URL + str + '/down_in_zip/',
+    "zipPreview": BASE_URL + str + '/zip_preview/',
   }
 }
