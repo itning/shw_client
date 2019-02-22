@@ -131,51 +131,18 @@
     watch: {
       selected(now, old) {
         if (now.up) {
-          switch (now.upload.extensionName) {
-            case '.doc':
-            case '.docx':
-            case '.xls':
-            case '.xlsx':
-            case '.ppt':
-            case '.pptx': {
-              this.preview_file_type = 'office';
-              this.disablePreviewBtn = false;
-              break
-            }
-            case '.bmp':
-            case '.gif':
-            case '.png':
-            case '.jpeg':
-            case '.ico':
-            case '.jpg':
-            case '.pdf':
-            case '.htm':
-            case '.html':
-            case '.cpp':
-            case '.c':
-            case '.h':
-            case '.php':
-            case '.java':
-            case '.sql':
-            case '.bat':
-            case '.vue':
-            case '.js':
-            case '.json':
-            case '.cs':
-            case '.md':
-            case '.log':
-            case '.txt': {
-              this.preview_file_type = 'immediacy';
-              this.disablePreviewBtn = false;
-              break;
-            }
-            case '.zip': {
-              this.preview_file_type = 'zip';
-              this.disablePreviewBtn = false;
-              break;
-            }
-            default:
-              this.disablePreviewBtn = true;
+          let extensionName = now.upload.extensionName;
+          if (this.$user.supportPreviewFiles.officeExtensionNames.includes(extensionName)) {
+            this.preview_file_type = 'office';
+            this.disablePreviewBtn = false;
+          } else if (this.$user.supportPreviewFiles.immediacyExtensionNames.includes(extensionName)) {
+            this.preview_file_type = 'immediacy';
+            this.disablePreviewBtn = false;
+          } else if (this.$user.supportPreviewFiles.zipExtensionNames.includes(extensionName)) {
+            this.preview_file_type = 'zip';
+            this.disablePreviewBtn = false;
+          } else {
+            this.disablePreviewBtn = true;
           }
         }
       }

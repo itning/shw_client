@@ -72,47 +72,15 @@
       },
       onPreview(name) {
         let ex = '.' + name.slice((name.lastIndexOf(".") - 1 >>> 0) + 2);
-        switch (ex) {
-          case '.doc':
-          case '.docx':
-          case '.xls':
-          case '.xlsx':
-          case '.ppt':
-          case '.pptx': {
-            this.showInImmediacy = false;
-            this.showFrame = true;
-            this.src = this.server_url + encodeURIComponent(Teacher().downInZip + this.url + '?name=' + name);
-            break;
-          }
-          case '.bmp':
-          case '.gif':
-          case '.png':
-          case '.jpeg':
-          case '.ico':
-          case '.jpg':
-          case '.pdf':
-          case '.htm':
-          case '.html':
-          case '.cpp':
-          case '.c':
-          case '.h':
-          case '.php':
-          case '.java':
-          case '.sql':
-          case '.bat':
-          case '.vue':
-          case '.js':
-          case '.json':
-          case '.cs':
-          case '.md':
-          case '.log':
-          case '.txt': {
-            this.showInImmediacy = true;
-            this.showFrame = true;
-            this.src = Teacher().downInZip + this.url + '?name=' +encodeURIComponent(name) ;
-            this.reloadUrl = this.src;
-            break;
-          }
+        if (this.$user.supportPreviewFiles.officeExtensionNames.includes(ex)) {
+          this.showInImmediacy = false;
+          this.showFrame = true;
+          this.src = this.server_url + encodeURIComponent(Teacher().downInZip + this.url + '?name=' + name);
+        } else if (this.$user.supportPreviewFiles.immediacyExtensionNames.includes(ex)) {
+          this.showInImmediacy = true;
+          this.showFrame = true;
+          this.src = Teacher().downInZip + this.url + '?name=' + encodeURIComponent(name);
+          this.reloadUrl = this.src;
         }
       }
     },
