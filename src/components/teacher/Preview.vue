@@ -79,6 +79,7 @@
           case '.xlsx':
           case '.ppt':
           case '.pptx': {
+            this.showInImmediacy = false;
             this.showFrame = true;
             this.src = this.server_url + encodeURIComponent(Teacher().downInZip + this.url + '?name=' + name);
             break;
