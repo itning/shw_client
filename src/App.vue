@@ -105,6 +105,12 @@
     },
     created() {
       this.user = this.$user.loginUser;
+      if ("fundebug" in window) {
+        fundebug.silentHttp = true;
+        fundebug.setHttpBody = true;
+        fundebug.silentVideo = false;
+        fundebug.metaData = this.user;
+      }
     }
   }
 </script>

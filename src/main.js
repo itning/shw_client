@@ -7,6 +7,10 @@ import store from './store'
 import VueMaterial from 'vue-material'
 import Toasted from 'vue-toasted';
 import User from '@/user'
+import * as fundebug from "fundebug-javascript";
+import fundebugVue from "fundebug-vue";
+fundebug.apikey = "2a7ca23266214f8be244652a3d19751ec83e802f16606d4b875f9815eb104327";
+fundebugVue(fundebug, Vue);
 
 Vue.config.productionTip = false;
 

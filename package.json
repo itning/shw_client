@@ -12,6 +12,8 @@
   "dependencies": {
     "axios": "^0.18.0",
     "dayjs": "^1.8.8",
+    "fundebug-javascript": "^1.6.0",
+    "fundebug-vue": "^0.0.1",
     "js-base64": "^2.5.1",
     "vue": "^2.5.22",
     "vue-material": "^1.0.0-beta-10.2",
