@@ -44,7 +44,7 @@
         所属班级：{{selected.student.clazzId}}<br><br>
         <span v-if="selected.up">
         文件大小：{{selected.upload.size}}<br><br>
-        文件类型：{{selected.upload.mime}}<br><br>
+        文件类型：{{selected.upload.extensionName.substring(1)}}<br><br>
         创建时间：{{selected.upload.gmtCreate}}<br><br>
         修改时间：{{selected.upload.gmtModified}}<br><br>
         </span>
