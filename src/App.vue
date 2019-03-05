@@ -68,11 +68,6 @@
             <md-icon>group</md-icon>
             <span class="md-list-item-text">群组管理</span>
           </md-list-item>
-
-          <md-list-item @click="pushRouter('/personal_center')">
-            <md-icon>account_circle</md-icon>
-            <span class="md-list-item-text">个人中心</span>
-          </md-list-item>
         </md-list>
       </md-app-drawer>
       <md-app-content class="height_100">
