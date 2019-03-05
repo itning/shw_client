@@ -7,7 +7,7 @@
                     md-icon="work_off"
                     md-label="没有作业"
                     md-description="该群组没有已经创建的作业，点击下方按钮来创建第一个作业">
-      <md-button class="md-primary md-raised" @click="addBtn">创建作业</md-button>
+      <md-button class="md-primary md-raised" @click="addBtn" v-if="id!=='all'">创建作业</md-button>
     </md-empty-state>
     <md-table v-if="have_work" v-show="init_finish" v-model="searched" md-sort="gmtCreate" md-sort-order="asc" md-card
               md-fixed-header>
