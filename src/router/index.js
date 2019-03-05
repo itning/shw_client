@@ -81,18 +81,6 @@ let router = new Router({
       component: () => import(/* webpackChunkName: "group" */ '@/components/Group.vue'),
     },
     {
-      path: '/personal_center',
-      name: 'PersonalCenter',
-      component: () => import(/* webpackChunkName: "personal_center" */ '@/components/PersonalCenter.vue'),
-      beforeEnter: (to, from, next) => {
-        Vue.toasted.info('这什么都没有', {
-          position: "top-right",
-          icon: 'web',
-          duration: 2000
-        });
-      }
-    },
-    {
       path: '/work/:id',
       name: 'Work',
       component: () => import(/* webpackChunkName: "work" */ '@/components/teacher/Work.vue'),

@@ -56,7 +56,6 @@
       <md-dialog :md-active.sync="showDialog" :md-fullscreen="alert_fullscreen">
         <md-dialog-title>群组详情</md-dialog-title>
         <md-dialog-content>
-          编号：{{selected.id}}<br><br>
           名称：{{selected.groupName}}<br><br>
           邀请码：{{selected.code}}<br><br>
           管理教师：{{selected.teacherName}}<br><br>

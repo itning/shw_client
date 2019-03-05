@@ -24,7 +24,7 @@
       <md-table-empty-state
         md-label="群组没有找到"
         :md-description="`没有找到名为 '${search}' 的作业. 尝试其他关键字进行搜索或者创建新作业`">
-        <md-button class="md-primary md-raised" @click="addBtn">创建新作业</md-button>
+        <md-button class="md-primary md-raised" @click="addBtn" v-show="this.id!=='all'">创建新作业</md-button>
       </md-table-empty-state>
 
       <md-table-row slot="md-table-row" slot-scope="{ item }" @click.ctrl="routerToWorkDetails(item.id)"
@@ -50,7 +50,6 @@
     <md-dialog :md-active.sync="showDialog" :md-fullscreen="alert_fullscreen">
       <md-dialog-title>作业详情</md-dialog-title>
       <md-dialog-content>
-        编号：{{selected.id}}<br><br>
         名称：{{selected.workName}}<br><br>
         文件名规范：{{selected.fileNameFormat}}<br><br>
         开启状态：{{selected.enabled?'已开启':'已关闭'}}<br><br>
