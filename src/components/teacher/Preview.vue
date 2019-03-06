@@ -107,6 +107,13 @@
         }
         default:
       }
+      layx.html('review', '批阅', layx.multiLine(function () {/*
+             <textarea style="resize: none;width:100%;height:97%" placeholder="在此输入批阅信息..."></textarea>
+            */
+      }), {closeMenu: false, width: '400', height: '250'});
+    },
+    beforeDestroy() {
+      layx.destroyAll();
     }
   }
 </script>
