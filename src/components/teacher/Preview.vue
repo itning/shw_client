@@ -30,6 +30,7 @@
     <md-button v-if="showInImmediacy" class="md-fab md-fixed md-fab-bottom-right" @click="showDialog=true">
       <md-icon>build</md-icon>
     </md-button>
+    <move-dialog/>
   </div>
 </template>
 
@@ -38,9 +39,10 @@
   import {Get} from "@/http";
   import {Teacher} from "@/api";
   import Tree from "@/components/Tree";
+  import MoveDialog from "@/components/teacher/MoveDialog";
 
   export default {
-    components: {Tree, WelcomeCard},
+    components: {MoveDialog, Tree, WelcomeCard},
     props: ['url', 'type'],
     name: "Preview",
     data: () => ({
@@ -107,16 +109,6 @@
         }
         default:
       }
-    },
-    mounted() {
-      layx.html('review', '批阅', '<textarea style="resize: none;width:100%;height:97%" placeholder="在此输入批阅信息..."></textarea>', {
-        closeMenu: false,
-        width: '400',
-        height: '250'
-      });
-    },
-    beforeDestroy() {
-      layx.destroyAll();
     }
   }
 </script>
