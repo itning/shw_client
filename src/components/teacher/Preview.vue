@@ -71,7 +71,7 @@
         }
       },
       onPreview(name) {
-        let ex = '.' + name.slice((name.lastIndexOf(".") - 1 >>> 0) + 2);
+        let ex = '.' + name.slice((name.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase();
         if (this.$user.supportPreviewFiles.officeExtensionNames.includes(ex)) {
           this.showInImmediacy = false;
           this.showFrame = true;

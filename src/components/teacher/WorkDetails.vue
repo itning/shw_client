@@ -131,7 +131,7 @@
     watch: {
       selected(now, old) {
         if (now.up) {
-          let extensionName = now.upload.extensionName;
+          let extensionName = now.upload.extensionName.toLowerCase();
           if (this.$user.supportPreviewFiles.officeExtensionNames.includes(extensionName)) {
             this.preview_file_type = 'office';
             this.disablePreviewBtn = false;
