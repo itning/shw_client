@@ -7,10 +7,10 @@
         </md-button>
         <span class="md-title md-xsmall-hide">哈信息学生作业管理系统</span>
         <div class="md-toolbar-section-end">
-          <md-badge md-content="1" v-if="isHaveNotifications">
+          <md-badge :md-content="notices.length" v-if="isHaveNotifications">
             <md-button class="md-icon-button" @click="showNotificationsList=!showNotificationsList">
               <md-icon>notifications</md-icon>
-              <md-tooltip md-delay="300" md-direction="bottom">您有1条新的邀请</md-tooltip>
+              <md-tooltip md-delay="300" md-direction="bottom">您有{{notices.length}}条新的通知</md-tooltip>
             </md-button>
           </md-badge>
           <md-button class="md-icon-button" v-if="!isHaveNotifications">
@@ -18,19 +18,14 @@
             <md-tooltip md-delay="200" md-direction="bottom">没有通知需要处理</md-tooltip>
           </md-button>
           <transition name="fade">
-            <md-list class="notifications-list md-elevation-2" v-show="showNotificationsList">
-              <md-subheader>群组邀请</md-subheader>
+            <md-list v-for="notice in notices" :key="notice.id" class="notifications-list md-elevation-6"
+                     v-show="showNotificationsList">
+              <md-subheader>{{notice.title}}</md-subheader>
               <md-list-item>
-                <span class="md-list-item-text">XX邀请你加入XXXXXXXXXXXX群组</span>
-                <md-tooltip md-delay="1000" md-direction="bottom">XX邀请你加入XXXXXXXXXXXX群组</md-tooltip>
-                <md-button class="md-icon-button">
-                  <md-icon>done</md-icon>
-                  <md-tooltip md-delay="300" md-direction="bottom">同意加入</md-tooltip>
-                </md-button>
-                <md-button class="md-icon-button">
-                  <md-icon>clear</md-icon>
-                  <md-tooltip md-delay="300" md-direction="bottom">拒绝加入</md-tooltip>
-                </md-button>
+                <span class="md-list-item-text">{{notice.content}}</span>
+                <md-tooltip md-delay="1000" md-direction="bottom">{{notice.content}}</md-tooltip>
+                <md-button class="md-raised md-primary" @click="showNotificationsList=false">我知道了</md-button>
+                <md-button class="md-raised md-accent" @click="clearNotice(notice.id)">清除通知</md-button>
               </md-list-item>
             </md-list>
           </transition>
@@ -78,7 +73,8 @@
 </template>
 
 <script>
-  import {BASE_URL} from "@/api";
+  import {BASE_URL, Student} from "@/api";
+  import {Del, Get} from "@/http";
 
   export default {
     name: 'App',
@@ -86,6 +82,7 @@
       menuVisible: false,
       isHaveNotifications: false,
       showNotificationsList: false,
+      notices: [],
       user: {}
     }),
     methods: {
@@ -96,6 +93,20 @@
       logout() {
         window.localStorage.removeItem('authorization_token');
         window.location.href = BASE_URL + "/logout";
+      },
+      initNotices() {
+        Get(Student().notices)
+          .do(response => {
+            this.notices = response.data.data;
+            this.isHaveNotifications = this.notices.length !== 0;
+          })
+      },
+      clearNotice(id) {
+        Del(Student().delNotice + id)
+          .withSuccessCode(204)
+          .do(response => {
+            this.initNotices();
+          })
       }
     },
     created() {
@@ -105,6 +116,9 @@
         fundebug.setHttpBody = true;
         fundebug.silentVideo = false;
         fundebug.metaData = this.user;
+      }
+      if (this.$user.user_is_student) {
+        this.initNotices();
       }
     }
   }
@@ -120,7 +134,7 @@
     top: 70px;
     right: 4%;
     width: 400px;
-    background-color: #c2c2c2;
+    border-radius: 6px;
   }
 
   .notifications-list button {

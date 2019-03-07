@@ -16,6 +16,9 @@ export function Student() {
     existGroup: BASE_URL + str + '/group/exist',
     downWork: BASE_URL + str + '/down/',
     downPreview: BASE_URL + str + '/down_preview/',
+    notices: BASE_URL + str + '/notices',
+    getReview: BASE_URL + str + '/review/',
+    delNotice: BASE_URL + str + '/notice/',
   }
 }
 

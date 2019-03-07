@@ -53,6 +53,7 @@
       <md-dialog-actions>
         <md-button class="md-accent" @click="showDelUploadDialog" :disabled="!selected.enabled">删除</md-button>
         <md-button @click="down">下载</md-button>
+        <md-button @click="viewReview">查看批阅信息</md-button>
         <md-button class="md-primary" @click="closeDialog">关闭</md-button>
       </md-dialog-actions>
     </md-dialog>
@@ -65,6 +66,10 @@
         <md-button class="md-accent" @click="delUpload">删除</md-button>
         <md-button class="md-primary" @click="show_del_upload_dialog = false">取消</md-button>
       </md-dialog-actions>
+    </md-dialog>
+    <md-dialog :md-active.sync="showReviewDialog">
+      <md-dialog-title>{{selected.workName}}批阅信息</md-dialog-title>
+      <md-dialog-content>{{reviewData}}</md-dialog-content>
     </md-dialog>
   </div>
 </template>
@@ -101,6 +106,8 @@
       have_done_work: true,
       init_finish: false,
       show_del_upload_dialog: false,
+      showReviewDialog: false,
+      reviewData: '',
       works: []
     }),
     methods: {
@@ -207,6 +214,21 @@
         this.selected = {};
         this.init_finish = false;
         this.initData();
+      },
+      viewReview() {
+        this.showDialog = false;
+        let createToast = this.$toasted.info('加载中...', {
+          position: "top-right",
+          icon: 'hourglass_empty'
+        });
+        Get(Student().getReview + this.selected.id)
+          .do(response => {
+            this.reviewData = response.data.data;
+          })
+          .doAfter(() => {
+            createToast.goAway(1000);
+            this.showReviewDialog = true;
+          });
       }
     },
     created() {
