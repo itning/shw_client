@@ -42,7 +42,7 @@
                :md-click-outside-to-close="alert_click_outside_to_close">
       <md-dialog-title>{{selected.workName}}</md-dialog-title>
       <md-dialog-content>
-        组名：{{selected.workName}}<br><br>
+        组名：{{selected.groupName}}<br><br>
         作业名：{{selected.workName}}<br><br>
         教师：{{selected.teacherName}}<br><br>
         创建时间：{{selected.gmtCreate}}<br><br>
