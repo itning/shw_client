@@ -30,7 +30,7 @@
     <md-button v-if="showInImmediacy" class="md-fab md-fixed md-fab-bottom-right" @click="showDialog=true">
       <md-icon>build</md-icon>
     </md-button>
-    <move-dialog/>
+    <move-dialog :url="url"/>
   </div>
 </template>
 

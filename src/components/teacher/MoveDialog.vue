@@ -1,24 +1,66 @@
 <template>
   <div class="review md-elevation-6">
     <p id="p">批阅窗口</p>
-    <md-button class="md-accent">保存</md-button>
-    <md-button class="md-primary">关闭</md-button>
+    <md-button class="md-accent" @click="save">保存</md-button>
     <md-content style="padding: 0 16px 1px 16px">
       <md-field>
         <label>批阅信息：</label>
-        <md-textarea v-model="reviewData" md-autogrow></md-textarea>
+        <md-textarea v-model="reviewData" style="height: 166px"></md-textarea>
       </md-field>
     </md-content>
   </div>
 </template>
 
 <script>
+  import {Get, Patch} from "@/http";
+  import {Teacher} from "@/api";
+
   export default {
+    props: ['url'],
     name: "MoveDialog",
     data: () => ({
+      studentId: '',
+      workId: '',
       reviewData: ''
     }),
-    methods: {},
+    methods: {
+      initData() {
+        Get(Teacher().getReviewWork + this.studentId + '/' + this.workId)
+          .do(response => {
+            this.reviewData = response.data.data;
+          })
+      },
+      save() {
+        if (this.reviewData === '') {
+          return;
+        }
+        Patch(Teacher().reviewWork + this.studentId + '/' + this.workId)
+          .withErrorStartMsg('保存失败: ')
+          .withSuccessCode(204)
+          .withURLSearchParams({review: this.reviewData})
+          .do(response => {
+            this.$toasted.success('保存成功', {
+              position: "top-right",
+              icon: 'check',
+              duration: 2000
+            });
+          })
+      }
+    },
+    created() {
+      let urlArray = this.url.split('/');
+      if (urlArray.length < 2) {
+        this.$toasted.error('批阅窗口数据加载失败', {
+          position: "top-right",
+          icon: 'clear',
+          duration: 5000
+        });
+        return
+      }
+      this.workId = urlArray[urlArray.length - 1];
+      this.studentId = urlArray[urlArray.length - 2];
+      this.initData();
+    },
     mounted() {
       let box = document.getElementsByClassName("review")[0];
       let p = document.getElementById("p");
