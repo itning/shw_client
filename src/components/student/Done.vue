@@ -53,7 +53,7 @@
       <md-dialog-actions>
         <md-button class="md-accent" @click="showDelUploadDialog" :disabled="!selected.enabled">删除</md-button>
         <md-button @click="down">下载</md-button>
-        <md-button @click="viewReview">查看批阅信息</md-button>
+        <md-button @click="viewReview" :disabled="disabledReviewBtn">查看批阅信息</md-button>
         <md-button class="md-primary" @click="closeDialog">关闭</md-button>
       </md-dialog-actions>
     </md-dialog>
@@ -107,6 +107,7 @@
       init_finish: false,
       show_del_upload_dialog: false,
       showReviewDialog: false,
+      disabledReviewBtn: true,
       reviewData: '',
       works: []
     }),
@@ -119,15 +120,16 @@
         this.showDialog = false;
       },
       onItemClick(id) {
+        let that = this;
         this.selected = this.works.content.find(item => item.id === id);
         this.selected_upload = {gmtCreate: '加载中...', size: '加载中...', mime: '加载中...'};
         this.showDialog = true;
-        let that = this;
         Get(Student().upload + id).withSuccessCode(200).withErrorStartMsg('加载失败：').do(response => {
           let temp = response.data.data;
           temp.gmtCreate = dayjs(temp.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
           temp.gmtModified = dayjs(temp.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
           that.selected_upload = temp;
+          that.disabledReviewBtn = temp.review === '';
         });
       },
       getFormatFileSize(size) {

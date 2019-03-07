@@ -95,17 +95,19 @@
         window.location.href = BASE_URL + "/logout";
       },
       initNotices() {
+        let that = this;
         Get(Student().notices)
           .do(response => {
-            this.notices = response.data.data;
-            this.isHaveNotifications = this.notices.length !== 0;
+            that.notices = response.data.data;
+            that.isHaveNotifications = this.notices.length !== 0;
           })
       },
       clearNotice(id) {
+        let that = this;
         Del(Student().delNotice + id)
           .withSuccessCode(204)
           .do(response => {
-            this.initNotices();
+            that.initNotices();
           })
       }
     },
