@@ -48,7 +48,7 @@
         创建时间：{{selected.gmtCreate}}<br><br>
         上传时间：{{selected_upload.gmtCreate}}<br><br>
         文件大小：{{getFormatFileSize(selected_upload.size)}}<br><br>
-        文件类型：{{selected_upload.mime}}<br><br>
+        文件类型：{{selected_upload.extensionName}}<br><br>
       </md-dialog-content>
       <md-dialog-actions>
         <md-button class="md-accent" @click="showDelUploadDialog" :disabled="!selected.enabled">删除</md-button>
