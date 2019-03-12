@@ -25,7 +25,7 @@ User.loginName = loginUser.name;
 User.user_is_student = loginUser.userType === '99';
 User.user_is_teacher = loginUser.userType !== '99';
 User.supportPreviewFiles = {
-  officeExtensionNames: ['.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx'],
+  officeExtensionNames: ['.doc', '.docx', '.xls', '.xlsx'],
   immediacyExtensionNames: ['.bmp', '.gif', '.png', '.jpeg', '.ico', '.jpg', '.pdf', '.htm', '.html', '.cpp', '.c', '.h', '.php', '.java', '.sql', '.bat', '.vue', '.js', '.json', '.cs', '.md', '.log', '.txt',],
   zipExtensionNames: ['.zip']
 };

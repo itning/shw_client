@@ -277,7 +277,7 @@
           case 'office': {
             this.$router.push({
               name: 'Preview',
-              params: {type: 'office', url: Student().downWork + studentId + '/' + this.id}
+              params: {type: 'office', url: Student().downPreview + studentId + '/' + this.id}
             });
             break;
           }

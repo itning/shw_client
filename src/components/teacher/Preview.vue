@@ -74,11 +74,7 @@
       },
       onPreview(name) {
         let ex = '.' + name.slice((name.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase();
-        if (this.$user.supportPreviewFiles.officeExtensionNames.includes(ex)) {
-          this.showInImmediacy = false;
-          this.showFrame = true;
-          this.src = this.server_url + encodeURIComponent(Teacher().downInZip + this.url + '?name=' + name);
-        } else if (this.$user.supportPreviewFiles.immediacyExtensionNames.includes(ex)) {
+        if (this.$user.supportPreviewFiles.immediacyExtensionNames.includes(ex) || this.$user.supportPreviewFiles.officeExtensionNames.includes(ex)) {
           this.showInImmediacy = true;
           this.showFrame = true;
           this.src = Teacher().downInZip + this.url + '?name=' + encodeURIComponent(name);
@@ -89,10 +85,7 @@
     created() {
       this.height = (document.getElementsByClassName('md-app-content')[0].clientHeight - 32) + 'px';
       switch (this.type) {
-        case 'office': {
-          this.src = this.server_url + this.url;
-          break;
-        }
+        case 'office':
         case 'immediacy': {
           this.showInImmediacy = true;
           this.src = this.url;

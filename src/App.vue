@@ -63,6 +63,11 @@
             <md-icon>group</md-icon>
             <span class="md-list-item-text">群组管理</span>
           </md-list-item>
+
+          <md-list-item @click="down_desktop">
+            <md-icon>cloud_download</md-icon>
+            <span class="md-list-item-text">下载客户端</span>
+          </md-list-item>
         </md-list>
       </md-app-drawer>
       <md-app-content class="height_100">
@@ -109,6 +114,9 @@
           .do(response => {
             that.initNotices();
           })
+      },
+      down_desktop() {
+        window.location.href = "http://172.16.28.166:9001/update.html"
       }
     },
     created() {
