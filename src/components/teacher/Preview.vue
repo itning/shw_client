@@ -8,7 +8,7 @@
     <md-content>
       <tree :model="zipTree" @preview="onPreview"/>
     </md-content>
-    <iframe :src="src" width="100%" :style="{ height: height}" v-if="showFrame"></iframe>
+    <iframe :src="src" width="100%" :style="{ height: height}" v-if="showFrame" @load="load"></iframe>
     <md-dialog :md-active.sync="showDialog" :md-fullscreen="alert_fullscreen" :md-backdrop="md_backdrop">
       <md-dialog-title>更改预览编码</md-dialog-title>
       <md-dialog-content>
@@ -46,7 +46,6 @@
     props: ['url', 'type'],
     name: "Preview",
     data: () => ({
-      server_url: 'https://view.officeapps.live.com/op/view.aspx?src=',
       src: '',
       height: "0px",
       showDialog: false,
@@ -56,7 +55,8 @@
       showInImmediacy: false,
       showFrame: true,
       zipTree: [],
-      reloadUrl: ''
+      reloadUrl: '',
+      toast: Object
     }),
     methods: {
       reload() {
@@ -75,11 +75,18 @@
       onPreview(name) {
         let ex = '.' + name.slice((name.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase();
         if (this.$user.supportPreviewFiles.immediacyExtensionNames.includes(ex) || this.$user.supportPreviewFiles.officeExtensionNames.includes(ex)) {
+          this.toast = this.$toasted.info('加载中', {
+            position: "top-right",
+            icon: 'hourglass_empty'
+          });
           this.showInImmediacy = true;
           this.showFrame = true;
           this.src = Teacher().downInZip + this.url + '?name=' + encodeURIComponent(name);
           this.reloadUrl = this.src;
         }
+      },
+      load() {
+        this.toast.goAway(100);
       }
     },
     created() {
@@ -87,6 +94,10 @@
       switch (this.type) {
         case 'office':
         case 'immediacy': {
+          this.toast = this.$toasted.info('加载中', {
+            position: "top-right",
+            icon: 'hourglass_empty'
+          });
           this.showInImmediacy = true;
           this.src = this.url;
           this.reloadUrl = this.src;
