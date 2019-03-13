@@ -2634,10 +2634,10 @@ function-bind@^1.1.1:
   resolved "http://registry.npm.taobao.org/function-bind/download/function-bind-1.1.1.tgz#a56899d3ea3c9bab874bb9773b7c5ede92f4895d"
   integrity sha1-pWiZ0+o8m6uHS7l3O3xe3pL0iV0=
 
-fundebug-javascript@^1.6.0:
-  version "1.6.0"
-  resolved "http://registry.npm.taobao.org/fundebug-javascript/download/fundebug-javascript-1.6.0.tgz#3b764b1e251fd94e933122a37beda88d589afbbf"
-  integrity sha1-O3ZLHiUf2U6TMSKje+2ojVia+78=
+fundebug-javascript@^1.7.1:
+  version "1.7.1"
+  resolved "http://registry.npm.taobao.org/fundebug-javascript/download/fundebug-javascript-1.7.1.tgz#8eab23381c5f11623fbf9710fdb82cbe7836f215"
+  integrity sha1-jqsjOBxfEWI/v5cQ/bgsvng28hU=
 
 fundebug-vue@^0.0.1:
   version "0.0.1"

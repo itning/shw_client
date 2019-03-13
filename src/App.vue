@@ -124,7 +124,7 @@
       if ("fundebug" in window) {
         fundebug.silentHttp = true;
         fundebug.setHttpBody = true;
-        fundebug.silentVideo = false;
+        fundebug.releasestage = "production";
         fundebug.metaData = this.user;
       }
       if (this.$user.user_is_student) {
