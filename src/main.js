@@ -9,6 +9,8 @@ import Toasted from 'vue-toasted';
 import User from '@/user'
 import * as fundebug from "fundebug-javascript";
 import fundebugVue from "fundebug-vue";
+import 'vue-material/dist/vue-material.min.css'
+import 'vue-material/dist/theme/default.css'
 fundebug.apikey = "2a7ca23266214f8be244652a3d19751ec83e802f16606d4b875f9815eb104327";
 fundebugVue(fundebug, Vue);
 

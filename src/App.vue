@@ -116,7 +116,7 @@
           })
       },
       down_desktop() {
-        window.location.href = "http://172.16.28.166:9001/update.html"
+        window.location.href = "http://172.16.28.19:9001/update.html"
       }
     },
     created() {
