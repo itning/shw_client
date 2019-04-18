@@ -66,7 +66,12 @@
     <md-dialog :md-active.sync="show_modify_dialog" :md-fullscreen="alert_fullscreen">
       <md-dialog-title>修改作业信息</md-dialog-title>
       <md-dialog-content>
-        <md-checkbox v-model="selected.enabled">{{selected.enabled?'作业开启':'作业关闭'}}</md-checkbox>
+        <md-checkbox v-model="modify_work_enabled">{{selected.enabled?'作业开启':'作业关闭'}}</md-checkbox>
+        <md-field>
+          <label>新作业名</label>
+          <md-input v-model="modify_work_name"></md-input>
+          <span class="md-helper-text">不键入任何值代表不修改作业名称</span>
+        </md-field>
       </md-dialog-content>
       <md-dialog-actions>
         <md-button class="md-accent" @click="modify">保存</md-button>
@@ -127,6 +132,8 @@
       show_del_work_dialog: false,
       show_modify_dialog: false,
       new_work_name: '',
+      modify_work_enabled: false,
+      modify_work_name: ''
     }),
     watch: {
       id(now, old) {
@@ -174,6 +181,7 @@
       },
       onItemClick(id) {
         this.selected = this.work.content.find(item => item.id === id);
+        this.modify_work_enabled = this.selected.enabled;
         this.showDialog = true;
       },
       addBtn() {
@@ -225,16 +233,33 @@
       modify() {
         this.show_modify_dialog = false;
         let that = this;
-        Patch(Teacher().upWork + this.selected.id + '/' + this.selected.enabled)
-          .withSuccessCode(204)
-          .withErrorStartMsg('修改失败：')
-          .do(response => {
-            that.$toasted.success('修改成功', {
-              position: "top-right",
-              icon: 'check',
-              duration: 5000
+        if (this.modify_work_enabled !== this.selected.enabled) {
+          Patch(Teacher().upWorkEnabled + this.selected.id + '/' + this.modify_work_enabled)
+            .withSuccessCode(204)
+            .withErrorStartMsg('状态修改失败：')
+            .do(response => {
+              that.selected.enabled = that.modify_work_enabled;
+              that.$toasted.success('状态修改成功', {
+                position: "top-right",
+                icon: 'check',
+                duration: 5000
+              });
             });
-          });
+        }
+        if (this.modify_work_name !== '') {
+          Patch(Teacher().upWorkName + this.selected.id + '/' + this.modify_work_name)
+            .withSuccessCode(204)
+            .withErrorStartMsg('作业名修改失败：')
+            .do(response => {
+              that.selected.workName = that.modify_work_name;
+              that.modify_work_name = '';
+              that.$toasted.success('作业名修改成功', {
+                position: "top-right",
+                icon: 'check',
+                duration: 5000
+              });
+            });
+        }
       },
       routerToWorkDetails(id) {
         this.showDialog = false;
