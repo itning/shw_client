@@ -6,6 +6,7 @@
           <md-icon>menu</md-icon>
         </md-button>
         <span class="md-title md-xsmall-hide">哈信息学生作业管理系统</span>
+        <span style="padding-left: 20px;cursor: pointer" @click="showFeedbackDialogMethod">加入反馈群</span>
         <div class="md-toolbar-section-end">
           <md-badge :md-content="notices.length" v-if="isHaveNotifications">
             <md-button class="md-icon-button" @click="showNotificationsList=!showNotificationsList">
@@ -63,12 +64,28 @@
             <md-icon>group</md-icon>
             <span class="md-list-item-text">群组管理</span>
           </md-list-item>
+
+          <md-list-item @click="showFeedbackDialogMethod">
+            <md-icon>verified_user</md-icon>
+            <span class="md-list-item-text">反馈建议</span>
+          </md-list-item>
         </md-list>
       </md-app-drawer>
       <md-app-content class="height_100">
         <router-view/>
       </md-app-content>
     </md-app>
+    <md-dialog :md-active.sync="showFeedbackDialog">
+      <md-dialog-title>反馈建议请加入QQ群</md-dialog-title>
+      <div>
+        <p style="padding: 0 24px 0;">QQ群号：<span style="color: red">647667358</span></p>
+        <img src="/static/join_feedback_group_qr.png" alt="群二维码">
+      </div>
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="showFeedbackDialog = false">关闭</md-button>
+        <md-button class="md-primary" @click="joinFeedbackGroup">一键加群</md-button>
+      </md-dialog-actions>
+    </md-dialog>
   </div>
 </template>
 
@@ -82,6 +99,7 @@
       menuVisible: false,
       isHaveNotifications: false,
       showNotificationsList: false,
+      showFeedbackDialog: false,
       notices: [],
       user: {}
     }),
@@ -109,6 +127,13 @@
           .do(response => {
             that.initNotices();
           })
+      },
+      showFeedbackDialogMethod() {
+        this.menuVisible = false;
+        this.showFeedbackDialog = true;
+      },
+      joinFeedbackGroup() {
+        window.open("//shang.qq.com/wpa/qunwpa?idkey=cd4450a85209c290024fe5617f291d7a9946db2a53fa64090156c7085a411bdd");
       }
     },
     created() {
