@@ -6,7 +6,6 @@
           <md-icon>menu</md-icon>
         </md-button>
         <span class="md-title md-xsmall-hide">哈信息学生作业管理系统</span>
-        <span style="padding-left: 20px;cursor: pointer" @click="showFeedbackDialogMethod">加入反馈群</span>
         <div class="md-toolbar-section-end">
           <md-badge :md-content="notices.length" v-if="isHaveNotifications">
             <md-button class="md-icon-button" @click="showNotificationsList=!showNotificationsList">
