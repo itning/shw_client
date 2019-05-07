@@ -89,7 +89,7 @@
 </template>
 
 <script>
-  import {BASE_URL, Student} from "@/api";
+  import {CAS_LOGOUT_URL, Student} from "@/api";
   import {Del, Get} from "@/http";
 
   export default {
@@ -109,7 +109,7 @@
       },
       logout() {
         window.localStorage.removeItem('authorization_token');
-        window.location.href = BASE_URL + "/logout";
+        window.location.href = CAS_LOGOUT_URL;
       },
       initNotices() {
         let that = this;

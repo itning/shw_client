@@ -1,6 +1,7 @@
 'use strict';
 export const BASE_URL = "http://localhost:8080";
 export const CAS_LOGIN_URL = BASE_URL + "/login";
+export const CAS_LOGOUT_URL = BASE_URL + "/logout";
 
 export function Student() {
   const str = "/student";
