@@ -6066,10 +6066,10 @@ vue-loader@^13.3.0:
     vue-style-loader "^3.0.0"
     vue-template-es2015-compiler "^1.6.0"
 
-vue-material@^1.0.0-beta-10.2:
-  version "1.0.0-beta-10.2"
-  resolved "http://registry.npm.taobao.org/vue-material/download/vue-material-1.0.0-beta-10.2.tgz#c3effea97e0c5a0c696b0051d5ef9c6e6cf2a5ed"
-  integrity sha1-w+/+qX4MWgxpawBR1e+cbmzype0=
+vue-material@^1.0.0-beta-11:
+  version "1.0.0-beta-11"
+  resolved "https://registry.npm.taobao.org/vue-material/download/vue-material-1.0.0-beta-11.tgz#11baf0cdb22a35d35859c619099d6c3cb3cc2cc3"
+  integrity sha1-EbrwzbIqNdNYWcYZCZ1sPLPMLMM=
 
 vue-router@^3.0.1:
   version "3.0.2"

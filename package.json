@@ -1,6 +1,6 @@
 {
   "name": "shw_client",
-  "version": "1.7.9-RELEASE",
+  "version": "1.8.1-RELEASE",
   "description": "Student HomeWork Management System Client",
   "author": "itning <itning@itning.top>",
   "private": true,
@@ -16,7 +16,7 @@
     "fundebug-vue": "^0.0.1",
     "js-base64": "^2.5.1",
     "vue": "^2.5.2",
-    "vue-material": "^1.0.0-beta-10.2",
+    "vue-material": "^1.0.0-beta-11",
     "vue-router": "^3.0.1",
     "vue-toasted": "^1.1.26",
     "vuex": "^3.0.1"
