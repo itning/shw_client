@@ -171,6 +171,7 @@ _request.prototype.do = function (fn) {
           });
           let config = {
             headers: {'content-type': 'multipart/form-data'},
+            timeout: 1000 * 60 * 5,
             onUploadProgress: progressEvent => {
               let progress = (progressEvent.loaded / progressEvent.total * 100 | 0) + '%';
               uploadToast.text("正在上传：" + progress);

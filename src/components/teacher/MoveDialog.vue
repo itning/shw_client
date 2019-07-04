@@ -1,5 +1,5 @@
 <template>
-  <div class="review md-elevation-6">
+  <div class="review md-elevation-6" style="display: none">
     <p id="p">批阅窗口</p>
     <md-button class="md-accent" @click="save">保存</md-button>
     <md-content style="padding: 0 16px 1px 16px">

@@ -5,7 +5,7 @@
         <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
           <md-icon>menu</md-icon>
         </md-button>
-        <span class="md-title md-xsmall-hide">哈信息学生作业管理系统</span>
+        <span class="md-title md-xsmall-hide">哈信息学生作业、实验系统</span>
         <div class="md-toolbar-section-end">
           <md-badge :md-content="notices.length" v-if="isHaveNotifications">
             <md-button class="md-icon-button" @click="showNotificationsList=!showNotificationsList">
