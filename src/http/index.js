@@ -151,6 +151,7 @@ _request.prototype.doAfter = function (fn) {
 _request.prototype.do = function (fn) {
   let that = this;
   let promise = null;
+  let uploadToast = null;
   switch (this.method) {
     case Method.GET:
       promise = instance.get(this.url);
@@ -165,7 +166,7 @@ _request.prototype.do = function (fn) {
         if (this.enableUploadProgress === false) {
           promise = instance.post(this.url, this.formData, {headers: {'content-type': 'multipart/form-data'}});
         } else {
-          let uploadToast = Vue.toasted.info('正在上传：0%', {
+          uploadToast = Vue.toasted.info('正在上传：0%', {
             position: "top-right",
             icon: 'hourglass_empty'
           });
@@ -207,6 +208,9 @@ _request.prototype.do = function (fn) {
       }
     })
     .catch(error => {
+      if (uploadToast !== null) {
+        uploadToast.goAway(100);
+      }
       if (error.response !== undefined) {
         showErrorToast(that.startMsg + error.response.data.msg);
       }
