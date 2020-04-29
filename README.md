@@ -21,9 +21,12 @@
 
 ## 构建步骤
 
+[下载yarn](https://classic.yarnpkg.com/zh-Hans/docs/install/#windows-stable)
+
 ``` bash
 # 安装依赖
-npm install
+# 不建议使用 npm install 在本项目中
+yarn install
 
 # 开发服务
 npm run dev
